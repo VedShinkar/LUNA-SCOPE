@@ -1,0 +1,57 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+dist/
+build/
+*.egg-info/
+
+# Node
+node_modules/
+frontend/dist/
+frontend/.vite/
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# Editors / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Scientific data and generated artifacts
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+data/cache/*
+!data/cache/.gitkeep
+*.tif
+*.tiff
+*.img
+*.cub
+*.fits
+*.bsp
+*.bc
+*.tls
+*.tpc
+*.tf
+*.dem
+*.h5
+*.hdf5
+*.parquet
+*.npz
+*.npy
+
+# Logs and local outputs
+logs/
+outputs/
+reports/generated/

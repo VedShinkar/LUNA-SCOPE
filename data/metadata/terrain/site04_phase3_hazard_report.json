@@ -1,0 +1,230 @@
+{
+  "report_type": "LUNA-SCOPE Phase 3 Terrain Hazard Screening Report",
+  "policy": "Option B: Decoupled Decisional Screening",
+  "site": "Site04",
+  "timestamp_utc": "2026-11-13T18:28:24.457841+00:00",
+  "phase3_complete": true,
+  "classification_encoding": {
+    "codes": {
+      "UNKNOWN": 0,
+      "LOW": 1,
+      "MODERATE": 2,
+      "HIGH": 3
+    },
+    "nodata_value": 255,
+    "nodata_meaning": "Pixel outside raster domain",
+    "class_0_meaning": "UNKNOWN \u2013 unverified low-hazard evidence or missing critical data"
+  },
+  "indicator_domains": {
+    "physical_hazard": [
+      "slope",
+      "roughness_small",
+      "roughness_medium",
+      "roughness_large"
+    ],
+    "data_quality": [
+      "elevation_uncertainty",
+      "slope_uncertainty",
+      "observation_coverage"
+    ]
+  },
+  "thresholds": {
+    "slope_deg": {
+      "low": 5.0,
+      "low_max": 5.0,
+      "moderate": 15.0,
+      "moderate_max": 15.0,
+      "high": 30.0,
+      "units": "degrees",
+      "domain": "physical_hazard",
+      "provisional": true,
+      "description": "Slope hazard: LOW <= 5 deg, MODERATE 5-15 deg, HIGH > 15 deg (slopes > 30 deg represent extreme terrain)."
+    },
+    "roughness_small_m": {
+      "low": 0.5,
+      "low_max": 0.5,
+      "moderate": 1.5,
+      "moderate_max": 1.5,
+      "high": 3.0,
+      "units": "metres",
+      "domain": "physical_hazard",
+      "provisional": true,
+      "description": "15m micro-scale roughness: LOW <= 0.5m, MODERATE 0.5-1.5m, HIGH > 1.5m."
+    },
+    "roughness_medium_m": {
+      "low": 1.0,
+      "low_max": 1.0,
+      "moderate": 2.5,
+      "moderate_max": 2.5,
+      "high": 5.0,
+      "units": "metres",
+      "domain": "physical_hazard",
+      "provisional": true,
+      "description": "35m meso-scale roughness: LOW <= 1.0m, MODERATE 1.0-2.5m, HIGH > 2.5m."
+    },
+    "roughness_large_m": {
+      "low": 2.0,
+      "low_max": 2.0,
+      "moderate": 4.0,
+      "moderate_max": 4.0,
+      "high": 8.0,
+      "units": "metres",
+      "domain": "physical_hazard",
+      "provisional": true,
+      "description": "75m macro-scale roughness: LOW <= 2.0m, MODERATE 2.0-4.0m, HIGH > 4.0m."
+    },
+    "elevation_uncertainty_m": {
+      "low": 0.5,
+      "low_max": 0.5,
+      "moderate": 1.5,
+      "moderate_max": 1.5,
+      "high": 3.0,
+      "units": "metres_rms",
+      "domain": "data_quality",
+      "provisional": true,
+      "description": "Total vertical elevation uncertainty (toterr): LOW <= 0.5m, MODERATE 0.5-1.5m, HIGH > 1.5m."
+    },
+    "slope_uncertainty_deg": {
+      "low": 0.5,
+      "low_max": 0.5,
+      "moderate": 1.5,
+      "moderate_max": 1.5,
+      "high": 3.0,
+      "units": "degrees_rms",
+      "domain": "data_quality",
+      "provisional": true,
+      "description": "Slope uncertainty (slperr): LOW <= 0.5 deg, MODERATE 0.5-1.5 deg, HIGH > 1.5 deg."
+    },
+    "observation_coverage": {
+      "confident_min": 2,
+      "single_obs_min": 1,
+      "units": "laser_spot_count",
+      "domain": "data_quality",
+      "provisional": true,
+      "description": "LOLA observation count (ldec): DIRECT MULTI-SHOT >= 2 (LOW concern, code 1), DIRECT SINGLE-SHOT == 1 (MODERATE concern, code 2), INTERPOLATED == 0 (HIGH concern, code 3), MISSING/INVALID (UNKNOWN, code 0).",
+      "scientific_note": "LDEC observation count is an epistemic (data-quality) measure, not a physical hazard. LDEC=0 represents mathematically interpolated terrain between orbital tracks, not invalid elevation or physical danger."
+    }
+  },
+  "combination_rules": {
+    "rule_1_high_physical": "Known HIGH physical hazard (slope > 15 deg or roughness > high threshold) remains HIGH (3) regardless of observation coverage.",
+    "rule_2_moderate_physical": "Known MODERATE physical hazard (slope 5-15 deg or roughness moderate) remains MODERATE (2) regardless of observation coverage.",
+    "rule_3_low_physical": "LOW physical hazard becomes LOW (1) only when required quality evidence satisfies criteria: direct observations LDEC > 0, acceptable elevation uncertainty (toterr <= 1.5m), and acceptable slope uncertainty (slperr <= 1.5 deg).",
+    "rule_4_unverified_low": "LOW physical hazard with interpolated (LDEC=0) or insufficient quality evidence becomes UNKNOWN (0).",
+    "rule_5_missing_indicators": "Missing critical physical indicators remain UNKNOWN (0) unless a known HIGH or MODERATE indicator independently establishes that severity."
+  },
+  "interpolation_and_observation_summary": {
+    "total_pixels": 10240000,
+    "interpolated_cells_ldec_zero": 9302619,
+    "interpolated_percentage": 90.8459,
+    "direct_observation_cells_ldec_positive": 937381,
+    "direct_observation_percentage": 9.1541,
+    "missing_invalid_ldec_cells": 0
+  },
+  "combined_class_counts": {
+    "UNKNOWN": 329429,
+    "LOW": 32296,
+    "MODERATE": 1730510,
+    "HIGH": 8147765
+  },
+  "combined_class_percentages": {
+    "UNKNOWN": 3.2171,
+    "LOW": 0.3154,
+    "MODERATE": 16.8995,
+    "HIGH": 79.568
+  },
+  "physical_hazard_summary_counts": {
+    "UNKNOWN": 0,
+    "LOW": 361725,
+    "MODERATE": 1730510,
+    "HIGH": 8147765
+  },
+  "physical_hazard_summary_percentages": {
+    "UNKNOWN": 0.0,
+    "LOW": 3.5325,
+    "MODERATE": 16.8995,
+    "HIGH": 79.568
+  },
+  "epistemic_quality_summary_counts": {
+    "UNKNOWN": 0,
+    "LOW": 0,
+    "MODERATE": 449113,
+    "HIGH": 9790887
+  },
+  "epistemic_quality_summary_percentages": {
+    "UNKNOWN": 0.0,
+    "LOW": 0.0,
+    "MODERATE": 4.3859,
+    "HIGH": 95.6141
+  },
+  "per_indicator_class_counts": {
+    "slope": {
+      "UNKNOWN": 0,
+      "LOW": 476733,
+      "MODERATE": 3309807,
+      "HIGH": 6453460
+    },
+    "roughness_small": {
+      "UNKNOWN": 0,
+      "LOW": 814293,
+      "MODERATE": 4015670,
+      "HIGH": 5410037
+    },
+    "roughness_medium": {
+      "UNKNOWN": 0,
+      "LOW": 574975,
+      "MODERATE": 2876963,
+      "HIGH": 6788062
+    },
+    "roughness_large": {
+      "UNKNOWN": 0,
+      "LOW": 486540,
+      "MODERATE": 1615646,
+      "HIGH": 8137814
+    },
+    "elevation_uncertainty": {
+      "UNKNOWN": 0,
+      "LOW": 7630082,
+      "MODERATE": 2579435,
+      "HIGH": 30483
+    },
+    "slope_uncertainty": {
+      "UNKNOWN": 0,
+      "LOW": 0,
+      "MODERATE": 5153615,
+      "HIGH": 5086385
+    },
+    "observation_coverage": {
+      "UNKNOWN": 0,
+      "LOW": 45011,
+      "MODERATE": 892370,
+      "HIGH": 9302619
+    }
+  },
+  "valid_coverage_percentage": 96.7829,
+  "total_pixels": 10240000,
+  "indicator_geotiffs": {
+    "slope": "data\\processed\\terrain\\site04\\Site04_hazard_slope.tif",
+    "roughness_small": "data\\processed\\terrain\\site04\\Site04_hazard_roughness_small.tif",
+    "roughness_medium": "data\\processed\\terrain\\site04\\Site04_hazard_roughness_medium.tif",
+    "roughness_large": "data\\processed\\terrain\\site04\\Site04_hazard_roughness_large.tif",
+    "elevation_uncertainty": "data\\processed\\terrain\\site04\\Site04_hazard_elevation_uncertainty.tif",
+    "slope_uncertainty": "data\\processed\\terrain\\site04\\Site04_hazard_slope_uncertainty.tif",
+    "observation_coverage": "data\\processed\\terrain\\site04\\Site04_hazard_observation_coverage.tif"
+  },
+  "combined_geotiff": "data\\processed\\terrain\\site04\\Site04_combined_hazard_screen.tif",
+  "data_quality_geotiff": "data\\processed\\terrain\\site04\\Site04_data_quality_screen.tif",
+  "scientific_limitations": [
+    "All thresholds are provisional and not tied to any specific lunar vehicle or lander design.",
+    "LDEC observation count is an epistemic (data-quality) measure, not a physical terrain hazard. LDEC=0 represents mathematically interpolated terrain between orbital tracks, not invalid elevation or physical danger.",
+    "Elevation and slope uncertainty layers reflect interpolation variance and instrument error; they are not exhaustive error budgets.",
+    "Combined classification uses Decoupled Decisional Screening: crater walls and rough slopes are flagged as hazardous regardless of laser spot support, while benign slopes without direct laser support are held as UNKNOWN to prevent silent certification of interpolated terrain as safe.",
+    "Roughness scales (15 m, 35 m, 75 m) are provisional analytical scales; mission-specific hardware dimensions are not defined.",
+    "This product is a decision-support preliminary screening layer, NOT a certified landing-site safety assessment."
+  ],
+  "assumptions": [
+    "All input rasters share identical spatial grids (validated in Phase 1).",
+    "Slope and roughness are computed from the same 5 m LOLA DEM (Phase 2).",
+    "NoData in any source raster propagates as UNKNOWN in the combined product unless overridden by a known physical hazard.",
+    "Independent physical hazards (slope > 15 deg) are unlandable/impassable regardless of measurement density."
+  ]
+}

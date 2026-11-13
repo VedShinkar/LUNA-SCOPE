@@ -3,17 +3,21 @@
 from __future__ import annotations
 import argparse
 import json
+import sys
 from pathlib import Path
 import numpy as np
 import rasterio
 
-SUFFIXES = {
-    "elevation": "_final_adj_5mpp_surf.tif",
-    "observation_count": "_final_adj_5mpp_ldec.tif",
-    "slope": "_final_adj_5mpp_slp.tif",
-    "elevation_uncertainty": "_final_adj_5mpp_toterr.tif",
-    "slope_uncertainty": "_final_adj_5mpp_slperr.tif",
-}
+# Ensure backend package is in python search path
+repo_root = Path(__file__).resolve().parent.parent
+backend_dir = repo_root / "backend"
+if str(backend_dir) not in sys.path:
+    sys.path.insert(0, str(backend_dir))
+
+from app.scientific_engines.terrain.loader import LOLA_CORE_PRODUCTS
+from app.scientific_engines.terrain.validation import validate_site_rasters
+
+SUFFIXES = LOLA_CORE_PRODUCTS
 
 
 def inspect(path: Path) -> dict:
@@ -46,16 +50,21 @@ def inspect(path: Path) -> dict:
 
 
 def main():
-    parser = argparse.ArgumentParser()
+    parser = argparse.ArgumentParser(description="Inspect and validate LOLA terrain rasters.")
     parser.add_argument("--site", choices=["Site04", "Site11", "Site23"], default="Site04")
+    parser.add_argument("--no-validate", action="store_false", dest="validate", default=True,
+                        help="Skip Phase 1 scientific validation and report generation")
     args = parser.parse_args()
     site_dir = Path("data/raw/terrain") / args.site.lower()
     results = {}
     reference = None
+    all_present = True
+
     for key, suffix in SUFFIXES.items():
         path = site_dir / (args.site + suffix)
         if not path.exists():
             print(f"MISSING: {path}")
+            all_present = False
             continue
         info = inspect(path)
         results[key] = info
@@ -76,8 +85,17 @@ def main():
     out_path = Path("data/metadata/terrain") / f"{args.site.lower()}_inspection.json"
     out_path.parent.mkdir(parents=True, exist_ok=True)
     out_path.write_text(json.dumps(output, indent=2), encoding="utf-8")
-    print(json.dumps(output, indent=2))
-    print(f"\\nSaved: {out_path}")
+    print(f"Saved inspection: {out_path}")
+
+    if args.validate and all_present:
+        validation_report_path = Path("data/metadata/terrain") / f"{args.site.lower()}_validation_report.json"
+        report = validate_site_rasters(
+            site_dir=site_dir,
+            site=args.site,
+            output_report_path=validation_report_path,
+        )
+        print(f"Phase 1 Gate Status: {report['status']} (Passed: {report['phase1_gate_passed']})")
+        print(f"Saved validation report: {validation_report_path}")
 
 
 if __name__ == "__main__":

@@ -53,6 +53,10 @@ def terrain_service(tmp_path: Path) -> TerrainService:
 
     def write_raster(directory: Path, filename: str, data: np.ndarray) -> None:
         raster_profile = {**profile, "dtype": str(data.dtype)}
+        if np.issubdtype(data.dtype, np.floating):
+            raster_profile["nodata"] = np.nan
+        else:
+            raster_profile.pop("nodata", None)
         with rasterio.open(directory / filename, "w", **raster_profile) as dst:
             dst.write(data, 1)
 

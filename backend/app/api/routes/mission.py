@@ -24,9 +24,6 @@ class MissionAssessmentRequest(BaseModel):
 
     scenario_id: str | None = None
 
-    equipment_profile_id: str | None = None
-
-
 # Request model for scenario comparison
 class MissionComparisonRequest(BaseModel):
 
@@ -40,23 +37,19 @@ class MissionComparisonRequest(BaseModel):
 def mission_assessment(request: MissionAssessmentRequest):
 
     try:
-
         result = assess_mission(
             site_id=request.site_id,
             profile_id=request.mission_profile_id,
-            scenario_id=request.scenario_id,
-            equipment_profile_id=request.equipment_profile_id
+            scenario_id=request.scenario_id
         )
 
         return result
 
     except ValueError as error:
-
         raise HTTPException(
             status_code=400,
             detail=str(error)
         )
-
 
 # Compare multiple lunar locations
 @router.post("/compare")
@@ -80,3 +73,4 @@ def mission_comparison(request: MissionComparisonRequest):
             status_code=400,
             detail=str(error)
         )
+        

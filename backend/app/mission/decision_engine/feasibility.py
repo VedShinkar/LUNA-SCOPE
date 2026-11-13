@@ -7,19 +7,84 @@ the mandatory mission requirements.
 Initial inputs are synthetic test data.
 """
 
+import math
+from numbers import Real
+
 from .mission_profiles import get_mission_profile
 from .mock_data import get_lunar_site
 
 
+# Physical limits for lunar site measurements.
+SITE_MEASUREMENT_LIMITS = {
+    "sunlight_hours": (0, None),
+    "earth_visibility_hours": (0, None),
+    "solar_energy_wh": (0, None),
+    "slope_deg": (0, 90),
+    "terrain_hazard_score": (0, 1)
+}
+
+
+def validate_site_measurements(site):
+    """
+    Validate physical measurements before feasibility calculations.
+
+    Missing values are allowed and handled as INSUFFICIENT_DATA.
+    Invalid values raise ValueError.
+    """
+
+    for field, (minimum, maximum) in SITE_MEASUREMENT_LIMITS.items():
+
+        actual = site.get(field)
+
+        # Missing measurements are handled separately.
+        if actual is None:
+            continue
+
+        # Reject booleans, strings and other non-numeric values.
+        if (
+            isinstance(actual, bool)
+            or not isinstance(actual, Real)
+        ):
+            raise ValueError(
+                f"Invalid measurement '{field}': "
+                "value must be numeric."
+            )
+
+        # Reject NaN and infinity.
+        if not math.isfinite(actual):
+            raise ValueError(
+                f"Invalid measurement '{field}': "
+                "value must be finite."
+            )
+
+        # Check minimum physical limit.
+        if actual < minimum:
+            raise ValueError(
+                f"Invalid measurement '{field}': "
+                f"value cannot be below {minimum}."
+            )
+
+        # Check maximum physical limit where applicable.
+        if maximum is not None and actual > maximum:
+            raise ValueError(
+                f"Invalid measurement '{field}': "
+                f"value cannot exceed {maximum}."
+            )
+
+    return True
+
+
 def check_feasibility(site_id, profile_id):
 
-    # Load mission profile and lunar site
+    # Load validated mission profile and lunar site.
     profile = get_mission_profile(profile_id)
     site = get_lunar_site(site_id)
 
+    # Validate physical measurements before calculations.
+    validate_site_measurements(site)
+
     requirements = profile["requirements"]
 
-    # Map mission requirements to site data
     checks = {
 
         "minimum_sunlight_hours": (
@@ -58,7 +123,7 @@ def check_feasibility(site_id, profile_id):
     failed_constraints = []
     missing_inputs = []
 
-    # Check each requirement
+    # Check each mission requirement.
     for requirement, (actual, operator, required) in checks.items():
 
         if actual is None:
@@ -76,7 +141,6 @@ def check_feasibility(site_id, profile_id):
 
         if operator == ">=":
             passed = actual >= required
-
         else:
             passed = actual <= required
 
@@ -94,17 +158,14 @@ def check_feasibility(site_id, profile_id):
         if not passed:
             failed_constraints.append(result)
 
-    # Determine overall feasibility
+    # Determine overall feasibility.
     if missing_inputs:
-
         feasibility = "INSUFFICIENT_DATA"
 
     elif failed_constraints:
-
         feasibility = "NOT_FEASIBLE"
 
     else:
-
         feasibility = "FEASIBLE"
 
     return {
@@ -165,8 +226,10 @@ if __name__ == "__main__":
                 result["status"]
             )
 
-        print("\nFailed Constraints:",
-              len(assessment["failed_constraints"]))
+        print(
+            "\nFailed Constraints:",
+            len(assessment["failed_constraints"])
+        )
 
         print("Data Status:", assessment["data_status"])
 

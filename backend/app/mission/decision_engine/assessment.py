@@ -17,7 +17,7 @@ def assess_mission(
     site_id,
     profile_id,
     scenario_id=None,
-    equipment_profile_id=None
+    
 ):
 
     # Retrieve the original site information
@@ -36,26 +36,60 @@ def assess_mission(
     # Identify missing information
     missing_inputs = feasibility["missing_inputs"]
 
-    # Determine data quality status
+       # Determine data quality status
+    source_status = site.get(
+        "data_status",
+        "INSUFFICIENT_DATA"
+    )
+
     if feasibility["feasibility"] == "INSUFFICIENT_DATA":
-
         data_status = "INSUFFICIENT_DATA"
-
     else:
+        data_status = source_status
 
-        data_status = site.get(
-            "data_status",
-            "INSUFFICIENT_DATA"
+    # Read provenance information when available.
+    data_source = site.get("data_source")
+    provenance = site.get("provenance")
+    source_limitations = site.get("limitations", [])
+
+    # Generate limitations dynamically.
+    limitations = []
+
+    if source_status == "SYNTHETIC_EXAMPLE":
+        limitations.append(
+            "This assessment uses synthetic example data, "
+            "not verified scientific measurements."
         )
 
-    # Record limitations
-    limitations = [
-        "Current assessment uses synthetic example data.",
-        "Results are not actual NASA measurements.",
-        "Terrain and celestial calculations require integration "
-        "with the respective scientific modules.",
-        "Preliminary scoring is not a certified site-suitability model."
-    ]
+    elif source_status == "AVAILABLE":
+        if data_source:
+            limitations.append(
+                f"Data source: {data_source}."
+            )
+
+        if not provenance:
+            limitations.append(
+                "Detailed data provenance has not been provided."
+            )
+
+    else:
+        limitations.append(
+            "Data source or scientific measurement status "
+            "has not been fully established."
+        )
+
+    if isinstance(source_limitations, list):
+        limitations.extend(source_limitations)
+
+    limitations.append(
+        "Preliminary scoring is a heuristic and is not "
+        "a scientifically validated landing-site suitability model."
+    )
+
+    limitations.append(
+        "Terrain and celestial calculations depend on the "
+        "availability and validation of their respective scientific modules."
+    )
 
     # Build the final assessment
     assessment = {
@@ -67,8 +101,6 @@ def assess_mission(
         "site_name": site["site_name"],
 
         "mission_profile_id": profile_id,
-
-        "equipment_profile_id": equipment_profile_id,
 
         "feasibility": feasibility["feasibility"],
 
@@ -131,7 +163,7 @@ if __name__ == "__main__":
             site_id,
             profile_id,
             scenario_id="DEMO_SCENARIO_01",
-            equipment_profile_id="ROVER_BASELINE_V1"
+
         )
 
         print("\nSite:", result["site_id"])

@@ -12,9 +12,24 @@ from .recommendations import generate_recommendation
 
 def compare_scenarios(site_ids, profile_id):
 
+    # Validate the site list.
+    if not isinstance(site_ids, list) or not site_ids:
+        raise ValueError("Site IDs must be a non-empty list.")
+
+    # Reject invalid site IDs.
+    if any(
+        not isinstance(site_id, str) or not site_id.strip()
+        for site_id in site_ids
+    ):
+        raise ValueError("Every site ID must be a non-empty string.")
+
+    # Reject duplicate site IDs.
+    if len(site_ids) != len(set(site_ids)):
+        raise ValueError("Duplicate site IDs are not allowed.")
+
     results = []
 
-    # Evaluate each lunar location
+    # Evaluate each lunar location.
     for site_id in site_ids:
 
         result = generate_recommendation(
@@ -24,25 +39,47 @@ def compare_scenarios(site_ids, profile_id):
 
         results.append(result)
 
-    # Rank feasible locations first.
-    # Within each feasibility group, use score.
+    # Define transparent comparison priority.
     status_priority = {
         "FEASIBLE": 0,
-        "INSUFFICIENT_DATA": 1,
-        "NOT_FEASIBLE": 2
+        "NOT_FEASIBLE": 1,
+        "INSUFFICIENT_DATA": 2
     }
 
+    # Sort by feasibility first, then score.
     results.sort(
         key=lambda item: (
             status_priority[item["feasibility"]],
-            -(item["overall_score"] or 0)
+            -(item.get("overall_score") or 0),
+            item["site_id"]
         )
     )
 
-    # Assign ranks
-    for rank, result in enumerate(results, start=1):
+    # Assign suitability ranks only to feasible locations.
+    current_rank = 0
+    previous_score = None
 
-        result["rank"] = rank
+    for result in results:
+
+        if result["feasibility"] != "FEASIBLE":
+
+            result["rank"] = None
+            continue
+
+        score = result.get("overall_score")
+
+        if score is None:
+
+            result["rank"] = None
+            continue
+
+        if score != previous_score:
+
+            current_rank += 1
+
+        result["rank"] = current_rank
+
+        previous_score = score
 
     return results
 
@@ -80,3 +117,4 @@ if __name__ == "__main__":
         print("-" * 55)
 
     print("\nCOMPARISON COMPLETE")
+

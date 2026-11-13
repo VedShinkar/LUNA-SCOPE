@@ -57,9 +57,9 @@ It requires the repository's GitHub Actions workflow to be enabled and the workf
 ## Milestones
 
 - Phase 0 — Foundations: #1, #3, #4, #16, #24
-- Phase 1 — First vertical slices: #2, #5, #6, #7, #10, #11, #15, #17
+- Phase 1 — First vertical slices: #2, #5, #6, #7, #10, #11, #15, #17, #18
 - Phase 2 — Terrain-aware environment: #8, #9, #12, #13, #14
-- Phase 3 — Mission intelligence: #18, #19, #20, #21
+- Phase 3 — Mission intelligence: #19, #20, #21
 - Phase 4 — Integration & demo: #22, #23, #25
 
 Milestones intentionally have no calendar due dates yet. Add due dates only after the official challenge deadline and realistic work estimates are known.

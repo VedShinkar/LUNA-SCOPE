@@ -2,14 +2,6 @@
 
 Planned stack: React, TypeScript, Vite, Three.js / React Three Fiber.
 
-Suggested feature areas:
-- `src/features/lunar-explorer/`
-- `src/features/site-analysis/`
-- `src/features/mission-timeline/`
-- `src/features/scenario-comparison/`
-- `src/features/mission-copilot/`
-- `src/components/`
-- `src/services/` (typed API clients)
-- `src/visualization/` (shared 3D utilities)
+The `src/` structure separates reusable UI, feature modules, API clients, visualization utilities, and shared types. The frontend should display backend results and should not independently reimplement scientific calculations.
 
-Initialize the app when the team agrees on the package manager and baseline tooling.
+Initialize the React/Vite application when the team is ready to install the frontend toolchain.

@@ -4,10 +4,7 @@
 Provide an integrated, scientifically traceable environment for evaluating lunar landing sites, landing dates, and mission equipment configurations.
 
 ## Target users
-- Lunar mission planners and aerospace engineers
-- Planetary scientists and researchers
-- Rover/lander development teams
-- Educators, students, and the public
+Lunar mission planners and aerospace engineers, planetary scientists and researchers, rover/lander teams, educators, students, and the public.
 
 ## Core capabilities
 1. Lunar Intelligence Explorer
@@ -28,11 +25,7 @@ Provide an integrated, scientifically traceable environment for evaluating lunar
 16. Lunar Infrastructure Placement Optimizer
 17. Lunar Mission Digital Twin
 
-## Cross-cutting capabilities
-- AI Mission Copilot (must use verified scientific service outputs)
-- Integrated simulation environment
-- Configurable lander, rover, and surface-infrastructure profiles
-- Data provenance, uncertainty, and validation
+AI Mission Copilot is a cross-cutting capability and must use verified scientific service outputs.
 
 ## First complete workflow
 Select site and date -> load terrain -> calculate Sun/Earth geometry -> evaluate illumination and visibility -> configure equipment -> compare scenarios -> produce traceable assessment.

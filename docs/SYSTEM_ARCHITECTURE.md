@@ -21,5 +21,4 @@ Start with a modular monolith. Keep module boundaries explicit; split services o
 4. Mission engines: mobility, scheduling, optimization, contingencies.
 5. Data/storage: source metadata, processed terrain, scenario results, equipment profiles.
 
-## Integration rule
 Scientific calculations must be exposed through documented interfaces. The frontend must not reimplement scientific calculations independently.

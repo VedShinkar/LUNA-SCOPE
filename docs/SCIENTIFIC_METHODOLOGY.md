@@ -18,13 +18,7 @@ This document must be completed jointly before scientific modules are integrated
 - Thermal model assumptions: TBD
 
 ## Required traceability for every result
-- Inputs and units
-- Source dataset / SPICE kernel identifiers and versions
-- Coordinate and time conventions
-- Model version and assumptions
-- Output units
-- Known limitations
-- Validation test and reference result
+Inputs and units; source dataset/SPICE kernel identifiers and versions; coordinate and time conventions; model version and assumptions; output units; known limitations; validation test and reference result.
 
 ## Validation principle
 Do not present placeholder values or visually plausible estimates as validated scientific results. Separate measured data, ephemeris-derived values, model predictions, and user assumptions.

@@ -2,17 +2,15 @@
 
 Planned stack: Python, FastAPI, NumPy, SciPy, SpiceyPy, Rasterio, PyProj.
 
-Suggested packages:
-- `app/api/`
-- `app/scientific_engines/ephemeris/`
-- `app/scientific_engines/terrain/`
-- `app/scientific_engines/illumination/`
-- `app/scientific_engines/communication/`
-- `app/scientific_engines/power/`
-- `app/scientific_engines/thermal/`
-- `app/mission/`
-- `app/ai_copilot/`
-- `app/data/`
-- `tests/`
+The backend is organized as a modular monolith:
+- `api/`: HTTP endpoints and request validation
+- `scientific_engines/`: terrain, ephemeris, horizon, illumination, power, communication, thermal
+- `mission/`: decision engine, mobility, operations, contingencies, optimization
+- `ai_copilot/`: controlled natural-language interface to verified results
+- `models/`: shared backend data models
+- `services/`: orchestration and integration
 
-Keep scientific engines independent of HTTP request handling.
+Run locally from `backend/` after installing dependencies:
+`python -m uvicorn app.main:app --reload`
+
+Scientific engines must remain independent of HTTP request handling.

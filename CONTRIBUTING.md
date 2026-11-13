@@ -22,17 +22,10 @@ Use concise conventional-style messages:
 - `test: add horizon geometry cases`
 
 ## Pull requests
-- Keep each PR focused.
-- Link the relevant issue.
-- Explain what changed and how it was tested.
-- Include screenshots for visual changes.
-- State data sources, units, assumptions, and limitations for scientific changes.
-- Do not merge unreviewed scientific calculations into `main`.
+Keep each PR focused. Link the relevant issue, explain what changed and how it was tested, include screenshots for visual changes, and state data sources, units, assumptions, and limitations for scientific changes.
 
 ## Scientific integrity
 Never fabricate ephemeris, terrain, illumination, power, thermal, or communication values. Clearly label mock data and assumptions. Every scientific output should be traceable to inputs, data versions, model assumptions, units, and validation tests.
 
 ## Data and secrets
-- Never commit `.env`, API keys, passwords, private credentials, or personal access tokens.
-- Do not commit large source datasets or SPICE kernels.
-- Add dataset provenance and retrieval instructions to `docs/DATA_SOURCES.md`.
+Never commit `.env`, API keys, passwords, private credentials, large source datasets, or SPICE kernels. Add dataset provenance and retrieval instructions to `docs/DATA_SOURCES.md`.

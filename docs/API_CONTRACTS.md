@@ -21,16 +21,6 @@ Complete this document before connecting modules.
 
 These are proposals, not implemented endpoints. Agree on request/response schemas before coding.
 
-## Example conceptual site request
-```json
-{
-  "site_id": "custom-site-001",
-  "latitude_deg": null,
-  "longitude_deg": null,
-  "coordinate_convention": "TBD"
-}
-```
-
 ## Contract ownership
 - Terrain and geospatial outputs: Member 1
 - Ephemeris and geometry outputs: Member 2

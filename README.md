@@ -5,7 +5,6 @@
 LUNA-SCOPE is an AI-assisted lunar mission planning and decision-support platform combining NASA lunar terrain data, celestial geometry, solar illumination, direct-to-Earth communication analysis, and integrated mission simulation to evaluate and compare lunar landing sites, dates, and equipment configurations.
 
 ## Project goals
-
 - Explore lunar locations using measured NASA terrain products.
 - Calculate Sun and Earth geometry for selected lunar coordinates and times.
 - Evaluate terrain-aware illumination and direct-to-Earth visibility.
@@ -14,7 +13,6 @@ LUNA-SCOPE is an AI-assisted lunar mission planning and decision-support platfor
 - Provide traceable explanations through an AI Mission Copilot.
 
 ## Repository structure
-
 ```text
 frontend/       React + TypeScript application and 3D visualization
 backend/        FastAPI services and scientific/mission engines
@@ -26,11 +24,9 @@ tests/          Cross-module and integration tests
 ```
 
 ## Development status
-
 This repository is a starter scaffold. Scientific calculations and data products must be validated before being presented as mission-planning results. Do not use placeholder values as scientific outputs.
 
 ## Team workflow
-
 1. Create a feature branch for each task.
 2. Make focused commits.
 3. Open a pull request into `main`.
@@ -40,17 +36,7 @@ This repository is a starter scaffold. Scientific calculations and data products
 See [CONTRIBUTING.md](CONTRIBUTING.md) and the documents in `docs/`.
 
 ## Data policy
-
 Do not commit large DEMs, imagery archives, SPICE kernels, credentials, or other bulky datasets to Git. Store acquisition scripts, product identifiers, source URLs, checksums, licences/usage notes, and processing metadata in the repository. Keep local datasets outside version control unless the team explicitly agrees otherwise.
 
 ## Scientific conventions
-
-Before integrating modules, the team must agree on:
-- Lunar coordinate convention and longitude direction.
-- Reference frames and body-fixed frame realization.
-- Time scales and conversion rules.
-- Elevation datum/radius and units.
-- Terrain grid projection, resolution, and no-data handling.
-- Definition of geometric versus terrain-obstructed visibility.
-
-Record decisions in `docs/SCIENTIFIC_METHODOLOGY.md` and `docs/API_CONTRACTS.md`.
+Before integrating modules, the team must agree on lunar coordinate conventions, reference frames, time scales, elevation datum/units, terrain projections, and visibility definitions. Record decisions in `docs/SCIENTIFIC_METHODOLOGY.md` and `docs/API_CONTRACTS.md`.

@@ -86,7 +86,7 @@ jobs:
               15: { labels: ["member-2", "workstream:celestial", "priority:P0"], milestone: "Phase 1 — First vertical slices" },
               16: { labels: ["shared", "workstream:integration", "priority:P0"], milestone: "Phase 0 — Foundations" },
               17: { labels: ["member-3", "workstream:intelligence", "priority:P1"], milestone: "Phase 1 — First vertical slices" },
-              18: { labels: ["member-3", "workstream:intelligence", "priority:P1"], milestone: "Phase 3 — Mission intelligence" },
+              18: { labels: ["member-3", "workstream:intelligence", "priority:P1"], milestone: "Phase 1 — First vertical slices" },
               19: { labels: ["member-3", "workstream:intelligence", "priority:P2"], milestone: "Phase 3 — Mission intelligence" },
               20: { labels: ["member-3", "workstream:intelligence", "priority:P2"], milestone: "Phase 3 — Mission intelligence" },
               21: { labels: ["member-3", "workstream:intelligence", "priority:P1", "documentation"], milestone: "Phase 3 — Mission intelligence" },

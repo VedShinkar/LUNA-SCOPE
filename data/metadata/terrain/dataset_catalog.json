@@ -1,0 +1,116 @@
+{
+  "catalog_version": "1.0",
+  "last_reviewed_utc": "2026-11-13",
+  "primary_source": {
+    "name": "NASA GSFC Planetary Geodesy Data Archive",
+    "product_id": 78,
+    "product_url": "https://pgda.gsfc.nasa.gov/products/78",
+    "data_index": "https://pgda.gsfc.nasa.gov/data/LOLA_5mpp/",
+    "common_metadata": {
+      "raster_spacing": "5 m/pixel",
+      "projection": "South-polar stereographic X/Y coordinates in metres",
+      "reference_frame": "MOON_ME associated with ephemeris DE421",
+      "caveat": "5 m pixel spacing is not equivalent to independent 5 m measurement spacing; use LDEC and uncertainty layers."
+    }
+  },
+  "sites": {
+    "Site04": {
+      "name": "Shackleton rim",
+      "priority": "P0",
+      "directory": "data/raw/terrain/site04",
+      "roi_archive_listed": true
+    },
+    "Site11": {
+      "name": "de Gerlache rim",
+      "priority": "P1",
+      "directory": "data/raw/terrain/site11",
+      "roi_archive_listed": true
+    },
+    "Site23": {
+      "name": "Malapert massif",
+      "priority": "P1",
+      "directory": "data/raw/terrain/site23",
+      "roi_archive_listed": false
+    }
+  },
+  "core_products": [
+    {
+      "key": "elevation",
+      "suffix": "_final_adj_5mpp_surf.tif",
+      "units": "m",
+      "purpose": "Base elevation surface for terrain mesh, elevation queries, derived slope and horizon calculations."
+    },
+    {
+      "key": "observation_count",
+      "suffix": "_final_adj_5mpp_ldec.tif",
+      "units": "LOLA spots per pixel",
+      "purpose": "Measurement-support layer; helps identify sparse sampling and interpolation."
+    },
+    {
+      "key": "slope",
+      "suffix": "_final_adj_5mpp_slp.tif",
+      "units": "degrees",
+      "purpose": "NASA-supplied slope product for terrain screening and validation of independently calculated slope."
+    },
+    {
+      "key": "elevation_uncertainty",
+      "suffix": "_final_adj_5mpp_toterr.tif",
+      "units": "m RMS",
+      "purpose": "Vertical uncertainty layer for traceable terrain and horizon analysis."
+    },
+    {
+      "key": "slope_uncertainty",
+      "suffix": "_final_adj_5mpp_slperr.tif",
+      "units": "degrees RMS",
+      "purpose": "Slope uncertainty for terrain suitability confidence."
+    }
+  ],
+  "optional_products": [
+    {
+      "key": "point_cloud",
+      "filename_pattern": "{SITE}_final_adj.xyzi",
+      "format": "binary XYZI",
+      "purpose": "Adjusted/cleaned LOLA point observations; useful for inspecting actual measurement support; potentially large."
+    },
+    {
+      "key": "error_realisation_clones",
+      "directory": "Clones/",
+      "filename_pattern": "{SITE}_final_adj_5mpp_{NNNN}_err.tif",
+      "count": 100,
+      "purpose": "DEM error-realisation ensemble for uncertainty propagation; large optional download."
+    },
+    {
+      "key": "regions_of_interest",
+      "filename_pattern": "{SITE}_ROIs.tgz",
+      "sites_listed": [
+        "Site04",
+        "Site11"
+      ],
+      "purpose": "GIS region-of-interest shapefiles for study-region masks and reproducible summaries."
+    }
+  ],
+  "complementary_sources": [
+    {
+      "name": "PGDA Shape-from-Shading DEMs",
+      "product_id": 104,
+      "url": "https://pgda.gsfc.nasa.gov/products/104",
+      "archive": "https://doi.org/10.5281/zenodo.17954508",
+      "purpose": "Complementary enhanced topography using LOLA control and LROC NAC images; confirm exact regional overlap and frame before use."
+    },
+    {
+      "name": "LROC NAC calibrated imagery",
+      "url": "https://pds-imaging.jpl.nasa.gov/",
+      "purpose": "Visual context and potential small-feature inspection; exact image product IDs and geometry must be recorded."
+    },
+    {
+      "name": "LROC QuickMap",
+      "url": "https://quickmap.lroc.asu.edu/",
+      "purpose": "Terrain discovery and visual inspection only; map tiles/screenshots are not numeric DEM inputs."
+    },
+    {
+      "name": "NASA Moon Trek",
+      "url": "https://trek.nasa.gov/moon/",
+      "purpose": "3D map context and layer discovery; use actual documented source products for analysis."
+    }
+  ]
+}

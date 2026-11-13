@@ -3,16 +3,17 @@
 ## Before starting
 - Read `README.md` and the relevant documents in `docs/`.
 - Check the GitHub Project board and take an assigned issue.
-- Confirm the issue's owner, expected output, and acceptance criteria.
+- Confirm issue ownership, dependencies, expected output and acceptance criteria.
+- Do not start cross-module integration until the shared coordinate conventions and versioned data contracts are agreed.
 
 ## Branch naming
-Use descriptive branches:
-- `feature/<short-name>`
-- `fix/<short-name>`
-- `docs/<short-name>`
-- `test/<short-name>`
+Prefer issue-specific branches:
+- `feat/<issue-number>-<short-name>`
+- `fix/<issue-number>-<short-name>`
+- `docs/<issue-number>-<short-name>`
+- `test/<issue-number>-<short-name>`
 
-Examples: `feature/lola-dem-reader`, `feature/spice-sun-vector`.
+Examples: `feat/7-terrain-dem-pipeline`, `feat/11-spice-sun-earth-positions`.
 
 ## Commit messages
 Use concise conventional-style messages:
@@ -22,10 +23,15 @@ Use concise conventional-style messages:
 - `test: add horizon geometry cases`
 
 ## Pull requests
-Keep each PR focused. Link the relevant issue, explain what changed and how it was tested, include screenshots for visual changes, and state data sources, units, assumptions, and limitations for scientific changes.
+- Open PRs against `main` and reference the issue (for example, `Closes #7`).
+- Keep PRs focused on one issue where practical.
+- Explain behavior, tests and any migration/data requirements.
+- Include screenshots for visual changes.
+- For scientific changes, state source/kernel identifiers, coordinate/time frames, units, model assumptions, validation and limitations.
+- Request review; do not merge unreviewed scientific changes.
 
 ## Scientific integrity
-Never fabricate ephemeris, terrain, illumination, power, thermal, or communication values. Clearly label mock data and assumptions. Every scientific output should be traceable to inputs, data versions, model assumptions, units, and validation tests.
+Never fabricate ephemeris, terrain, illumination, power, thermal or communication values. Clearly label synthetic fixtures and user assumptions. Every scientific output must be traceable to inputs, data versions, model assumptions, units and validation tests. Missing data must not be silently converted to zero or a successful feasibility result.
 
 ## Data and secrets
-Never commit `.env`, API keys, passwords, private credentials, large source datasets, or SPICE kernels. Add dataset provenance and retrieval instructions to `docs/DATA_SOURCES.md`.
+Never commit `.env`, API keys, passwords, private credentials, large source datasets or SPICE kernels. Add dataset provenance and retrieval instructions to `docs/DATA_SOURCES.md`.

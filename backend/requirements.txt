@@ -7,3 +7,4 @@ spiceypy
 rasterio
 pyproj
 pytest
+httpx>=0.27,<1

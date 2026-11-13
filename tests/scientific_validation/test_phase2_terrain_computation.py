@@ -317,7 +317,7 @@ def test_slope_comparison_synthetic_metrics():
     assert res_exact["metrics_deg"]["bias_mean_error"] == 0.0
     assert res_exact["metrics_deg"]["mean_absolute_error_mae"] == 0.0
     assert res_exact["metrics_deg"]["root_mean_square_error_rmse"] == 0.0
-    assert res_exact["match_quality"] == "EXACT_NUMERICAL_MATCH"
+    assert res_exact["match_quality"] == "IDENTICAL_VALID_VALUES"
 
     # Known bias offset (+0.5 deg)
     biased = base + 0.5
@@ -325,32 +325,57 @@ def test_slope_comparison_synthetic_metrics():
     assert np.isclose(res_biased["metrics_deg"]["bias_mean_error"], 0.5, atol=1e-5)
     assert np.isclose(res_biased["metrics_deg"]["mean_absolute_error_mae"], 0.5, atol=1e-5)
     assert np.isclose(res_biased["metrics_deg"]["root_mean_square_error_rmse"], 0.5, atol=1e-5)
+    assert res_biased["match_quality"] == "DIFFERENCES_MEASURED"
+
+
+def test_slope_comparison_reports_small_mae_and_large_local_error():
+    base = np.full((100, 100), 10.0)
+    calculated = base.copy()
+    calculated[0, 0] = 35.0
+    result = compare_slopes(calculated, base)
+    assert result["match_quality"] == "DIFFERENCES_MEASURED"
+    assert result["metrics_deg"]["mean_absolute_error_mae"] == 0.0025
+    assert result["metrics_deg"]["max_absolute_error"] == 25.0
+    assert "maximum absolute error is 25 deg" in result["investigation_and_findings"]
+
+
+def test_slope_comparison_reports_no_mutually_valid_pixels():
+    calculated = np.array([[np.nan, 10.0, 10.0]])
+    reference = np.array([[10.0, np.inf, 10.0]])
+    mask = np.array([[True, True, False]])
+    result = compare_slopes(calculated, reference, mask)
+    assert result["match_quality"] == "INSUFFICIENT_VALID_DATA"
+    assert result["comparison_coverage"]["valid_pixels"] == 0
+    assert result["error"] == result["investigation_and_findings"]
+    assert compare_slopes(calculated[:, :0], reference[:, :0])["match_quality"] == "INSUFFICIENT_VALID_DATA"
 
 
 def test_site04_actual_slope_matches_nasa_within_tolerance():
-    """Verify that calculated Zevenbergen-Thorne slope matches NASA Site04 slope product within geodetic tolerance."""
+    """Check the observed Site04 Zevenbergen-Thorne regression bounds."""
     surf_path = Path("data/raw/terrain/site04/Site04_final_adj_5mpp_surf.tif")
     nasa_slp_path = Path("data/raw/terrain/site04/Site04_final_adj_5mpp_slp.tif")
     assert surf_path.exists() and nasa_slp_path.exists()
 
     with rasterio.open(surf_path) as s_surf, rasterio.open(nasa_slp_path) as s_slp:
+        assert (s_surf.shape, s_surf.transform, s_surf.crs) == (s_slp.shape, s_slp.transform, s_slp.crs)
         dem = s_surf.read(1)
         nasa_slp = s_slp.read(1)
+        valid = (s_surf.read_masks(1) != 0) & (s_slp.read_masks(1) != 0)
         transform = s_surf.transform
 
     calc_zt = calculate_slope(dem, transform=transform, method="zevenbergen_thorne")
-    metrics_full = compare_slopes(calc_zt, nasa_slp)
+    metrics_full = compare_slopes(calc_zt, nasa_slp, mask=valid)
 
     # Across full array (including 1-pixel boundaries), MAE is ~0.0011 deg
     assert metrics_full["metrics_deg"]["mean_absolute_error_mae"] < 0.002
     assert metrics_full["metrics_deg"]["median_absolute_error_medae"] < 0.0005
     assert abs(metrics_full["metrics_deg"]["bias_mean_error"]) < 0.001
-    assert metrics_full["match_quality"] == "EXACT_NUMERICAL_MATCH"
+    assert metrics_full["match_quality"] == "DIFFERENCES_MEASURED"
 
     # In the interior (excluding 1-pixel boundary difference), MAE is < 0.0003 deg
     inner_mask = np.zeros_like(dem, dtype=bool)
     inner_mask[1:-1, 1:-1] = True
-    metrics_inner = compare_slopes(calc_zt, nasa_slp, mask=inner_mask)
+    metrics_inner = compare_slopes(calc_zt, nasa_slp, mask=inner_mask & valid)
     assert metrics_inner["metrics_deg"]["mean_absolute_error_mae"] < 0.0003
     assert metrics_inner["metrics_deg"]["root_mean_square_error_rmse"] < 0.0003
     assert metrics_inner["metrics_deg"]["median_absolute_error_medae"] < 0.0002

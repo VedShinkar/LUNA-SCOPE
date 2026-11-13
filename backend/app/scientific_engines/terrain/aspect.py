@@ -18,8 +18,7 @@ from rasterio.transform import Affine
 
 from app.scientific_engines.terrain.slope import (
     SlopeMethod,
-    compute_terrain_gradients,
-    extract_pixel_spacing_from_transform,
+    _compute_map_gradients,
 )
 
 FLAT_ASPECT_SENTINEL = -1.0
@@ -62,15 +61,14 @@ def calculate_aspect(
 
     Args:
         dem: 2D array of elevations in metres.
-        transform: Affine transform providing pixel spacing.
+        transform: Affine transform mapping raster coordinates to map coordinates.
         method: "zevenbergen_thorne" or "horn".
         flat_threshold_deg: Slope magnitude below which terrain is classified flat.
 
     Returns:
         2D array of aspect in degrees [0, 360), with -1.0 for flat cells and NaN for NoData.
     """
-    dx, dy = extract_pixel_spacing_from_transform(transform)
-    dz_dx, dz_dy = compute_terrain_gradients(dem, dx=dx, dy=dy, method=method, edge_mode="gradient")
+    dz_dx, dz_dy = _compute_map_gradients(dem, transform, method, edge_mode="gradient")
 
     grad_mag = np.hypot(dz_dx, dz_dy)
     slope_deg = np.degrees(np.arctan(grad_mag))
@@ -83,7 +81,8 @@ def calculate_aspect(
     aspect_rad = np.arctan2(u, v)
     aspect_deg = (np.degrees(aspect_rad) + 360.0) % 360.0
 
-    # Handle 360.0 edge case -> 0.0
+    # Normalize 360.0 to 0.0, including values rounded up during the cast.
+    aspect_deg = aspect_deg.astype(np.float32)
     aspect_deg = np.where(aspect_deg >= 360.0, 0.0, aspect_deg)
 
     # Apply flat mask
@@ -94,7 +93,7 @@ def calculate_aspect(
     nan_mask = ~np.isfinite(dz_dx) | ~np.isfinite(dz_dy)
     aspect_deg = np.where(nan_mask, np.nan, aspect_deg)
 
-    return aspect_deg.astype(np.float32)
+    return aspect_deg
 
 
 def summarize_aspect(

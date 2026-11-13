@@ -1,7 +1,7 @@
 """DEM Slope calculation and validation against NASA LOLA slope products.
 
 Phase 2 Slope module:
-- Computes spatial derivatives (dz/dx, dz/dy) using full affine transform and pixel spacing.
+- Computes map-coordinate derivatives (dz/dx, dz/dy) using the full affine transform.
 - Implements both Zevenbergen-Thorne (2nd-order central difference) and Horn (1981) algorithms.
 - Explicitly handles boundary conditions and NoData propagation.
 - Expresses slope in degrees: theta = arctan(hypot(dz/dx, dz/dy)) * 180 / pi.
@@ -75,6 +75,18 @@ def compute_terrain_gradients(
     Returns:
         (dz_dx, dz_dy) gradient arrays in m/m.
     """
+    dz_dx, dz_dy = _compute_raster_axis_gradients(dem, dx, dy, method, edge_mode)
+    return dz_dx.astype(np.float32), dz_dy.astype(np.float32)
+
+
+def _compute_raster_axis_gradients(
+    dem: np.ndarray,
+    dx: float,
+    dy: float,
+    method: SlopeMethod,
+    edge_mode: EdgeMode,
+) -> Tuple[np.ndarray, np.ndarray]:
+    """Apply the stencils along increasing columns and decreasing rows in float64."""
     if dem.ndim != 2:
         raise ValueError(f"DEM must be a 2D array, got {dem.ndim}D")
     if dx <= 0 or dy <= 0:
@@ -169,7 +181,36 @@ def compute_terrain_gradients(
         dz_dy[:, 0] = np.nan
         dz_dy[:, -1] = np.nan
 
-    return dz_dx.astype(np.float32), dz_dy.astype(np.float32)
+    return dz_dx, dz_dy
+
+
+def _compute_map_gradients(
+    dem: np.ndarray,
+    transform: Affine | Tuple[float, float, float, float, float, float],
+    method: SlopeMethod,
+    edge_mode: EdgeMode,
+) -> Tuple[np.ndarray, np.ndarray]:
+    """Return elevation derivatives along map east (+X) and grid north (+Y)."""
+    coefficients = np.asarray(transform[:6], dtype=np.float64)
+    if not np.isfinite(coefficients).all():
+        raise ValueError("Affine transform coefficients must be finite.")
+    a, b, _, d, e, _ = coefficients
+
+    if b == 0 and d == 0 and a > 0 and e < 0:
+        # Preserve the established float32 gradient rounding on north-up rasters.
+        return compute_terrain_gradients(dem, a, -e, method, edge_mode)
+
+    dz_dcol, dz_dnegative_row = _compute_raster_axis_gradients(dem, 1.0, 1.0, method, edge_mode)
+    # The stencil's second derivative points toward decreasing rows. Reverse it
+    # to form [dz/dcol, dz/drow] before solving A.T @ g_map = g_pixel.
+    pixel_gradients = np.stack((dz_dcol.ravel(), -dz_dnegative_row.ravel()))
+    # Treat each pixel as a right-hand side so NumPy factors the 2x2 matrix once.
+    try:
+        map_gradients = np.linalg.solve([[a, d], [b, e]], pixel_gradients)
+    except np.linalg.LinAlgError as exc:
+        raise ValueError("Affine transform has a singular linear part.") from exc
+
+    return map_gradients[0].reshape(dem.shape), map_gradients[1].reshape(dem.shape)
 
 
 def calculate_slope(
@@ -186,15 +227,14 @@ def calculate_slope(
 
     Args:
         dem: 2D array of elevations in metres.
-        transform: Affine transform providing pixel spacing.
+        transform: Affine transform mapping raster coordinates to map coordinates.
         method: "zevenbergen_thorne" (default, matches NASA product) or "horn".
         edge_mode: Boundary treatment ("gradient" or "nan").
 
     Returns:
         2D array of slope in degrees.
     """
-    dx, dy = extract_pixel_spacing_from_transform(transform)
-    dz_dx, dz_dy = compute_terrain_gradients(dem, dx=dx, dy=dy, method=method, edge_mode=edge_mode)
+    dz_dx, dz_dy = _compute_map_gradients(dem, transform, method, edge_mode)
 
     grad_mag = np.hypot(dz_dx, dz_dy)
     slope_rad = np.arctan(grad_mag)
@@ -218,10 +258,16 @@ def compare_slopes(
     - Max Absolute Difference
     - Standard deviation of difference
     - Quantiles (p5, p25, p50, p75, p95)
-    - Comparison coverage and discrepancy analysis
+    - Comparison coverage and a descriptive status
+
+    Inputs must be aligned slope arrays in degrees. Only finite pairs selected
+    by the optional validity mask are compared. The status uses no accuracy
+    thresholds: it records whether there are no valid pairs, all selected values
+    are identical, or differences were measured. Agreement requirements depend
+    on the intended use, including sensitivity to local outliers.
 
     Returns:
-        Dictionary of comparison metrics and geomorphometric interpretation.
+        Dictionary of comparison coverage, numerical metrics, and status.
     """
     total_pixels = int(calculated_slope.size)
 
@@ -231,14 +277,17 @@ def compare_slopes(
         valid_comparison &= mask
 
     valid_count = int(valid_comparison.sum())
-    coverage_pct = float(valid_count / total_pixels * 100.0)
 
     if valid_count == 0:
+        explanation = "No mutually valid pixels found for slope comparison."
         return {
             "comparison_coverage": {"valid_pixels": 0, "total_pixels": total_pixels, "percentage": 0.0},
-            "error": "No mutually valid pixels found for slope comparison.",
+            "match_quality": "INSUFFICIENT_VALID_DATA",
+            "investigation_and_findings": explanation,
+            "error": explanation,
         }
 
+    coverage_pct = float(valid_count / total_pixels * 100.0)
     c_vals = calculated_slope[valid_comparison].astype(np.float64)
     n_vals = nasa_slope[valid_comparison].astype(np.float64)
 
@@ -254,28 +303,15 @@ def compare_slopes(
 
     p5, p25, p50, p75, p95 = [float(x) for x in np.percentile(diff, [5, 25, 50, 75, 95])]
 
-    # Discrepancy analysis
-    if mae < 0.01:
-        match_quality = "EXACT_NUMERICAL_MATCH"
-        explanation = (
-            "The calculated slope demonstrates near-perfect agreement with the NASA LOLA slope product "
-            f"(MAE = {mae:.6f} deg, RMSE = {rmse:.6f} deg, bias = {bias:.6f} deg). "
-            "This confirms that NASA's PGDA LOLA slope GeoTIFF was generated using unweighted 2nd-order "
-            "central differences (Zevenbergen & Thorne / GMT grdgradient) at the native 5 m grid spacing."
-        )
-    elif mae < 0.5:
-        match_quality = "CONSISTENT_WITH_SMOOTHING_FILTER_DISCREPANCY"
-        explanation = (
-            f"The calculated slope differs moderately from the NASA product (MAE = {mae:.4f} deg, RMSE = {rmse:.4f} deg). "
-            "This discrepancy is characteristic of using a 3x3 inverse-distance weighted filter (e.g. Horn 1981) "
-            "versus unweighted central differences (Zevenbergen & Thorne / GMT grdgradient), where Horn averages over "
-            "8 neighbouring pixels, dampening high-frequency slopes on sharp crater crests."
-        )
+    if max_abs_diff == 0.0:
+        match_quality = "IDENTICAL_VALID_VALUES"
+        explanation = f"Calculated and reference slope values are equal at all {valid_count:,} compared pixels."
     else:
-        match_quality = "SIGNIFICANT_SYSTEMATIC_DIFFERENCE"
+        match_quality = "DIFFERENCES_MEASURED"
         explanation = (
-            f"Significant discrepancy observed (MAE = {mae:.4f} deg, bias = {bias:.4f} deg). "
-            "Check spatial resolution units, vertical exaggeration, or gradient orientation conventions."
+            f"Across {valid_count:,} compared pixels, the MAE is {mae:.6g} deg, "
+            f"RMSE is {rmse:.6g} deg, median absolute error is {med_ae:.6g} deg, "
+            f"and maximum absolute error is {max_abs_diff:.6g} deg."
         )
 
     return {

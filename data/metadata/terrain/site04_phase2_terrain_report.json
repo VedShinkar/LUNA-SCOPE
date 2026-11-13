@@ -353,8 +353,8 @@
           "p95": 0.000392
         }
       },
-      "match_quality": "EXACT_NUMERICAL_MATCH",
-      "investigation_and_findings": "The calculated slope demonstrates near-perfect agreement with the NASA LOLA slope product (MAE = 0.001155 deg, RMSE = 0.065393 deg, bias = -0.000581 deg). This confirms that NASA's PGDA LOLA slope GeoTIFF was generated using unweighted 2nd-order central differences (Zevenbergen & Thorne / GMT grdgradient) at the native 5 m grid spacing."
+      "match_quality": "DIFFERENCES_MEASURED",
+      "investigation_and_findings": "Across 10,240,000 compared pixels, the MAE is 0.00115493 deg, RMSE is 0.0653926 deg, median absolute error is 0.000102997 deg, and maximum absolute error is 25.8785 deg."
     },
     "horn_vs_nasa_supplied": {
       "comparison_coverage": {
@@ -377,8 +377,8 @@
           "p95": 0.581814
         }
       },
-      "match_quality": "CONSISTENT_WITH_SMOOTHING_FILTER_DISCREPANCY",
-      "investigation_and_findings": "The calculated slope differs moderately from the NASA product (MAE = 0.2531 deg, RMSE = 0.4694 deg). This discrepancy is characteristic of using a 3x3 inverse-distance weighted filter (e.g. Horn 1981) versus unweighted central differences (Zevenbergen & Thorne / GMT grdgradient), where Horn averages over 8 neighbouring pixels, dampening high-frequency slopes on sharp crater crests."
+      "match_quality": "DIFFERENCES_MEASURED",
+      "investigation_and_findings": "Across 10,240,000 compared pixels, the MAE is 0.253064 deg, RMSE is 0.469442 deg, median absolute error is 0.118174 deg, and maximum absolute error is 25.8785 deg."
     }
   },
   "aspect_analysis": {

@@ -10,6 +10,7 @@ on:
 permissions:
   contents: read
   issues: write
+  projects: write
 
 jobs:
   bootstrap:
@@ -70,6 +71,97 @@ jobs:
               } else {
                 core.info(`Milestone already exists: ${milestone.title}`);
               }
+            }
+
+            // Configure the repository-linked user Project V2 fields when the token has project write access.
+            try {
+              const projectData = await github.graphql(
+                `query($login: String!) {
+                  user(login: $login) {
+                    projectsV2(first: 50) {
+                      nodes {
+                        id
+                        title
+                        number
+                        fields(first: 100) {
+                          nodes {
+                            ... on ProjectV2FieldCommon { id name }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }`,
+                { login: owner }
+              );
+
+              const project = projectData.user.projectsV2.nodes.find(p =>
+                p.title === "LUNA-SCOPE — Engineering Development Board" || p.title.includes("LUNA-SCOPE")
+              );
+
+              if (!project) {
+                core.warning("Could not find the LUNA-SCOPE user Project V2 board; repository labels/milestones/issues are still configured.");
+              } else {
+                const existingFields = new Set(project.fields.nodes.map(field => field.name));
+
+                const singleSelectFields = [
+                  {
+                    name: "Priority",
+                    options: [
+                      { name: "P0 — Critical", color: "RED", description: "Critical foundation or blocker" },
+                      { name: "P1 — Important", color: "ORANGE", description: "Important core capability" },
+                      { name: "P2 — Enhancement", color: "YELLOW", description: "Enhancement after the core vertical slice" }
+                    ]
+                  },
+                  {
+                    name: "Workstream",
+                    options: [
+                      { name: "Terrain & Visualization", color: "BLUE", description: "NASA terrain, geospatial processing and 3D" },
+                      { name: "Celestial Mechanics", color: "PURPLE", description: "SPICE, Horizons and environmental simulation" },
+                      { name: "Mission Intelligence", color: "GREEN", description: "Scoring, comparison, operations and AI" },
+                      { name: "Integration", color: "ORANGE", description: "Shared schemas, API integration and testing" },
+                      { name: "Documentation", color: "GRAY", description: "Scientific records, workflow and demo" }
+                    ]
+                  }
+                ];
+
+                for (const field of singleSelectFields) {
+                  if (!existingFields.has(field.name)) {
+                    await github.graphql(
+                      `mutation($projectId: ID!, $name: String!, $options: [ProjectV2SingleSelectFieldOptionInput!]!) {
+                        createProjectV2Field(input: {
+                          projectId: $projectId,
+                          dataType: SINGLE_SELECT,
+                          name: $name,
+                          singleSelectOptions: $options
+                        }) {
+                          projectV2Field { ... on ProjectV2SingleSelectField { id name } }
+                        }
+                      }`,
+                      { projectId: project.id, name: field.name, options: field.options }
+                    );
+                    core.info(`Created Project field: ${field.name}`);
+                  } else {
+                    core.info(`Project field already exists: ${field.name}`);
+                  }
+                }
+
+                if (!existingFields.has("Target Date")) {
+                  await github.graphql(
+                    `mutation($projectId: ID!, $name: String!) {
+                      createProjectV2Field(input: { projectId: $projectId, dataType: DATE, name: $name }) {
+                        projectV2Field { ... on ProjectV2Field { id name } }
+                      }
+                    }`,
+                    { projectId: project.id, name: "Target Date" }
+                  );
+                  core.info("Created Project field: Target Date");
+                } else {
+                  core.info("Project field already exists: Target Date");
+                }
+              }
+            } catch (error) {
+              core.warning(`Project V2 field setup could not be completed automatically: ${error.message}`);
             }
 
             const assignments = {

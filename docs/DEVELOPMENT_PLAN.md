@@ -34,13 +34,13 @@ Issues: #1, #3, #4, #24, #16
 ### Phase 1 — First independent vertical slices (parallel)
 Terrain: #2, #5, #6, #7  
 Geometry: #10, #11, #15  
-Mission intelligence: #17
+Mission intelligence: #17, #18
 
 - Member 1 selects candidate areas, acquires a suitable regional DEM and imagery, then builds the processing pipeline.
 - Member 2 sets up SPICE, calculates Sun/Earth positions and validates results against matching Horizons settings.
-- Member 3 implements explainable scoring and hard constraints against synthetic fixtures.
+- Member 3 implements explainable scoring and site/date/equipment scenario comparison against synthetic fixtures.
 
-**Exit gate:** Each workstream produces a tested, reviewable output that follows the shared conventions. At least one Shackleton DEM is verified locally; geometry examples are reproducible; scoring distinguishes hard failures from weighted preferences.
+**Exit gate:** Each workstream produces a tested, reviewable output that follows the shared conventions. At least one Shackleton DEM is verified locally; geometry examples are reproducible; the mock-data scoring and scenario-comparison engines distinguish hard failures from weighted preferences and compare locations, dates and equipment.
 
 ### Phase 2 — Terrain-aware environmental analysis
 Issues: #8, #9, #12, #13, #14
@@ -54,9 +54,9 @@ Issues: #8, #9, #12, #13, #14
 **Exit gate:** A selected site/time can produce terrain context, Sun/Earth geometry, visibility and clearly labelled model estimates with units and provenance.
 
 ### Phase 3 — Mission-level intelligence
-Issues: #18, #19, #20, #21
+Issues: #19, #20, #21
 
-- Compare sites, dates/times and equipment configurations.
+- Replace mock scenario inputs with validated terrain and environmental outputs in the scenario comparison workflow.
 - Add operations scheduling and contingency scenarios after power/communication outputs are available.
 - Integrate the Copilot only after structured scenario outputs and schemas are stable.
 - Generate reports from structured results, including assumptions and limitations.
@@ -82,7 +82,7 @@ Issues: #22, #23, #25
 - #7 terrain pipeline + #11 geometry → #12 terrain-aware visibility.
 - #9 terrain analysis + #12 visibility → #13 solar power estimation.
 - #11/#12 → #14 communication and thermal models.
-- #4 mock data + #16 schemas + outputs from #9/#13/#14 → #17 site scoring → #18 scenario comparison.
+- #4 mock data + #16 schemas → #17 site scoring → #18 initial scenario comparison; later connect outputs from #9/#13/#14 during integration.
 - #18 + #13 + #14 → #19 operations/contingencies.
 - #16 schemas + #18 → #20 Copilot.
 - #15 validation + #18 → #21 reports.

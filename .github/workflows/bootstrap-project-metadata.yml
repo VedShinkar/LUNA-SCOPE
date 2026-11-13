@@ -1,0 +1,113 @@
+name: Bootstrap LUNA-SCOPE labels and milestones
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create labels, milestones, and organize issues
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+
+            const labels = [
+              { name: "member-1", color: "1D76DB", description: "Owned by Member 1 — Lunar Terrain & 3D" },
+              { name: "member-2", color: "5319E7", description: "Owned by Member 2 — Celestial Mechanics" },
+              { name: "member-3", color: "0E8A16", description: "Owned by Member 3 — Mission Intelligence" },
+              { name: "shared", color: "BFD4F2", description: "Shared team responsibility" },
+              { name: "workstream:terrain", color: "1D76DB", description: "Terrain, geospatial processing and 3D visualization" },
+              { name: "workstream:celestial", color: "5319E7", description: "SPICE, Horizons and environmental simulation" },
+              { name: "workstream:intelligence", color: "0E8A16", description: "Mission assessment, comparison and AI" },
+              { name: "workstream:integration", color: "FBCA04", description: "Shared schemas, integration and interfaces" },
+              { name: "workstream:documentation", color: "C2E0C6", description: "Documentation, workflow and demonstration" },
+              { name: "priority:P0", color: "B60205", description: "Critical foundation or blocker" },
+              { name: "priority:P1", color: "D93F0B", description: "Important core capability" },
+              { name: "priority:P2", color: "FBCA04", description: "Enhancement after the core vertical slice" },
+              { name: "type:testing", color: "D4C5F9", description: "Testing and scientific validation" },
+              { name: "type:integration", color: "F9D0C4", description: "Cross-module integration" },
+              { name: "enhancement", color: "A2EEEF", description: "Feature or capability improvement" },
+              { name: "documentation", color: "0075CA", description: "Documentation work" }
+            ];
+
+            const existingLabels = await github.paginate(github.rest.issues.listLabelsForRepo, { owner, repo, per_page: 100 });
+            const labelNames = new Set(existingLabels.map(x => x.name));
+            for (const label of labels) {
+              if (!labelNames.has(label.name)) {
+                await github.rest.issues.createLabel({ owner, repo, ...label });
+                core.info(`Created label ${label.name}`);
+              } else {
+                core.info(`Label already exists: ${label.name}`);
+              }
+            }
+
+            const milestones = [
+              { title: "Phase 0 — Foundations", description: "Coordinate/time conventions, Horizons/SPICE setup, mock fixtures, Git workflow and data contracts." },
+              { title: "Phase 1 — First vertical slices", description: "Real regional terrain acquisition and processing, SPICE geometry validation, and initial mission scoring." },
+              { title: "Phase 2 — Terrain-aware environment", description: "3D terrain, terrain analysis, horizon visibility, solar power, communication and thermal models." },
+              { title: "Phase 3 — Mission intelligence", description: "Scenario comparison, operations/contingencies, grounded Copilot and mission reports." },
+              { title: "Phase 4 — Integration & demo", description: "End-to-end integration, regression testing and final demonstration." }
+            ];
+
+            const existingMilestones = await github.paginate(github.rest.issues.listMilestones, { owner, repo, state: "all", per_page: 100 });
+            const milestoneByTitle = new Map(existingMilestones.map(x => [x.title, x.number]));
+            for (const milestone of milestones) {
+              if (!milestoneByTitle.has(milestone.title)) {
+                const created = await github.rest.issues.createMilestone({ owner, repo, ...milestone });
+                milestoneByTitle.set(milestone.title, created.data.number);
+                core.info(`Created milestone ${milestone.title}`);
+              } else {
+                core.info(`Milestone already exists: ${milestone.title}`);
+              }
+            }
+
+            const assignments = {
+              1:  { labels: ["shared", "workstream:integration", "priority:P0"], milestone: "Phase 0 — Foundations" },
+              2:  { labels: ["member-1", "workstream:terrain", "priority:P0"], milestone: "Phase 1 — First vertical slices" },
+              3:  { labels: ["member-2", "workstream:celestial", "priority:P0"], milestone: "Phase 0 — Foundations" },
+              4:  { labels: ["member-3", "workstream:intelligence", "priority:P0"], milestone: "Phase 0 — Foundations" },
+              5:  { labels: ["member-1", "workstream:terrain", "priority:P0"], milestone: "Phase 1 — First vertical slices" },
+              6:  { labels: ["member-1", "workstream:terrain", "priority:P1"], milestone: "Phase 1 — First vertical slices" },
+              7:  { labels: ["member-1", "workstream:terrain", "priority:P0"], milestone: "Phase 1 — First vertical slices" },
+              8:  { labels: ["member-1", "workstream:terrain", "priority:P1"], milestone: "Phase 2 — Terrain-aware environment" },
+              9:  { labels: ["member-1", "workstream:terrain", "priority:P1"], milestone: "Phase 2 — Terrain-aware environment" },
+              10: { labels: ["member-2", "workstream:celestial", "priority:P0"], milestone: "Phase 1 — First vertical slices" },
+              11: { labels: ["member-2", "workstream:celestial", "priority:P0"], milestone: "Phase 1 — First vertical slices" },
+              12: { labels: ["member-2", "workstream:celestial", "priority:P0"], milestone: "Phase 2 — Terrain-aware environment" },
+              13: { labels: ["member-2", "workstream:celestial", "priority:P1"], milestone: "Phase 2 — Terrain-aware environment" },
+              14: { labels: ["member-2", "workstream:celestial", "priority:P1"], milestone: "Phase 2 — Terrain-aware environment" },
+              15: { labels: ["member-2", "workstream:celestial", "priority:P0"], milestone: "Phase 1 — First vertical slices" },
+              16: { labels: ["shared", "workstream:integration", "priority:P0"], milestone: "Phase 0 — Foundations" },
+              17: { labels: ["member-3", "workstream:intelligence", "priority:P1"], milestone: "Phase 1 — First vertical slices" },
+              18: { labels: ["member-3", "workstream:intelligence", "priority:P1"], milestone: "Phase 3 — Mission intelligence" },
+              19: { labels: ["member-3", "workstream:intelligence", "priority:P2"], milestone: "Phase 3 — Mission intelligence" },
+              20: { labels: ["member-3", "workstream:intelligence", "priority:P2"], milestone: "Phase 3 — Mission intelligence" },
+              21: { labels: ["member-3", "workstream:intelligence", "priority:P1", "documentation"], milestone: "Phase 3 — Mission intelligence" },
+              22: { labels: ["shared", "workstream:integration", "priority:P0", "type:integration"], milestone: "Phase 4 — Integration & demo" },
+              23: { labels: ["shared", "workstream:integration", "priority:P0", "type:testing"], milestone: "Phase 4 — Integration & demo" },
+              24: { labels: ["shared", "workstream:documentation", "priority:P0", "documentation"], milestone: "Phase 0 — Foundations" },
+              25: { labels: ["shared", "workstream:documentation", "priority:P1", "documentation"], milestone: "Phase 4 — Integration & demo" }
+            };
+
+            for (const [numberText, assignment] of Object.entries(assignments)) {
+              const issue_number = Number(numberText);
+              const issue = await github.rest.issues.get({ owner, repo, issue_number });
+              if (issue.data.pull_request) continue;
+              const existing = issue.data.labels.map(x => typeof x === "string" ? x : x.name);
+              const merged = [...new Set([...existing, ...assignment.labels])];
+              await github.rest.issues.update({
+                owner, repo, issue_number,
+                labels: merged,
+                milestone: milestoneByTitle.get(assignment.milestone)
+              });
+              core.info(`Organized issue #${issue_number}: ${assignment.milestone}`);
+            }
+
+            core.notice("LUNA-SCOPE labels, milestones and issue assignments are configured.");

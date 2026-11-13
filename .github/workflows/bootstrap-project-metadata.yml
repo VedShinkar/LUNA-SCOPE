@@ -76,8 +76,8 @@ jobs:
             // Configure the repository-linked user Project V2 fields when the token has project write access.
             try {
               const projectData = await github.graphql(
-                `query($login: String!) {
-                  user(login: $login) {
+                `query($owner: String!, $name: String!) {
+                  repository(owner: $owner, name: $name) {
                     projectsV2(first: 50) {
                       nodes {
                         id
@@ -86,23 +86,30 @@ jobs:
                         fields(first: 100) {
                           nodes {
                             ... on ProjectV2FieldCommon { id name }
+                            ... on ProjectV2SingleSelectField { id name options { id name } }
+                          }
+                        }
+                        items(first: 100) {
+                          nodes {
+                            id
+                            content { ... on Issue { number } }
                           }
                         }
                       }
                     }
                   }
                 }`,
-                { login: owner }
+                { owner, name: repo }
               );
 
-              const project = projectData.user.projectsV2.nodes.find(p =>
+              const project = projectData.repository.projectsV2.nodes.find(p =>
                 p.title === "LUNA-SCOPE — Engineering Development Board" || p.title.includes("LUNA-SCOPE")
               );
 
               if (!project) {
-                core.warning("Could not find the LUNA-SCOPE user Project V2 board; repository labels/milestones/issues are still configured.");
+                core.warning("No repository-linked LUNA-SCOPE Project V2 board was visible to this workflow token. Repository labels, milestones and issue metadata are still configured.");
               } else {
-                const existingFields = new Set(project.fields.nodes.map(field => field.name));
+                let fieldNames = new Set(project.fields.nodes.map(field => field.name));
 
                 const singleSelectFields = [
                   {
@@ -126,7 +133,7 @@ jobs:
                 ];
 
                 for (const field of singleSelectFields) {
-                  if (!existingFields.has(field.name)) {
+                  if (!fieldNames.has(field.name)) {
                     await github.graphql(
                       `mutation($projectId: ID!, $name: String!, $options: [ProjectV2SingleSelectFieldOptionInput!]!) {
                         createProjectV2Field(input: {
@@ -146,7 +153,7 @@ jobs:
                   }
                 }
 
-                if (!existingFields.has("Target Date")) {
+                if (!fieldNames.has("Target Date")) {
                   await github.graphql(
                     `mutation($projectId: ID!, $name: String!) {
                       createProjectV2Field(input: { projectId: $projectId, dataType: DATE, name: $name }) {
@@ -156,9 +163,75 @@ jobs:
                     { projectId: project.id, name: "Target Date" }
                   );
                   core.info("Created Project field: Target Date");
-                } else {
-                  core.info("Project field already exists: Target Date");
                 }
+
+                const refreshed = await github.graphql(
+                  `query($projectId: ID!) {
+                    node(id: $projectId) {
+                      ... on ProjectV2 {
+                        fields(first: 100) {
+                          nodes {
+                            ... on ProjectV2SingleSelectField { id name options { id name } }
+                          }
+                        }
+                        items(first: 100) {
+                          nodes {
+                            id
+                            content { ... on Issue { number } }
+                          }
+                        }
+                      }
+                    }
+                  }`,
+                  { projectId: project.id }
+                );
+
+                const fields = refreshed.node.fields.nodes;
+                const items = refreshed.node.items.nodes;
+                const priorityField = fields.find(f => f.name === "Priority");
+                const workstreamField = fields.find(f => f.name === "Workstream");
+                const itemByIssue = new Map(items.filter(i => i.content?.number).map(i => [i.content.number, i.id]));
+
+                const issueValues = {
+                  1:["P0 — Critical","Integration"], 2:["P0 — Critical","Terrain & Visualization"],
+                  3:["P0 — Critical","Celestial Mechanics"], 4:["P0 — Critical","Mission Intelligence"],
+                  5:["P0 — Critical","Terrain & Visualization"], 6:["P1 — Important","Terrain & Visualization"],
+                  7:["P0 — Critical","Terrain & Visualization"], 8:["P1 — Important","Terrain & Visualization"],
+                  9:["P1 — Important","Terrain & Visualization"], 10:["P0 — Critical","Celestial Mechanics"],
+                  11:["P0 — Critical","Celestial Mechanics"], 12:["P0 — Critical","Celestial Mechanics"],
+                  13:["P1 — Important","Celestial Mechanics"], 14:["P1 — Important","Celestial Mechanics"],
+                  15:["P0 — Critical","Celestial Mechanics"], 16:["P0 — Critical","Integration"],
+                  17:["P1 — Important","Mission Intelligence"], 18:["P1 — Important","Mission Intelligence"],
+                  19:["P2 — Enhancement","Mission Intelligence"], 20:["P2 — Enhancement","Mission Intelligence"],
+                  21:["P1 — Important","Mission Intelligence"], 22:["P0 — Critical","Integration"],
+                  23:["P0 — Critical","Integration"], 24:["P0 — Critical","Documentation"],
+                  25:["P1 — Important","Documentation"]
+                };
+
+                for (const [issueNumberText, values] of Object.entries(issueValues)) {
+                  const issueNumber = Number(issueNumberText);
+                  const itemId = itemByIssue.get(issueNumber);
+                  if (!itemId) {
+                    core.warning(`Issue #${issueNumber} is not currently on the Project board; skipped custom field values.`);
+                    continue;
+                  }
+                  for (const [field, valueName] of [[priorityField, values[0]], [workstreamField, values[1]]]) {
+                    const option = field?.options.find(o => o.name === valueName);
+                    if (!field || !option) continue;
+                    await github.graphql(
+                      `mutation($projectId: ID!, $itemId: ID!, $fieldId: ID!, $optionId: String!) {
+                        updateProjectV2ItemFieldValue(input: {
+                          projectId: $projectId,
+                          itemId: $itemId,
+                          fieldId: $fieldId,
+                          value: { singleSelectOptionId: $optionId }
+                        }) { projectV2Item { id } }
+                      }`,
+                      { projectId: project.id, itemId, fieldId: field.id, optionId: option.id }
+                    );
+                  }
+                }
+                core.notice("Project V2 Priority and Workstream fields configured and populated for available issues.");
               }
             } catch (error) {
               core.warning(`Project V2 field setup could not be completed automatically: ${error.message}`);

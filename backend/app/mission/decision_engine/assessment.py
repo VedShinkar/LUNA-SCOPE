@@ -13,7 +13,6 @@ from .scoring_engine import calculate_site_score
 from .recommendations import generate_recommendation
 from .mock_data import get_lunar_site
 
-
 def classify_provenance(site):
     """
     Classify the provenance and verification status of site data.
@@ -47,21 +46,22 @@ def classify_provenance(site):
     if not isinstance(data_source, str) or not data_source.strip():
         return "MISSING_PROVENANCE"
 
-    # Check required provenance fields.
+    # Required provenance fields.
     required_fields = [
         "provider",
         "product",
         "product_version",
         "processing_lineage",
-        "verification_status"
+        "verification_status",
+        "quality_flags"
     ]
 
     for field in required_fields:
-
         if field not in provenance:
             return "MISSING_PROVENANCE"
 
-    # Provider, product and version must contain valid text.
+    # Provider, product, version and verification status
+    # must contain valid text.
     text_fields = [
         "provider",
         "product",
@@ -70,7 +70,6 @@ def classify_provenance(site):
     ]
 
     for field in text_fields:
-
         value = provenance.get(field)
 
         if not isinstance(value, str) or not value.strip():
@@ -91,11 +90,28 @@ def classify_provenance(site):
     ):
         return "MISSING_PROVENANCE"
 
+    # Quality flags must be a list of non-empty strings.
+    quality_flags = provenance.get("quality_flags")
+
+    if not isinstance(quality_flags, list):
+        return "MISSING_PROVENANCE"
+
+    if not all(
+        isinstance(flag, str) and flag.strip()
+        for flag in quality_flags
+    ):
+        return "MISSING_PROVENANCE"
+
     # Verification must be explicitly established.
-    if provenance["verification_status"] != "VERIFIED":
+    verification_status = provenance["verification_status"]
+
+    if verification_status == "VERIFIED":
+        return "VERIFIED"
+
+    if verification_status == "NOT_VERIFIED":
         return "UNVERIFIED"
 
-    return "VERIFIED"
+    return "UNKNOWN"
 
 
 def assess_mission(

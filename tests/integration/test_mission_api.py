@@ -3,9 +3,13 @@ Integration tests for LUNA-SCOPE Mission Intelligence API.
 """
 
 import pytest
+import copy
 from fastapi.testclient import TestClient
 
 from app.main import app
+from app.mission.decision_engine import assessment as assessment_module
+from app.mission.decision_engine import feasibility as feasibility_module
+from app.mission.decision_engine.mock_data import LUNAR_SITES
 
 
 client = TestClient(app)
@@ -283,3 +287,79 @@ def test_compare_whitespace_site_id():
     )
 
     assert response.status_code == 422
+# --------------------------------------------------
+# Mixed missing-data and failed-constraint API test
+# --------------------------------------------------
+
+def test_assess_reports_failure_and_missing_inputs(
+    monkeypatch
+):
+    site = copy.deepcopy(LUNAR_SITES["SHACKLETON_RIM"])
+
+    profile = feasibility_module.get_mission_profile(PROFILE_ID)
+
+    # Create a confirmed slope failure.
+    maximum_slope = profile["requirements"]["maximum_slope_deg"]
+    site["slope_deg"] = maximum_slope + 1
+
+    # Remove sunlight information.
+    site["sunlight_hours"] = None
+
+    # Supply the modified site to the real assessment pipeline.
+    monkeypatch.setattr(
+        feasibility_module,
+        "get_lunar_site",
+        lambda site_id: site
+    )
+
+    monkeypatch.setattr(
+        assessment_module,
+        "get_lunar_site",
+        lambda site_id: site
+    )
+
+    # Stub unrelated scoring and recommendation calculations.
+    monkeypatch.setattr(
+        assessment_module,
+        "calculate_site_score",
+        lambda *args, **kwargs: {
+            "overall_score": 50,
+            "criterion_scores": {}
+        }
+    )
+
+    monkeypatch.setattr(
+        assessment_module,
+        "generate_recommendation",
+        lambda *args, **kwargs: {
+            "risk_factors": [],
+            "recommendation": "NOT_FEASIBLE"
+        }
+    )
+
+    response = client.post(
+        "/api/v1/mission/assess",
+        json={
+            "site_id": "SHACKLETON_RIM",
+            "mission_profile_id": PROFILE_ID
+        }
+    )
+
+    assert response.status_code == 200
+
+    data = response.json()
+
+    # Confirmed failure must take priority.
+    assert data["feasibility"] == "NOT_FEASIBLE"
+
+    # Failed slope must remain visible.
+    assert any(
+        item["requirement"] == "maximum_slope_deg"
+        for item in data["failed_constraints"]
+    )
+
+    # Missing sunlight must also remain visible.
+    assert (
+        "minimum_sunlight_hours"
+        in data["data_quality"]["missing_inputs"]
+    )

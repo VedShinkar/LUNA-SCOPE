@@ -242,3 +242,43 @@ def test_non_numeric_measurements_are_rejected(
             "SHACKLETON_RIM",
             PROFILE_ID
         )
+# --------------------------------------------------
+# Mixed missing-data and failed-constraint tests
+# --------------------------------------------------
+
+def test_known_constraint_failure_takes_priority_over_missing_data(
+    monkeypatch
+):
+    site = copy.deepcopy(LUNAR_SITES["SHACKLETON_RIM"])
+
+    profile = feasibility.get_mission_profile(PROFILE_ID)
+
+    # Make the slope exceed the mission's permitted maximum.
+    maximum_slope = profile["requirements"]["maximum_slope_deg"]
+    site["slope_deg"] = maximum_slope + 1
+
+    # Remove sunlight data.
+    site["sunlight_hours"] = None
+
+    monkeypatch.setattr(
+        feasibility,
+        "get_lunar_site",
+        lambda site_id: site
+    )
+
+    result = feasibility.check_feasibility(
+        "SHACKLETON_RIM",
+        PROFILE_ID
+    )
+
+    # A confirmed mandatory failure takes priority.
+    assert result["feasibility"] == "NOT_FEASIBLE"
+
+    # The failed slope constraint must still be reported.
+    assert any(
+        item["requirement"] == "maximum_slope_deg"
+        for item in result["failed_constraints"]
+    )
+
+    # Missing sunlight data must also be preserved.
+    assert "minimum_sunlight_hours" in result["missing_inputs"]

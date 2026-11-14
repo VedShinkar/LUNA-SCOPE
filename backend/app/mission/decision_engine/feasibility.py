@@ -158,12 +158,13 @@ def check_feasibility(site_id, profile_id):
         if not passed:
             failed_constraints.append(result)
 
-    # Determine overall feasibility.
-    if missing_inputs:
-        feasibility = "INSUFFICIENT_DATA"
-
-    elif failed_constraints:
+        # Determine overall feasibility.
+    # A confirmed mandatory failure takes priority over missing data.
+    if failed_constraints:
         feasibility = "NOT_FEASIBLE"
+
+    elif missing_inputs:
+        feasibility = "INSUFFICIENT_DATA"
 
     else:
         feasibility = "FEASIBLE"

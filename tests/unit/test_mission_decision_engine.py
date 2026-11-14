@@ -1,6 +1,7 @@
 import pytest
 import copy
-
+from app.mission.decision_engine import mission_profiles
+from app.mission.decision_engine.scoring_engine import calculate_site_score
 from app.mission.decision_engine.mission_profiles import (
     MISSION_PROFILES,
     get_mission_profile,
@@ -243,3 +244,42 @@ def test_mission_profile_returns_independent_copy():
     original_profile = get_mission_profile("ROVER_EXPLORATION_V1")
 
     assert original_profile["weights"]["solar_energy"] == 0.30
+# --------------------------------------------------
+# Runtime profile validation through scoring engine
+# --------------------------------------------------
+
+@pytest.mark.parametrize(
+    "requirement",
+    [
+        "minimum_sunlight_hours",
+        "minimum_earth_visibility_hours",
+        "minimum_solar_energy_wh",
+        "maximum_slope_deg",
+        "maximum_terrain_hazard_score"
+    ]
+)
+def test_zero_threshold_rejected_by_scoring_engine(
+    monkeypatch,
+    requirement
+):
+
+    invalid_profile = copy.deepcopy(
+        mission_profiles.MISSION_PROFILES["ROVER_EXPLORATION_V1"]
+    )
+
+    invalid_profile["requirements"][requirement] = 0
+
+    monkeypatch.setitem(
+        mission_profiles.MISSION_PROFILES,
+        "ROVER_EXPLORATION_V1",
+        invalid_profile
+    )
+
+    with pytest.raises(
+        ValueError,
+        match="greater than zero"
+    ):
+        calculate_site_score(
+            "SHACKLETON_RIM",
+            "ROVER_EXPLORATION_V1"
+        )

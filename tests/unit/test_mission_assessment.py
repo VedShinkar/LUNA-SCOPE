@@ -259,3 +259,48 @@ def test_assessment_does_not_repeat_calculations(monkeypatch):
 
     assert call_counts["feasibility"] == 1
     assert call_counts["scoring"] == 1
+def test_unknown_verification_status(monkeypatch):
+
+    site = deepcopy(LUNAR_SITES["SHACKLETON_RIM"])
+
+    site["data_status"] = "AVAILABLE"
+    site["provenance"]["verification_status"] = "FUTURE_STATUS"
+
+    monkeypatch.setattr(
+        assessment,
+        "get_lunar_site",
+        lambda site_id: site
+    )
+
+    result = assessment.assess_mission(
+        "SHACKLETON_RIM",
+        PROFILE_ID
+    )
+
+    assert result["data_quality"]["provenance_status"] == "UNKNOWN"
+
+
+def test_invalid_quality_flags_are_rejected_as_missing_provenance(
+    monkeypatch
+):
+
+    site = deepcopy(LUNAR_SITES["SHACKLETON_RIM"])
+
+    site["data_status"] = "AVAILABLE"
+    site["provenance"]["quality_flags"] = "NOT_A_LIST"
+
+    monkeypatch.setattr(
+        assessment,
+        "get_lunar_site",
+        lambda site_id: site
+    )
+
+    result = assessment.assess_mission(
+        "SHACKLETON_RIM",
+        PROFILE_ID
+    )
+
+    assert (
+        result["data_quality"]["provenance_status"]
+        == "MISSING_PROVENANCE"
+    )

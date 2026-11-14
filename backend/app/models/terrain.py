@@ -40,6 +40,7 @@ class UncertaintyAndObservationModel(BaseModel):
 
 
 class TerrainPointQueryRequest(BaseModel):
+    site_id: str = Field(default="Site04", description="Configured terrain site identifier")
     easting_m: float = Field(..., description="Projected Easting coordinate in metres")
     northing_m: float = Field(..., description="Projected Northing coordinate in metres")
 
@@ -62,6 +63,7 @@ class TerrainPointQueryResponse(BaseModel):
 
 
 class TerrainHorizonRequest(BaseModel):
+    site_id: str = Field(default="Site04", description="Configured terrain site identifier")
     observer_x: float = Field(..., description="Observer projected Easting coordinate in metres")
     observer_y: float = Field(..., description="Observer projected Northing coordinate in metres")
     azimuth_step_deg: float = Field(default=1.0, ge=0.1, le=360.0, description="Angular sampling interval in degrees")
@@ -87,9 +89,9 @@ class TerrainHorizonResponse(BaseModel):
     spherical_curvature_corrected: Optional[bool] = None
     lunar_radius_m: Optional[float] = None
     azimuths_deg: Optional[List[float]] = None
-    horizon_angles_deg: Optional[List[float]] = None
-    horizon_distances_m: Optional[List[float]] = None
-    horizon_obstacle_elevations_m: Optional[List[float]] = None
+    horizon_angles_deg: Optional[List[Optional[float]]] = None
+    horizon_distances_m: Optional[List[Optional[float]]] = None
+    horizon_obstacle_elevations_m: Optional[List[Optional[float]]] = None
     summary_statistics: Optional[Dict[str, Any]] = None
     scientific_limitations: Optional[List[str]] = None
 

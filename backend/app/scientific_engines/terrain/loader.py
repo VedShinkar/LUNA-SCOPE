@@ -209,6 +209,13 @@ def read_raster_band(path: Path, band: int = 1) -> Tuple[np.ndarray, TerrainRast
     try:
         with rasterio.open(path) as src:
             data = src.read(band)
+            # Preserve valid values; represent the raster's own mask as NaN for
+            # numerical kernels. LDEC zero remains valid unless explicitly masked.
+            invalid = src.read_masks(band) == 0
+            if np.any(invalid):
+                if not np.issubdtype(data.dtype, np.floating):
+                    data = data.astype(np.float64)
+                data[invalid] = np.nan
             if data.shape != (meta.height, meta.width):
                 raise ValueError(
                     f"Read array shape {data.shape} does not match metadata ({meta.height}, {meta.width})"
@@ -247,3 +254,22 @@ def load_site_dataset(
             dataset.rasters[key] = TerrainRaster(key=key, metadata=meta, data=None)
 
     return dataset
+
+
+def require_compatible_grid(dataset: SiteTerrainDataset) -> None:
+    """Reject incompatible layers before any cross-layer computation."""
+    ref = dataset.elevation.metadata
+    for key, raster in dataset.rasters.items():
+        meta = raster.metadata
+        if meta.file_name != dataset.site_id + LOLA_CORE_PRODUCTS[key]:
+            raise ValueError(f"Incorrect site-layer association: {dataset.site_id}/{key}")
+        crs_compatible = (meta.crs_wkt == ref.crs_wkt) or (
+            meta.crs_proj4 == ref.crs_proj4
+            or pyproj.CRS.from_wkt(meta.crs_wkt).to_dict() == pyproj.CRS.from_wkt(ref.crs_wkt).to_dict()
+        )
+        if (meta.width, meta.height, meta.transform, meta.band_count) != (
+            ref.width, ref.height, ref.transform, 1
+        ) or not crs_compatible:
+            raise ValueError(f"Incompatible raster grid: {dataset.site_id}/{key}")
+        if not meta.is_lunar_crs or meta.is_terrestrial_epsg:
+            raise ValueError(f"Invalid lunar CRS: {dataset.site_id}/{key}")

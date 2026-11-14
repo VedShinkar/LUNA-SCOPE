@@ -118,6 +118,7 @@ def write_geotiff(
     nodata: float = np.nan,
     dtype: str = "float32",
     description: str = "",
+    units: str = "metre",
 ) -> Path:
     """Save a 2D numpy array as a georeferenced GeoTIFF preserving source lunar metadata.
 
@@ -142,8 +143,8 @@ def write_geotiff(
         "nodata": nodata,
         "compress": "deflate",
         "tiled": True,
-        "blockxsize": min(256, width),
-        "blockysize": min(256, height),
+        "blockxsize": 256,
+        "blockysize": 256,
     }
 
     with rasterio.open(output_path, "w", **profile) as dst:
@@ -153,7 +154,8 @@ def write_geotiff(
             "DESCRIPTION": description,
             "LUNAR_REFERENCE_FRAME": "MOON_ME associated with DE421 ephemeris",
             "PROJECTION": "Lunar South-Polar Stereographic",
-            "UNITS": "metre",
+            "UNITS": units,
+            "SOURCE_DEM_SHA256": meta.sha256_hash,
         }
         dst.update_tags(**tags)
 

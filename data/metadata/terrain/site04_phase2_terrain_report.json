@@ -1,7 +1,7 @@
 {
   "report_type": "LUNA-SCOPE Phase 2 Terrain Computation Report",
   "site": "Site04",
-  "timestamp_utc": "2026-11-13T16:30:40.756236+00:00",
+  "timestamp_utc": "2026-11-14T05:42:23.946427+00:00",
   "phase2_complete": true,
   "georeferencing_and_crs": {
     "coordinate_system": "Lunar South-Polar Stereographic",
@@ -496,26 +496,17 @@
     }
   },
   "generated_geotiffs": {
-    "elevation": "data\\processed\\terrain\\site04\\Site04_processed_elevation.tif",
-    "calculated_slope": "data\\processed\\terrain\\site04\\Site04_calculated_slope_deg.tif",
-    "slope_difference": "data\\processed\\terrain\\site04\\Site04_slope_difference_deg.tif",
-    "calculated_aspect": "data\\processed\\terrain\\site04\\Site04_calculated_aspect_deg.tif",
-    "small_15m": "data\\processed\\terrain\\site04\\Site04_roughness_15m.tif",
-    "medium_35m": "data\\processed\\terrain\\site04\\Site04_roughness_35m.tif",
-    "large_75m": "data\\processed\\terrain\\site04\\Site04_roughness_75m.tif"
+    "elevation": "F:\\Dell\\OneDrive\\\ubb38\uc11c\\GitHub\\LUNA-SCOPE\\data\\processed\\terrain\\site04\\Site04_processed_elevation.tif",
+    "calculated_slope": "F:\\Dell\\OneDrive\\\ubb38\uc11c\\GitHub\\LUNA-SCOPE\\data\\processed\\terrain\\site04\\Site04_calculated_slope_deg.tif",
+    "slope_difference": "F:\\Dell\\OneDrive\\\ubb38\uc11c\\GitHub\\LUNA-SCOPE\\data\\processed\\terrain\\site04\\Site04_slope_difference_deg.tif",
+    "calculated_aspect": "F:\\Dell\\OneDrive\\\ubb38\uc11c\\GitHub\\LUNA-SCOPE\\data\\processed\\terrain\\site04\\Site04_calculated_aspect_deg.tif",
+    "small_15m": "F:\\Dell\\OneDrive\\\ubb38\uc11c\\GitHub\\LUNA-SCOPE\\data\\processed\\terrain\\site04\\Site04_roughness_15m.tif",
+    "medium_35m": "F:\\Dell\\OneDrive\\\ubb38\uc11c\\GitHub\\LUNA-SCOPE\\data\\processed\\terrain\\site04\\Site04_roughness_35m.tif",
+    "large_75m": "F:\\Dell\\OneDrive\\\ubb38\uc11c\\GitHub\\LUNA-SCOPE\\data\\processed\\terrain\\site04\\Site04_roughness_75m.tif"
   },
-  "diagnostic_maps": {
-    "elevation": "data\\processed\\terrain\\site04\\diagnostics\\Site04_elevation_map.png",
-    "calculated_slope": "data\\processed\\terrain\\site04\\diagnostics\\Site04_calculated_slope_map.png",
-    "supplied_slope": "data\\processed\\terrain\\site04\\diagnostics\\Site04_supplied_slope_map.png",
-    "slope_difference": "data\\processed\\terrain\\site04\\diagnostics\\Site04_slope_difference_map.png",
-    "aspect": "data\\processed\\terrain\\site04\\diagnostics\\Site04_aspect_map.png",
-    "roughness_15m": "data\\processed\\terrain\\site04\\diagnostics\\Site04_roughness_15m_map.png",
-    "roughness_35m": "data\\processed\\terrain\\site04\\diagnostics\\Site04_roughness_35m_map.png",
-    "roughness_75m": "data\\processed\\terrain\\site04\\diagnostics\\Site04_roughness_75m_map.png"
-  },
+  "diagnostic_maps": {},
   "scientific_limitations": [
-    "5 m pixel spacing represents continuous-curvature interpolation between LOLA ground tracks; 90.85% of cells lack direct laser spot support.",
+    "Pixel spacing is not measurement spacing; consult this site's LDEC observation coverage.",
     "Roughness scales (15 m, 35 m, 75 m) are provisional analytical scales based on generic planetary geomorphometric baselines, not validated against certified flight vehicle or lander hardware dimensions.",
     "Local roughness and slope reflect interpolated topography and should be interpreted alongside toterr and slperr uncertainty layers.",
     "Slope calculations assume planar patches over 2*dx (10 m); sub-pixel micro-roughness below 5 m is unresolved by LOLA.",

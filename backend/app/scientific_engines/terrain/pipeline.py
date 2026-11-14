@@ -20,6 +20,7 @@ import tempfile
 from typing import Any, Dict, List, Optional
 
 import numpy as np
+import rasterio
 
 # Configure matplotlib for headless server environments
 try:
@@ -39,6 +40,7 @@ from app.scientific_engines.terrain.loader import (
     SiteTerrainDataset,
     TerrainRasterMetadata,
     load_site_dataset,
+    require_compatible_grid,
 )
 from app.scientific_engines.terrain.roughness import ROUGHNESS_SCALES_M, compute_multi_scale_roughness
 from app.scientific_engines.terrain.slope import (
@@ -114,6 +116,7 @@ def run_phase2_terrain_pipeline(
 
     # 1. Load validated inputs
     dataset = load_site_dataset(raw_site_dir, site=site, load_arrays=True)
+    require_compatible_grid(dataset)
     surf_raster = dataset.elevation
     nasa_slp_raster = dataset.slope
     if surf_raster is None or surf_raster.data is None:
@@ -133,7 +136,7 @@ def run_phase2_terrain_pipeline(
         dem,
         meta,
         elev_geotiff_path,
-        description=f"Processed LOLA 5m DEM for {site} Shackleton Rim",
+        description=f"Processed LOLA elevation for {site}",
     )
 
     # 3. Slope derivation using Zevenbergen-Thorne and Horn
@@ -152,6 +155,7 @@ def run_phase2_terrain_pipeline(
         meta,
         slope_geotiff_path,
         description=f"Calculated 5m Slope (deg) for {site} via 2nd-order central difference",
+        units="degrees",
     )
 
     slope_diff_geotiff_path = processed_dir / f"{site}_slope_difference_deg.tif"
@@ -160,6 +164,7 @@ def run_phase2_terrain_pipeline(
         meta,
         slope_diff_geotiff_path,
         description=f"Slope difference (calculated - NASA supplied) in degrees for {site}",
+        units="degrees",
     )
 
     # 4. Aspect derivation
@@ -172,6 +177,7 @@ def run_phase2_terrain_pipeline(
         meta,
         aspect_geotiff_path,
         description=f"Calculated 5m Aspect (deg clockwise from North, flat=-1) for {site}",
+        units="degrees",
     )
 
     # 5. Multi-scale roughness calculation (15m, 35m, 75m)
@@ -285,7 +291,7 @@ def run_phase2_terrain_pipeline(
         },
         "diagnostic_maps": diagnostic_map_paths,
         "scientific_limitations": [
-            "5 m pixel spacing represents continuous-curvature interpolation between LOLA ground tracks; 90.85% of cells lack direct laser spot support.",
+            "Pixel spacing is not measurement spacing; consult this site's LDEC observation coverage.",
             "Roughness scales (15 m, 35 m, 75 m) are provisional analytical scales based on generic planetary geomorphometric baselines, not validated against certified flight vehicle or lander hardware dimensions.",
             "Local roughness and slope reflect interpolated topography and should be interpreted alongside toterr and slperr uncertainty layers.",
             "Slope calculations assume planar patches over 2*dx (10 m); sub-pixel micro-roughness below 5 m is unresolved by LOLA.",
@@ -306,6 +312,7 @@ def run_phase3_hazard_pipeline(
     metadata_dir: Path = Path("data/metadata/terrain"),
     site: str = "Site04",
     generate_diagnostics: bool = True,
+    reuse_phase2_roughness: bool = False,
 ) -> Dict[str, Any]:
     """Execute complete Phase 3 Terrain Hazard Screening Pipeline for a lunar landing site.
 
@@ -324,11 +331,27 @@ def run_phase3_hazard_pipeline(
     from app.scientific_engines.terrain.hazards import generate_hazard_screening
 
     dataset = load_site_dataset(raw_site_dir, site=site, load_arrays=True)
+    require_compatible_grid(dataset)
+    roughness_results = None
+    if reuse_phase2_roughness:
+        roughness_results = {}
+        meta = dataset.elevation.metadata
+        for key, scale in ROUGHNESS_SCALES_M.items():
+            path = processed_dir / f"{site}_roughness_{int(scale)}m.tif"
+            with rasterio.open(path) as src:
+                if (src.height, src.width, tuple(src.transform)[:6], src.crs.to_wkt()) != (
+                    meta.height, meta.width, meta.transform, meta.crs_wkt
+                ):
+                    raise ValueError(f"Incompatible Phase 2 roughness grid: {path}")
+                if src.tags().get("SOURCE_DEM_SHA256") != meta.sha256_hash:
+                    raise ValueError(f"Stale or unverified Phase 2 roughness source: {path}")
+                roughness_results[key] = (src.read(1, masked=True).filled(np.nan), {})
     report = generate_hazard_screening(
         site_dataset=dataset,
         processed_dir=processed_dir,
         metadata_dir=metadata_dir,
         site=site,
+        roughness_results=roughness_results,
     )
 
     # Optional diagnostic maps

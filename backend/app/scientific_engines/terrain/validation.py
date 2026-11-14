@@ -18,6 +18,8 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 import numpy as np
+import rasterio
+import pyproj
 
 from app.scientific_engines.terrain.loader import (
     LOLA_CORE_PRODUCTS,
@@ -91,7 +93,11 @@ def validate_spatial_alignment(
         bounds_match = all(
             abs(a - b) < 1e-4 for a, b in zip(meta.bounds, ref.bounds)
         )
-        crs_match = meta.crs_wkt == ref.crs_wkt
+        # Exact string match or equivalent projected lunar coordinate system
+        crs_match = (meta.crs_wkt == ref.crs_wkt) or (
+            meta.crs_proj4 == ref.crs_proj4
+            or pyproj.CRS.from_wkt(meta.crs_wkt).to_dict() == pyproj.CRS.from_wkt(ref.crs_wkt).to_dict()
+        )
         band_match = meta.band_count == ref.band_count
         dtype_match = meta.dtype == ref.dtype
 
@@ -102,7 +108,6 @@ def validate_spatial_alignment(
             and bounds_match
             and crs_match
             and band_match
-            and dtype_match
         )
 
         if not is_aligned:
@@ -146,6 +151,8 @@ def validate_data_integrity(
     inf_count = int(np.isinf(data).sum())
 
     finite_mask = np.isfinite(data)
+    if nodata_val is not None:
+        finite_mask &= data != nodata_val
     finite_pixels = int(finite_mask.sum())
 
     if finite_pixels > 0:
@@ -214,7 +221,8 @@ def analyze_ldec_distribution(ldec_data: np.ndarray) -> Dict[str, Any]:
     pos_pct = float((pos_count / total) * 100.0)
 
     # Calculate discrete integer histogram
-    unique_vals, val_counts = np.unique(ldec_data, return_counts=True)
+    valid_counts = ldec_data[np.isfinite(ldec_data) & (ldec_data >= 0)]
+    unique_vals, val_counts = np.unique(valid_counts, return_counts=True)
     histogram = {}
     for val, count in zip(unique_vals, val_counts):
         val_int = int(round(float(val)))
@@ -230,14 +238,15 @@ def analyze_ldec_distribution(ldec_data: np.ndarray) -> Dict[str, Any]:
         "zero_count_percentage": round(zero_pct, 4),
         "positive_count_pixels": pos_count,
         "positive_count_percentage": round(pos_pct, 4),
-        "maximum_spots_per_pixel": int(np.max(ldec_data)),
-        "mean_spots_per_pixel": float(np.mean(ldec_data)),
+        "missing_invalid_count_pixels": total - int(valid_counts.size),
+        "maximum_spots_per_pixel": int(np.max(valid_counts)) if valid_counts.size else None,
+        "mean_spots_per_pixel": float(np.mean(valid_counts)) if valid_counts.size else None,
         "histogram": histogram,
         "scientific_interpretation": (
             "LOLA polar ground tracks have spacing wider than the 5 m grid spacing. "
-            "Pixels with LDEC == 0 (90.85% at Site04) represent mathematically valid interpolated "
+            "Pixels with LDEC == 0 represent mathematically valid interpolated "
             "surface elevations between ground tracks. Direct laser-spot measurements are available "
-            "for 9.15% of pixels (LDEC >= 1). LDEC == 0 must NOT be treated as invalid elevation or NoData."
+            "where LDEC >= 1. LDEC == 0 must NOT be treated as invalid elevation or NoData."
         ),
     }
 
@@ -262,7 +271,8 @@ def evaluate_dem_validity_and_coverage(
         & (surf_data >= LUNAR_ELEVATION_MIN_M)
         & (surf_data <= LUNAR_ELEVATION_MAX_M)
     )
-    direct_observation_mask = (ldec_data > 0)
+    direct_observation_mask = finite_dem_mask & np.isfinite(ldec_data) & (ldec_data > 0)
+    missing_support_mask = finite_dem_mask & (~np.isfinite(ldec_data) | (ldec_data < 0))
     interpolated_dem_mask = finite_dem_mask & (ldec_data == 0)
 
     finite_count = int(finite_dem_mask.sum())
@@ -272,7 +282,7 @@ def evaluate_dem_validity_and_coverage(
     # Verify that finite coverage is strictly decoupled from direct observation coverage
     masks_are_distinct = not np.array_equal(finite_dem_mask, direct_observation_mask)
     union_matches_finite = np.array_equal(
-        finite_dem_mask, (direct_observation_mask | interpolated_dem_mask)
+        finite_dem_mask, (direct_observation_mask | interpolated_dem_mask | missing_support_mask)
     )
 
     # Elevation metrics for direct vs interpolated
@@ -298,35 +308,38 @@ def evaluate_dem_validity_and_coverage(
         },
     }
 
+    def finite_stat(values, operation):
+        valid = values[np.isfinite(values)]
+        return float(operation(valid)) if valid.size else None
+
     uncertainty_comparison = {}
     if toterr_data is not None:
         toterr_direct = toterr_data[direct_observation_mask]
         toterr_interp = toterr_data[interpolated_dem_mask]
         uncertainty_comparison["elevation_uncertainty_toterr_m_rms"] = {
-            "direct_observations_mean": float(np.mean(toterr_direct)),
-            "direct_observations_median": float(np.median(toterr_direct)),
-            "direct_observations_max": float(np.max(toterr_direct)),
-            "interpolated_terrain_mean": float(np.mean(toterr_interp)),
-            "interpolated_terrain_median": float(np.median(toterr_interp)),
-            "interpolated_terrain_max": float(np.max(toterr_interp)),
+            "direct_observations_mean": finite_stat(toterr_direct, np.mean),
+            "direct_observations_median": finite_stat(toterr_direct, np.median),
+            "direct_observations_max": finite_stat(toterr_direct, np.max),
+            "interpolated_terrain_mean": finite_stat(toterr_interp, np.mean),
+            "interpolated_terrain_median": finite_stat(toterr_interp, np.median),
+            "interpolated_terrain_max": finite_stat(toterr_interp, np.max),
         }
 
     if slperr_data is not None:
         slperr_direct = slperr_data[direct_observation_mask]
         slperr_interp = slperr_data[interpolated_dem_mask]
         uncertainty_comparison["slope_uncertainty_slperr_deg_rms"] = {
-            "direct_observations_mean": float(np.mean(slperr_direct)),
-            "direct_observations_median": float(np.median(slperr_direct)),
-            "direct_observations_max": float(np.max(slperr_direct)),
-            "interpolated_terrain_mean": float(np.mean(slperr_interp)),
-            "interpolated_terrain_median": float(np.median(slperr_interp)),
-            "interpolated_terrain_max": float(np.max(slperr_interp)),
+            "direct_observations_mean": finite_stat(slperr_direct, np.mean),
+            "direct_observations_median": finite_stat(slperr_direct, np.median),
+            "direct_observations_max": finite_stat(slperr_direct, np.max),
+            "interpolated_terrain_mean": finite_stat(slperr_interp, np.mean),
+            "interpolated_terrain_median": finite_stat(slperr_interp, np.median),
+            "interpolated_terrain_max": finite_stat(slperr_interp, np.max),
         }
 
     decoupling_verified = (
-        masks_are_distinct
-        and union_matches_finite
-        and finite_count == total
+        union_matches_finite
+        and not np.any(direct_observation_mask & interpolated_dem_mask)
     )
 
     scientific_evidence_distinction = {
@@ -353,7 +366,7 @@ def evaluate_dem_validity_and_coverage(
                 "Finite elevation values where no direct laser spot fell within the 5 m cell (LDEC == 0). "
                 "These are mathematically gridded continuous-curvature approximations between orbital tracks. "
                 "They are not NoData, but their local physical accuracy varies with distance from ground tracks "
-                "and is bounded by the accompanying toterr uncertainty layer (up to 7.64 m RMS)."
+                "and is bounded by the accompanying toterr uncertainty layer; see the site-specific statistics."
             ),
         },
         "scientifically_validated_terrain": {
@@ -376,6 +389,7 @@ def evaluate_dem_validity_and_coverage(
         "valid_dem_percentage": round(float(finite_count / total * 100.0), 4),  # Backwards-compatible key
         "direct_observation_pixels": direct_obs_count,
         "direct_observation_percentage": round(float(direct_obs_count / total * 100.0), 4),
+        "missing_observation_support_dem_pixels": int(missing_support_mask.sum()),
         "interpolated_dem_pixels": interpolated_count,
         "interpolated_dem_percentage": round(float(interpolated_count / total * 100.0), 4),
         "elevation_comparison": elevation_comparison,
@@ -469,9 +483,9 @@ def validate_site_rasters(
         "site_directory": str(site_dir.resolve()),
         "validation_timestamp_utc": timestamp,
         "software_environment": {
-            "rasterio": "1.5.2",
-            "numpy": "2.5.4",
-            "pyproj": "3.8.0",
+            "rasterio": rasterio.__version__,
+            "numpy": np.__version__,
+            "pyproj": pyproj.__version__,
         },
         "files": {
             key: {

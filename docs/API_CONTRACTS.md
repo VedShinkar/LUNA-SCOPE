@@ -173,3 +173,7 @@ Terrain responses should identify the source PGDA site/product and expose the fo
 Every response should include DEM product ID, site code, pixel spacing, CRS, body-fixed frame, vertical reference/datum if specified by product metadata, NoData handling, processing version and evidence class. Do not send a bare hazard score without its method/scale or hide missing uncertainty.
 
 Raw PGDA rasters are local data assets and are not transmitted in normal API responses. Return summaries, selected samples, or references to processed tiles as appropriate.
+
+## Phase 5 terrain site selection
+
+`GET /terrain/site` and `GET /terrain/summary` select `Site04`, `Site11`, or `Site23` with `site_id`. `POST /terrain/point` and `POST /terrain/horizon` accept the same field in JSON. Omission defaults to Site04. Unknown identifiers return 404; unavailable, incomplete or incompatible datasets return 503. GET point coordinates must be supplied together (422 otherwise). Response schemas and units remain compatible; each response identifies the selected site. Explorer routes remain Site04-specific. See [implementation and provenance](PHASE5_IMPLEMENTATION.md).

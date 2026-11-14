@@ -183,3 +183,7 @@ Site11 and Site23 are comparison regions. Download their five core rasters befor
 - Bertone, S. et al. (2025), *Enhanced Topography Models for selected Lunar South Pole regions with Shape-from-Shading*, The Planetary Science Journal. https://doi.org/10.3847/PSJ/ae5b70
 - NASA GSFC PGDA, *High-Resolution LOLA Topography for Lunar South Pole Sites*, Product 78: https://pgda.gsfc.nasa.gov/products/78
 - NASA GSFC PGDA, *Enhanced Topography Models ... with Shape-from-Shading*, Product 104: https://pgda.gsfc.nasa.gov/products/104
+
+## Multi-site execution
+
+Run `python scripts/download_lola_terrain.py --sites Site11 Site23 --skip-roi`, then `python scripts/process_lola_sites.py --sites Site04 Site11 Site23`. The second command stops each site at any failed prerequisite and records the error without inventing products. Sources remain under `data/raw/terrain/<site>/`; outputs remain under `data/processed/terrain/<site>/`. Per-site metadata and `multisite_comparison.json` are under `data/metadata/terrain/`. Use only reports marked PROCESSED. Native grids may differ across sites. See [Phase 5](PHASE5_IMPLEMENTATION.md).

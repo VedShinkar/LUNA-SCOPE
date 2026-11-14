@@ -1,0 +1,172 @@
+{
+  "site": "Site23",
+  "site_directory": "data\\raw\\terrain\\site23",
+  "inspection": {
+    "elevation": {
+      "file": "Site23_final_adj_5mpp_surf.tif",
+      "crs": "PROJCS[\"unnamed\",GEOGCS[\"unnamed ellipse\",DATUM[\"unknown\",SPHEROID[\"unnamed\",1737400,0]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Polar_Stereographic\"],PARAMETER[\"latitude_of_origin\",-90],PARAMETER[\"central_meridian\",0],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1],AXIS[\"Easting\",NORTH],AXIS[\"Northing\",NORTH]]",
+      "width_pixels": 4200,
+      "height_pixels": 4200,
+      "pixel_size_map_units": [
+        5.0,
+        5.0
+      ],
+      "bounds": [
+        -11000.0,
+        111000.0,
+        10000.0,
+        132000.0
+      ],
+      "transform": [
+        5.0,
+        0.0,
+        -11000.0,
+        0.0,
+        -5.0,
+        132000.0
+      ],
+      "nodata": NaN,
+      "band_count": 1,
+      "dtype": "float32",
+      "valid_pixels": 17640000,
+      "minimum": 901.9910888671875,
+      "maximum": 5173.56298828125,
+      "mean": 3534.981201171875,
+      "standard_deviation": 1026.24072265625,
+      "grid_matches_elevation": true
+    },
+    "observation_count": {
+      "file": "Site23_final_adj_5mpp_ldec.tif",
+      "crs": "PROJCS[\"unnamed\",GEOGCS[\"unnamed ellipse\",DATUM[\"unknown\",SPHEROID[\"unnamed\",1737400,0]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Polar_Stereographic\"],PARAMETER[\"latitude_of_origin\",-90],PARAMETER[\"central_meridian\",0],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1],AXIS[\"Easting\",NORTH],AXIS[\"Northing\",NORTH]]",
+      "width_pixels": 4200,
+      "height_pixels": 4200,
+      "pixel_size_map_units": [
+        5.0,
+        5.0
+      ],
+      "bounds": [
+        -11000.0,
+        111000.0,
+        10000.0,
+        132000.0
+      ],
+      "transform": [
+        5.0,
+        0.0,
+        -11000.0,
+        0.0,
+        -5.0,
+        132000.0
+      ],
+      "nodata": NaN,
+      "band_count": 1,
+      "dtype": "float32",
+      "valid_pixels": 17640000,
+      "minimum": 0.0,
+      "maximum": 5.0,
+      "mean": 0.10769160836935043,
+      "standard_deviation": 0.32984626293182373,
+      "grid_matches_elevation": true
+    },
+    "slope": {
+      "file": "Site23_final_adj_5mpp_slp.tif",
+      "crs": "PROJCS[\"unnamed\",GEOGCS[\"unnamed ellipse\",DATUM[\"unknown\",SPHEROID[\"unnamed\",1737400,0]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Polar_Stereographic\"],PARAMETER[\"latitude_of_origin\",-90],PARAMETER[\"central_meridian\",0],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1],AXIS[\"Easting\",NORTH],AXIS[\"Northing\",NORTH]]",
+      "width_pixels": 4200,
+      "height_pixels": 4200,
+      "pixel_size_map_units": [
+        5.0,
+        5.0
+      ],
+      "bounds": [
+        -11000.0,
+        111000.0,
+        10000.0,
+        132000.0
+      ],
+      "transform": [
+        5.0,
+        0.0,
+        -11000.0,
+        0.0,
+        -5.0,
+        132000.0
+      ],
+      "nodata": NaN,
+      "band_count": 1,
+      "dtype": "float32",
+      "valid_pixels": 17640000,
+      "minimum": 0.01978234015405178,
+      "maximum": 76.1829605102539,
+      "mean": 17.391939163208008,
+      "standard_deviation": 6.962011337280273,
+      "grid_matches_elevation": true
+    },
+    "elevation_uncertainty": {
+      "file": "Site23_final_adj_5mpp_toterr.tif",
+      "crs": "PROJCS[\"unknown\",GEOGCS[\"unknown\",DATUM[\"unknown\",SPHEROID[\"unknown\",1737400,0]],PRIMEM[\"Reference meridian\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Polar_Stereographic\"],PARAMETER[\"latitude_of_origin\",-90],PARAMETER[\"central_meridian\",0],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1],AXIS[\"Easting\",NORTH],AXIS[\"Northing\",NORTH]]",
+      "width_pixels": 4200,
+      "height_pixels": 4200,
+      "pixel_size_map_units": [
+        5.0,
+        5.0
+      ],
+      "bounds": [
+        -11000.0,
+        111000.0,
+        10000.0,
+        132000.0
+      ],
+      "transform": [
+        5.0,
+        0.0,
+        -11000.0,
+        0.0,
+        -5.0,
+        132000.0
+      ],
+      "nodata": NaN,
+      "band_count": 1,
+      "dtype": "float32",
+      "valid_pixels": 17640000,
+      "minimum": 0.05679123103618622,
+      "maximum": 15.93561840057373,
+      "mean": 0.5013641715049744,
+      "standard_deviation": 0.23180310428142548,
+      "grid_matches_elevation": false
+    },
+    "slope_uncertainty": {
+      "file": "Site23_final_adj_5mpp_slperr.tif",
+      "crs": "PROJCS[\"unknown\",GEOGCS[\"unknown\",DATUM[\"unknown\",SPHEROID[\"unknown\",1737400,0]],PRIMEM[\"Reference meridian\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Polar_Stereographic\"],PARAMETER[\"latitude_of_origin\",-90],PARAMETER[\"central_meridian\",0],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1],AXIS[\"Easting\",NORTH],AXIS[\"Northing\",NORTH]]",
+      "width_pixels": 4200,
+      "height_pixels": 4200,
+      "pixel_size_map_units": [
+        5.0,
+        5.0
+      ],
+      "bounds": [
+        -11000.0,
+        111000.0,
+        10000.0,
+        132000.0
+      ],
+      "transform": [
+        5.0,
+        0.0,
+        -11000.0,
+        0.0,
+        -5.0,
+        132000.0
+      ],
+      "nodata": NaN,
+      "band_count": 1,
+      "dtype": "float32",
+      "valid_pixels": 17640000,
+      "minimum": 0.6316045522689819,
+      "maximum": 35.99593734741211,
+      "mean": 2.3358559608459473,
+      "standard_deviation": 0.685860276222229,
+      "grid_matches_elevation": false
+    }
+  },
+  "warning": "Check lunar CRS, datum, units and pixel registration against the exact PGDA product README before coordinate transformations or combining rasters."
+}

@@ -1,6 +1,6 @@
 {
-  "catalog_version": "1.0",
-  "last_reviewed_utc": "2026-11-13",
+  "catalog_version": "1.1",
+  "last_reviewed_utc": "2026-11-14",
   "primary_source": {
     "name": "NASA GSFC Planetary Geodesy Data Archive",
     "product_id": 78,
@@ -18,19 +18,125 @@
       "name": "Shackleton rim",
       "priority": "P0",
       "directory": "data/raw/terrain/site04",
-      "roi_archive_listed": true
+      "roi_archive_listed": true,
+      "identity_source_url": "https://pgda.gsfc.nasa.gov/products/78",
+      "processed_directory": "data/processed/terrain/site04",
+      "validated_metadata": "data/metadata/terrain/site04_phase5_report.json",
+      "product_id": 78,
+      "rasters": {
+        "elevation": {
+          "path": "data/raw/terrain/site04/Site04_final_adj_5mpp_surf.tif",
+          "url": "https://pgda.gsfc.nasa.gov/data/LOLA_5mpp/Site04/Site04_final_adj_5mpp_surf.tif",
+          "units": "m"
+        },
+        "observation_count": {
+          "path": "data/raw/terrain/site04/Site04_final_adj_5mpp_ldec.tif",
+          "url": "https://pgda.gsfc.nasa.gov/data/LOLA_5mpp/Site04/Site04_final_adj_5mpp_ldec.tif",
+          "units": "LOLA spots per pixel"
+        },
+        "slope": {
+          "path": "data/raw/terrain/site04/Site04_final_adj_5mpp_slp.tif",
+          "url": "https://pgda.gsfc.nasa.gov/data/LOLA_5mpp/Site04/Site04_final_adj_5mpp_slp.tif",
+          "units": "degrees"
+        },
+        "elevation_uncertainty": {
+          "path": "data/raw/terrain/site04/Site04_final_adj_5mpp_toterr.tif",
+          "url": "https://pgda.gsfc.nasa.gov/data/LOLA_5mpp/Site04/Site04_final_adj_5mpp_toterr.tif",
+          "units": "m RMS"
+        },
+        "slope_uncertainty": {
+          "path": "data/raw/terrain/site04/Site04_final_adj_5mpp_slperr.tif",
+          "url": "https://pgda.gsfc.nasa.gov/data/LOLA_5mpp/Site04/Site04_final_adj_5mpp_slperr.tif",
+          "units": "degrees RMS"
+        }
+      },
+      "validity_rules": [
+        "Use each raster mask/NoData; finite values alone do not prove accuracy.",
+        "LDEC 0=interpolated, 1=single-shot, >=2=multi-shot; observation quality is separate from physical hazards."
+      ],
+      "display_name": "Shackleton Crater Rim"
     },
     "Site11": {
       "name": "de Gerlache rim",
       "priority": "P1",
       "directory": "data/raw/terrain/site11",
-      "roi_archive_listed": true
+      "roi_archive_listed": true,
+      "identity_source_url": "https://pgda.gsfc.nasa.gov/products/78",
+      "processed_directory": "data/processed/terrain/site11",
+      "validated_metadata": "data/metadata/terrain/site11_phase5_report.json",
+      "product_id": 78,
+      "rasters": {
+        "elevation": {
+          "path": "data/raw/terrain/site11/Site11_final_adj_5mpp_surf.tif",
+          "url": "https://pgda.gsfc.nasa.gov/data/LOLA_5mpp/Site11/Site11_final_adj_5mpp_surf.tif",
+          "units": "m"
+        },
+        "observation_count": {
+          "path": "data/raw/terrain/site11/Site11_final_adj_5mpp_ldec.tif",
+          "url": "https://pgda.gsfc.nasa.gov/data/LOLA_5mpp/Site11/Site11_final_adj_5mpp_ldec.tif",
+          "units": "LOLA spots per pixel"
+        },
+        "slope": {
+          "path": "data/raw/terrain/site11/Site11_final_adj_5mpp_slp.tif",
+          "url": "https://pgda.gsfc.nasa.gov/data/LOLA_5mpp/Site11/Site11_final_adj_5mpp_slp.tif",
+          "units": "degrees"
+        },
+        "elevation_uncertainty": {
+          "path": "data/raw/terrain/site11/Site11_final_adj_5mpp_toterr.tif",
+          "url": "https://pgda.gsfc.nasa.gov/data/LOLA_5mpp/Site11/Site11_final_adj_5mpp_toterr.tif",
+          "units": "m RMS"
+        },
+        "slope_uncertainty": {
+          "path": "data/raw/terrain/site11/Site11_final_adj_5mpp_slperr.tif",
+          "url": "https://pgda.gsfc.nasa.gov/data/LOLA_5mpp/Site11/Site11_final_adj_5mpp_slperr.tif",
+          "units": "degrees RMS"
+        }
+      },
+      "validity_rules": [
+        "Use each raster mask/NoData; finite values alone do not prove accuracy.",
+        "LDEC 0=interpolated, 1=single-shot, >=2=multi-shot; observation quality is separate from physical hazards."
+      ]
     },
     "Site23": {
       "name": "Malapert massif",
       "priority": "P1",
       "directory": "data/raw/terrain/site23",
-      "roi_archive_listed": false
+      "roi_archive_listed": false,
+      "identity_source_url": "https://pgda.gsfc.nasa.gov/products/78",
+      "processed_directory": "data/processed/terrain/site23",
+      "validated_metadata": "data/metadata/terrain/site23_phase5_report.json",
+      "product_id": 78,
+      "rasters": {
+        "elevation": {
+          "path": "data/raw/terrain/site23/Site23_final_adj_5mpp_surf.tif",
+          "url": "https://pgda.gsfc.nasa.gov/data/LOLA_5mpp/Site23/Site23_final_adj_5mpp_surf.tif",
+          "units": "m"
+        },
+        "observation_count": {
+          "path": "data/raw/terrain/site23/Site23_final_adj_5mpp_ldec.tif",
+          "url": "https://pgda.gsfc.nasa.gov/data/LOLA_5mpp/Site23/Site23_final_adj_5mpp_ldec.tif",
+          "units": "LOLA spots per pixel"
+        },
+        "slope": {
+          "path": "data/raw/terrain/site23/Site23_final_adj_5mpp_slp.tif",
+          "url": "https://pgda.gsfc.nasa.gov/data/LOLA_5mpp/Site23/Site23_final_adj_5mpp_slp.tif",
+          "units": "degrees"
+        },
+        "elevation_uncertainty": {
+          "path": "data/raw/terrain/site23/Site23_final_adj_5mpp_toterr.tif",
+          "url": "https://pgda.gsfc.nasa.gov/data/LOLA_5mpp/Site23/Site23_final_adj_5mpp_toterr.tif",
+          "units": "m RMS"
+        },
+        "slope_uncertainty": {
+          "path": "data/raw/terrain/site23/Site23_final_adj_5mpp_slperr.tif",
+          "url": "https://pgda.gsfc.nasa.gov/data/LOLA_5mpp/Site23/Site23_final_adj_5mpp_slperr.tif",
+          "units": "degrees RMS"
+        }
+      },
+      "validity_rules": [
+        "Use each raster mask/NoData; finite values alone do not prove accuracy.",
+        "LDEC 0=interpolated, 1=single-shot, >=2=multi-shot; observation quality is separate from physical hazards."
+      ]
     }
   },
   "core_products": [

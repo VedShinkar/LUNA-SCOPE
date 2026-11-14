@@ -61,3 +61,7 @@ These are design contracts, not claims that the endpoints have already been impl
 - Unknown data remains unknown; do not treat missing terrain coverage as clear visibility or safe landing.
 - Keep ideal geometric visibility distinct from terrain-obstructed visibility and RF link feasibility.
 - Keep source observations distinct from model predictions and user assumptions.
+
+## Phase 5 terrain architecture
+
+The existing JSON catalog is the site registry. `catalog.py` resolves each site's native source and processed directories. `TerrainService.get_instance(site_id)` maintains isolated, locked lazy caches. Source checksums and grid compatibility are verified before service access; newly derived products carry the source DEM checksum. The sequential `scripts/process_lola_sites.py` command reuses the Phase 1–3 kernels and writes per-site machine-readable reports and a comparison under `data/metadata/terrain/`. No database or new framework is involved. See [Phase 5 implementation](PHASE5_IMPLEMENTATION.md) for gates, corrections and limitations.

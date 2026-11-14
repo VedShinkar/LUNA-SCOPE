@@ -73,3 +73,7 @@ https://doi.org/10.5281/zenodo.17954508
 LROC NAC calibrated imagery remains a separate supporting source for local visual context and potential small-feature inspection. Record exact PDS product IDs and imaging geometry. QuickMap and Moon Trek are discovery/visualisation tools, not replacements for numerical DEMs.
 
 For download commands, file explanations, folder layout and optional products, see `docs/TERRAIN_DATA_GUIDE.md`.
+
+## Phase 5 source provenance
+
+NASA [PGDA Product 78](https://pgda.gsfc.nasa.gov/products/78) explicitly identifies Site04 as Shackleton rim, Site11 as de Gerlache rim, and Site23 as Malapert massif. Each uses its own SURF, LDEC, SLP, TOTERR and SLPERR product URL in the catalog. `download_manifest.json` records exact local SHA-256 identities and new acquisition timestamps; Site04's original download time was not retained and is unknown. `*_phase5_report.json` records embedded metadata, source URLs, native bounds/CRS/transform, units, validation and actual processing status. No reprojection/resampling or terrestrial EPSG substitution is performed. Source values are preserved on disk; source masks are applied in memory. See [execution/provenance limitations](PHASE5_IMPLEMENTATION.md).

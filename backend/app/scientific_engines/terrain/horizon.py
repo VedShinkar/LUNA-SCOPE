@@ -259,6 +259,7 @@ def compute_terrain_horizon_profile(
     sample_interval_m: float = DEFAULT_SAMPLE_INTERVAL_M,
     include_curvature: bool = True,
     lunar_radius_m: float = LUNAR_RADIUS_M,
+    site_id: str = "Site04",
 ) -> Dict[str, Any]:
     """Compute 360-degree radial local terrain-horizon profile.
 
@@ -365,7 +366,7 @@ def compute_terrain_horizon_profile(
     return {
         "status": "SUCCESS",
         "is_valid": True,
-        "site_id": "Site04",
+        "site_id": site_id,
         "observer_coordinates": {
             "easting_m": float(observer_x),
             "northing_m": float(observer_y),

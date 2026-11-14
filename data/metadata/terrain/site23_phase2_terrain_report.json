@@ -1,0 +1,515 @@
+{
+  "report_type": "LUNA-SCOPE Phase 2 Terrain Computation Report",
+  "site": "Site23",
+  "timestamp_utc": "2026-11-14T06:21:36.369923+00:00",
+  "phase2_complete": true,
+  "georeferencing_and_crs": {
+    "coordinate_system": "Lunar South-Polar Stereographic",
+    "reference_frame": "MOON_ME associated with DE421 ephemeris",
+    "semi_major_axis_m": 1737400.0,
+    "origin_latitude": -90.0,
+    "central_meridian": 0.0,
+    "linear_units": "metre",
+    "grid_resolution_m": [
+      5.0,
+      5.0
+    ],
+    "bounds": [
+      -11000.0,
+      111000.0,
+      10000.0,
+      132000.0
+    ],
+    "transform": [
+      5.0,
+      0.0,
+      -11000.0,
+      0.0,
+      -5.0,
+      132000.0
+    ],
+    "width": 4200,
+    "height": 4200
+  },
+  "elevation_summary": {
+    "total_pixels": 17640000,
+    "valid_pixels": 17640000,
+    "invalid_pixels": 0,
+    "coverage_percentage": 100.0,
+    "statistics": {
+      "minimum_m": 901.9911,
+      "maximum_m": 5173.563,
+      "range_m": 4271.5719,
+      "mean_m": 3534.9815,
+      "std_dev_m": 1026.2408,
+      "median_m": 3618.438,
+      "percentiles_m": {
+        "p01": 1303.8013,
+        "p05": 1811.1507,
+        "p25": 2708.6497,
+        "p75": 4458.5269,
+        "p95": 4940.9956,
+        "p99": 5107.002
+      },
+      "interquartile_range_m": 1749.8772
+    },
+    "hypsometric_distribution": {
+      "bin_count": 30,
+      "bins": [
+        {
+          "bin_index": 0,
+          "range_m": [
+            901.99,
+            1044.38
+          ],
+          "pixel_count": 37181,
+          "percentage": 0.2108
+        },
+        {
+          "bin_index": 1,
+          "range_m": [
+            1044.38,
+            1186.76
+          ],
+          "pixel_count": 66425,
+          "percentage": 0.3766
+        },
+        {
+          "bin_index": 2,
+          "range_m": [
+            1186.76,
+            1329.15
+          ],
+          "pixel_count": 90145,
+          "percentage": 0.511
+        },
+        {
+          "bin_index": 3,
+          "range_m": [
+            1329.15,
+            1471.53
+          ],
+          "pixel_count": 113116,
+          "percentage": 0.6412
+        },
+        {
+          "bin_index": 4,
+          "range_m": [
+            1471.53,
+            1613.92
+          ],
+          "pixel_count": 183878,
+          "percentage": 1.0424
+        },
+        {
+          "bin_index": 5,
+          "range_m": [
+            1613.92,
+            1756.31
+          ],
+          "pixel_count": 265051,
+          "percentage": 1.5026
+        },
+        {
+          "bin_index": 6,
+          "range_m": [
+            1756.31,
+            1898.69
+          ],
+          "pixel_count": 437168,
+          "percentage": 2.4783
+        },
+        {
+          "bin_index": 7,
+          "range_m": [
+            1898.69,
+            2041.08
+          ],
+          "pixel_count": 484162,
+          "percentage": 2.7447
+        },
+        {
+          "bin_index": 8,
+          "range_m": [
+            2041.08,
+            2183.46
+          ],
+          "pixel_count": 441489,
+          "percentage": 2.5028
+        },
+        {
+          "bin_index": 9,
+          "range_m": [
+            2183.46,
+            2325.85
+          ],
+          "pixel_count": 441871,
+          "percentage": 2.5049
+        },
+        {
+          "bin_index": 10,
+          "range_m": [
+            2325.85,
+            2468.23
+          ],
+          "pixel_count": 599727,
+          "percentage": 3.3998
+        },
+        {
+          "bin_index": 11,
+          "range_m": [
+            2468.23,
+            2610.62
+          ],
+          "pixel_count": 666169,
+          "percentage": 3.7765
+        },
+        {
+          "bin_index": 12,
+          "range_m": [
+            2610.62,
+            2753.01
+          ],
+          "pixel_count": 808564,
+          "percentage": 4.5837
+        },
+        {
+          "bin_index": 13,
+          "range_m": [
+            2753.01,
+            2895.39
+          ],
+          "pixel_count": 753082,
+          "percentage": 4.2692
+        },
+        {
+          "bin_index": 14,
+          "range_m": [
+            2895.39,
+            3037.78
+          ],
+          "pixel_count": 760274,
+          "percentage": 4.3099
+        },
+        {
+          "bin_index": 15,
+          "range_m": [
+            3037.78,
+            3180.16
+          ],
+          "pixel_count": 681233,
+          "percentage": 3.8619
+        },
+        {
+          "bin_index": 16,
+          "range_m": [
+            3180.16,
+            3322.55
+          ],
+          "pixel_count": 651191,
+          "percentage": 3.6916
+        },
+        {
+          "bin_index": 17,
+          "range_m": [
+            3322.55,
+            3464.93
+          ],
+          "pixel_count": 646129,
+          "percentage": 3.6629
+        },
+        {
+          "bin_index": 18,
+          "range_m": [
+            3464.93,
+            3607.32
+          ],
+          "pixel_count": 643802,
+          "percentage": 3.6497
+        },
+        {
+          "bin_index": 19,
+          "range_m": [
+            3607.32,
+            3749.71
+          ],
+          "pixel_count": 640460,
+          "percentage": 3.6307
+        },
+        {
+          "bin_index": 20,
+          "range_m": [
+            3749.71,
+            3892.09
+          ],
+          "pixel_count": 672401,
+          "percentage": 3.8118
+        },
+        {
+          "bin_index": 21,
+          "range_m": [
+            3892.09,
+            4034.48
+          ],
+          "pixel_count": 700329,
+          "percentage": 3.9701
+        },
+        {
+          "bin_index": 22,
+          "range_m": [
+            4034.48,
+            4176.86
+          ],
+          "pixel_count": 734426,
+          "percentage": 4.1634
+        },
+        {
+          "bin_index": 23,
+          "range_m": [
+            4176.86,
+            4319.25
+          ],
+          "pixel_count": 808462,
+          "percentage": 4.5831
+        },
+        {
+          "bin_index": 24,
+          "range_m": [
+            4319.25,
+            4461.63
+          ],
+          "pixel_count": 924163,
+          "percentage": 5.239
+        },
+        {
+          "bin_index": 25,
+          "range_m": [
+            4461.63,
+            4604.02
+          ],
+          "pixel_count": 950316,
+          "percentage": 5.3873
+        },
+        {
+          "bin_index": 26,
+          "range_m": [
+            4604.02,
+            4746.41
+          ],
+          "pixel_count": 1071267,
+          "percentage": 6.0729
+        },
+        {
+          "bin_index": 27,
+          "range_m": [
+            4746.41,
+            4888.79
+          ],
+          "pixel_count": 1148606,
+          "percentage": 6.5114
+        },
+        {
+          "bin_index": 28,
+          "range_m": [
+            4888.79,
+            5031.18
+          ],
+          "pixel_count": 717799,
+          "percentage": 4.0692
+        },
+        {
+          "bin_index": 29,
+          "range_m": [
+            5031.18,
+            5173.56
+          ],
+          "pixel_count": 501114,
+          "percentage": 2.8408
+        }
+      ]
+    }
+  },
+  "slope_analysis": {
+    "primary_method": "zevenbergen_thorne_central_difference",
+    "alternative_method_evaluated": "horn_1981_weighted",
+    "zevenbergen_thorne_vs_nasa_supplied": {
+      "comparison_coverage": {
+        "valid_comparison_pixels": 17640000,
+        "total_pixels": 17640000,
+        "coverage_percentage": 100.0
+      },
+      "metrics_deg": {
+        "bias_mean_error": -0.000233,
+        "mean_absolute_error_mae": 0.001128,
+        "root_mean_square_error_rmse": 0.053625,
+        "median_absolute_error_medae": 0.000418,
+        "max_absolute_error": 24.564617,
+        "std_dev_of_difference": 0.053624,
+        "difference_quantiles": {
+          "p05": -0.001249,
+          "p25": -0.000418,
+          "median_p50": -1e-06,
+          "p75": 0.000418,
+          "p95": 0.001249
+        }
+      },
+      "match_quality": "DIFFERENCES_MEASURED",
+      "investigation_and_findings": "Across 17,640,000 compared pixels, the MAE is 0.00112818 deg, RMSE is 0.0536249 deg, median absolute error is 0.000417709 deg, and maximum absolute error is 24.5646 deg."
+    },
+    "horn_vs_nasa_supplied": {
+      "comparison_coverage": {
+        "valid_comparison_pixels": 17640000,
+        "total_pixels": 17640000,
+        "coverage_percentage": 100.0
+      },
+      "metrics_deg": {
+        "bias_mean_error": -0.029952,
+        "mean_absolute_error_mae": 0.269866,
+        "root_mean_square_error_rmse": 0.511661,
+        "median_absolute_error_medae": 0.119871,
+        "max_absolute_error": 26.465573,
+        "std_dev_of_difference": 0.510783,
+        "difference_quantiles": {
+          "p05": -0.766798,
+          "p25": -0.134758,
+          "median_p50": -0.003984,
+          "p75": 0.106516,
+          "p95": 0.613428
+        }
+      },
+      "match_quality": "DIFFERENCES_MEASURED",
+      "investigation_and_findings": "Across 17,640,000 compared pixels, the MAE is 0.269866 deg, RMSE is 0.511661 deg, median absolute error is 0.119871 deg, and maximum absolute error is 26.4656 deg."
+    }
+  },
+  "aspect_analysis": {
+    "total_pixels": 17640000,
+    "sloped_pixels": 17640000,
+    "flat_pixels": 0,
+    "flat_percentage": 0.0,
+    "nodata_pixels": 0,
+    "azimuth_convention": "Degrees clockwise from grid North (+Y Northing axis): 0=N, 90=E, 180=S, 270=W. Flat terrain coded as -1.0.",
+    "cardinal_distribution_counts": {
+      "North (337.5-22.5 deg)": 5088698,
+      "North-East (22.5-67.5 deg)": 1282517,
+      "East (67.5-112.5 deg)": 452623,
+      "South-East (112.5-157.5 deg)": 983883,
+      "South (157.5-202.5 deg)": 4368694,
+      "South-West (202.5-247.5 deg)": 2984933,
+      "West (247.5-292.5 deg)": 571893,
+      "North-West (292.5-337.5 deg)": 1906759
+    },
+    "cardinal_distribution_percentages": {
+      "North (337.5-22.5 deg)": 28.85,
+      "North-East (22.5-67.5 deg)": 7.27,
+      "East (67.5-112.5 deg)": 2.57,
+      "South-East (112.5-157.5 deg)": 5.58,
+      "South (157.5-202.5 deg)": 24.77,
+      "South-West (202.5-247.5 deg)": 16.92,
+      "West (247.5-292.5 deg)": 3.24,
+      "North-West (292.5-337.5 deg)": 10.81
+    }
+  },
+  "roughness_analysis": {
+    "scale_classification": "provisional_analytical_scales",
+    "qualification_status": "provisional_analytical_scales_unsupported_by_specific_mission_hardware_dimensions",
+    "scale_justifications": {
+      "small_15m": "Provisional analytical micro-scale (3x3 pixels / 15m span): captures short-baseline elevation variability and local breaks-of-slope without certified vehicle wheel/chassis constraints.",
+      "medium_35m": "Provisional analytical meso-scale (7x7 pixels / 35m span): captures intermediate crater relief and touchdown-scale topographic variation without certified lander gear constraints.",
+      "large_75m": "Provisional analytical macro-scale (15x15 pixels / 75m span): captures regional undulating relief and mesoscale crater rim texture."
+    },
+    "scales": {
+      "small": {
+        "scale_key": "small",
+        "scale_classification": "provisional_analytical_scale",
+        "scale_qualification_note": "Designated as a provisional analytical scale. Certified vehicle or lander dimensions are not yet integrated into the repository configuration.",
+        "nominal_scale_m": 15.0,
+        "effective_scale_m": 15.0,
+        "window_size_pixels": 3,
+        "window_shape": [
+          3,
+          3
+        ],
+        "window_centering": "symmetrically_centred_on_focal_pixel",
+        "edge_mode": "valid_only",
+        "ddof": 1,
+        "min_samples": 2,
+        "metric": "unbiased_sample_elevation_standard_deviation_ddof1",
+        "units": "metre",
+        "statistics": {
+          "minimum_m": 0.0066,
+          "maximum_m": 17.7222,
+          "mean_m": 1.3829,
+          "std_dev_m": 0.5788,
+          "median_m": 1.4015
+        }
+      },
+      "medium": {
+        "scale_key": "medium",
+        "scale_classification": "provisional_analytical_scale",
+        "scale_qualification_note": "Designated as a provisional analytical scale. Certified vehicle or lander dimensions are not yet integrated into the repository configuration.",
+        "nominal_scale_m": 35.0,
+        "effective_scale_m": 35.0,
+        "window_size_pixels": 7,
+        "window_shape": [
+          7,
+          7
+        ],
+        "window_centering": "symmetrically_centred_on_focal_pixel",
+        "edge_mode": "valid_only",
+        "ddof": 1,
+        "min_samples": 2,
+        "metric": "unbiased_sample_elevation_standard_deviation_ddof1",
+        "units": "metre",
+        "statistics": {
+          "minimum_m": 0.0497,
+          "maximum_m": 19.9029,
+          "mean_m": 3.2007,
+          "std_dev_m": 1.2996,
+          "median_m": 3.2676
+        }
+      },
+      "large": {
+        "scale_key": "large",
+        "scale_classification": "provisional_analytical_scale",
+        "scale_qualification_note": "Designated as a provisional analytical scale. Certified vehicle or lander dimensions are not yet integrated into the repository configuration.",
+        "nominal_scale_m": 75.0,
+        "effective_scale_m": 75.0,
+        "window_size_pixels": 15,
+        "window_shape": [
+          15,
+          15
+        ],
+        "window_centering": "symmetrically_centred_on_focal_pixel",
+        "edge_mode": "valid_only",
+        "ddof": 1,
+        "min_samples": 2,
+        "metric": "unbiased_sample_elevation_standard_deviation_ddof1",
+        "units": "metre",
+        "statistics": {
+          "minimum_m": 0.1476,
+          "maximum_m": 20.436,
+          "mean_m": 6.812,
+          "std_dev_m": 2.7412,
+          "median_m": 6.9685
+        }
+      }
+    }
+  },
+  "generated_geotiffs": {
+    "elevation": "F:\\Dell\\OneDrive\\\ubb38\uc11c\\GitHub\\LUNA-SCOPE\\data\\processed\\terrain\\site23\\Site23_processed_elevation.tif",
+    "calculated_slope": "F:\\Dell\\OneDrive\\\ubb38\uc11c\\GitHub\\LUNA-SCOPE\\data\\processed\\terrain\\site23\\Site23_calculated_slope_deg.tif",
+    "slope_difference": "F:\\Dell\\OneDrive\\\ubb38\uc11c\\GitHub\\LUNA-SCOPE\\data\\processed\\terrain\\site23\\Site23_slope_difference_deg.tif",
+    "calculated_aspect": "F:\\Dell\\OneDrive\\\ubb38\uc11c\\GitHub\\LUNA-SCOPE\\data\\processed\\terrain\\site23\\Site23_calculated_aspect_deg.tif",
+    "small_15m": "F:\\Dell\\OneDrive\\\ubb38\uc11c\\GitHub\\LUNA-SCOPE\\data\\processed\\terrain\\site23\\Site23_roughness_15m.tif",
+    "medium_35m": "F:\\Dell\\OneDrive\\\ubb38\uc11c\\GitHub\\LUNA-SCOPE\\data\\processed\\terrain\\site23\\Site23_roughness_35m.tif",
+    "large_75m": "F:\\Dell\\OneDrive\\\ubb38\uc11c\\GitHub\\LUNA-SCOPE\\data\\processed\\terrain\\site23\\Site23_roughness_75m.tif"
+  },
+  "diagnostic_maps": {},
+  "scientific_limitations": [
+    "Pixel spacing is not measurement spacing; consult this site's LDEC observation coverage.",
+    "Roughness scales (15 m, 35 m, 75 m) are provisional analytical scales based on generic planetary geomorphometric baselines, not validated against certified flight vehicle or lander hardware dimensions.",
+    "Local roughness and slope reflect interpolated topography and should be interpreted alongside toterr and slperr uncertainty layers.",
+    "Slope calculations assume planar patches over 2*dx (10 m); sub-pixel micro-roughness below 5 m is unresolved by LOLA.",
+    "Aspect is undefined on near-horizontal surfaces and coded as -1.0."
+  ]
+}

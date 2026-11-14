@@ -1,6 +1,6 @@
-# Terrain Intelligence API (Phase 4)
+# Terrain Intelligence API (Phases 4–5)
 
-This document describes the public HTTP endpoints that expose validated Site04 terrain data.
+This document describes the public HTTP endpoints that expose validated site-specific terrain data.
 It follows the contract defined in **docs/API_CONTRACTS.md** and is meant for downstream
 celestial‑ and mission‑intelligence modules.
 
@@ -16,7 +16,7 @@ The service is served by the FastAPI application defined in `backend/app/main.py
 **Query parameters**
 | Parameter | Type | Description |
 |-----------|------|-------------|
-| `site_id` | `string` (default: `"Site04"`) | Landing‑site identifier (only `Site04` is supported). |
+| `site_id` | `string` (default: `"Site04"`) | Landing‑site identifier (`Site04`, `Site11`, and `Site23` are supported). |
 | `easting_m` | `float` (optional) | Projected Easting in metres (Lunar South‑Polar Stereographic). |
 | `northing_m` | `float` (optional) | Projected Northing in metres. |
 | `include` | `list[string]` (optional) | Names of additional products to embed (e.g., `elevation`, `slope`, `roughness`, `horizon`). |
@@ -193,3 +193,9 @@ print(resp.json())
 ---
 
 *This document is maintained in the repository at `docs/api_terrain.md` and should be updated whenever the API contract changes.*
+
+## Phase 5 site selection and errors
+
+Both POST request bodies accept `"site_id": "Site11"` (or Site04/Site23). Both GET endpoints accept `?site_id=Site11`. Omitting the field preserves Site04 behavior. Unknown sites return 404. Missing, incompatible or checksum-mismatched source/derived data return 503. GET `/site` requires either both projected coordinates or neither (422 otherwise). Use each site's summary bounds; coordinates from another site are not translated automatically. Summary identity and horizon results belong to the selected site. Explorer routes remain scoped to Site04.
+
+Correction to the earlier NoData description: the retained Phase 4 ray engine skips missing samples and can fall back to a nearest finite neighbor; it does not discard an entire ray on the first gap. An unsampled obstacle can therefore be missed. Rays with no valid samples are JSON null. No solar/Earth visibility is implied. See [Phase 5 report](PHASE5_IMPLEMENTATION.md).

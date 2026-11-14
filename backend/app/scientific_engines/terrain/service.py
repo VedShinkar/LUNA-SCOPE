@@ -1,6 +1,6 @@
-"""Terrain Intelligence Service layer for Site04.
+"""Terrain Intelligence Service layer for configured lunar sites.
 
-Provides centralized, thread-safe access to validated Site04 terrain layers:
+Provides centralized, thread-safe access to validated site-specific terrain layers:
 - Point coordinate queries for terrain attributes, hazards, and uncertainties.
 - Local terrain horizon profile generation.
 - Complete site-level summary and provenance metadata.
@@ -8,6 +8,7 @@ Provides centralized, thread-safe access to validated Site04 terrain layers:
 from __future__ import annotations
 
 import json
+from threading import RLock
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -23,27 +24,35 @@ from app.scientific_engines.terrain.horizon import (
 from app.scientific_engines.terrain.loader import (
     TerrainRasterMetadata,
     extract_raster_metadata,
+    load_site_dataset,
+    require_compatible_grid,
 )
+from app.scientific_engines.terrain.catalog import ROOT, get_site_config, verify_source_association
 
 DEFAULT_RAW_DIR = Path("data/raw/terrain/site04")
 DEFAULT_PROCESSED_DIR = Path("data/processed/terrain/site04")
-DEFAULT_METADATA_DIR = Path("data/metadata/terrain")
+DEFAULT_METADATA_DIR = ROOT / "data/metadata/terrain"
 
 
 class TerrainService:
-    """Singleton-style service managing Site04 terrain rasters and queries."""
+    """Cached service managing one site's terrain rasters and queries."""
 
     _instance: Optional["TerrainService"] = None
+    _instances: Dict[str, "TerrainService"] = {}
+    _cache_lock = RLock()
 
     def __init__(
         self,
-        raw_dir: Path = DEFAULT_RAW_DIR,
-        processed_dir: Path = DEFAULT_PROCESSED_DIR,
+        raw_dir: Optional[Path] = None,
+        processed_dir: Optional[Path] = None,
         metadata_dir: Path = DEFAULT_METADATA_DIR,
         site_id: str = "Site04",
     ):
-        self.raw_dir = raw_dir
-        self.processed_dir = processed_dir
+        self.config = get_site_config(site_id)
+        self._verify_provenance = raw_dir is None
+        self.raw_dir = Path(raw_dir) if raw_dir is not None else self.config["raw_dir"]
+        self.processed_dir = Path(processed_dir) if processed_dir is not None else self.config["processed_dir"]
+        self._load_lock = RLock()
         self.metadata_dir = metadata_dir
         self.site_id = site_id
 
@@ -64,83 +73,83 @@ class TerrainService:
         self._transform: Optional[Affine] = None
 
     @classmethod
-    def get_instance(cls) -> "TerrainService":
-        """Get or initialize the shared TerrainService singleton."""
-        if cls._instance is None:
-            cls._instance = cls()
-        return cls._instance
+    def get_instance(cls, site_id: str = "Site04") -> "TerrainService":
+        """Cache one isolated service per configured site."""
+        get_site_config(site_id)
+        with cls._cache_lock:
+            if site_id == "Site04":
+                if cls._instance is None:
+                    cls._instance = cls(site_id=site_id)
+                return cls._instance
+            if site_id not in cls._instances:
+                cls._instances[site_id] = cls(site_id=site_id)
+            return cls._instances[site_id]
 
     def _ensure_loaded(self) -> None:
+        with self._load_lock:
+            self._load()
+
+    def _load(self) -> None:
         """Load required rasters into memory if not already cached."""
         if self._loaded:
             return
+
+        sources = load_site_dataset(self.raw_dir, self.site_id)
+        require_compatible_grid(sources)
+        if self._verify_provenance:
+            verify_source_association(sources, self.metadata_dir)
 
         surf_path = self.raw_dir / f"{self.site_id}_final_adj_5mpp_surf.tif"
         if not surf_path.exists():
             raise FileNotFoundError(f"Missing primary DEM at {surf_path}")
 
-        self._meta = extract_raster_metadata(surf_path)
+        self._meta = sources.elevation.metadata
         self._transform = Affine(*self._meta.transform)
 
-        with rasterio.open(surf_path) as s:
-            self._dem = s.read(1)
+        def read_aligned(path, categorical=False):
+            if not path.is_file():
+                raise FileNotFoundError(f"Missing required terrain product for {self.site_id}: {path}")
+            with rasterio.open(path) as source:
+                source_hash = source.tags().get("SOURCE_DEM_SHA256")
+                if source_hash is not None and source_hash != self._meta.sha256_hash:
+                    raise ValueError(f"Incorrect source association for terrain product: {path}")
+                ref_crs = rasterio.crs.CRS.from_wkt(self._meta.crs_wkt)
+                crs_ok = (source.crs == ref_crs) or (
+                    source.crs.to_proj4() == ref_crs.to_proj4()
+                    or pyproj.CRS.from_wkt(source.crs.to_wkt()).to_dict() == pyproj.CRS.from_wkt(self._meta.crs_wkt).to_dict()
+                )
+                if (source.width, source.height, source.transform) != (
+                    self._meta.width, self._meta.height, self._transform
+                ) or not crs_ok:
+                    raise ValueError(f"Incompatible terrain product grid: {path}")
+                values = source.read(1, masked=True)
+                if categorical:
+                    return values.filled(0)
+                return values.astype(np.float32).filled(np.nan)
 
-        # Processed slope & aspect
-        p_slope = self.processed_dir / f"{self.site_id}_calculated_slope_deg.tif"
-        if not p_slope.exists():
-            p_slope = self.raw_dir / f"{self.site_id}_final_adj_5mpp_slp.tif"
-        with rasterio.open(p_slope) as s:
-            self._slope = s.read(1)
+        self._dem = read_aligned(surf_path)
+        for attribute, suffix in {
+            "_slope": "calculated_slope_deg", "_aspect": "calculated_aspect_deg",
+            "_r15": "roughness_15m", "_r35": "roughness_35m", "_r75": "roughness_75m",
+            "_hazard_combined": "combined_hazard_screen", "_data_quality": "data_quality_screen",
+        }.items():
+            setattr(self, attribute, read_aligned(
+                self.processed_dir / f"{self.site_id}_{suffix}.tif",
+                categorical=attribute in ("_hazard_combined", "_data_quality"),
+            ))
+        for attribute, suffix in {"_toterr": "toterr", "_slperr": "slperr", "_ldec": "ldec"}.items():
+            setattr(self, attribute, read_aligned(self.raw_dir / f"{self.site_id}_final_adj_5mpp_{suffix}.tif"))
 
-        p_aspect = self.processed_dir / f"{self.site_id}_calculated_aspect_deg.tif"
-        if p_aspect.exists():
-            with rasterio.open(p_aspect) as s:
-                self._aspect = s.read(1)
-        else:
-            self._aspect = np.full_like(self._dem, -1.0)
-
-        # Roughness rasters
-        p_r15 = self.processed_dir / f"{self.site_id}_roughness_15m.tif"
-        if p_r15.exists():
-            with rasterio.open(p_r15) as s:
-                self._r15 = s.read(1)
-        p_r35 = self.processed_dir / f"{self.site_id}_roughness_35m.tif"
-        if p_r35.exists():
-            with rasterio.open(p_r35) as s:
-                self._r35 = s.read(1)
-        p_r75 = self.processed_dir / f"{self.site_id}_roughness_75m.tif"
-        if p_r75.exists():
-            with rasterio.open(p_r75) as s:
-                self._r75 = s.read(1)
-
-        # Raw uncertainties and LDEC
-        p_toterr = self.raw_dir / f"{self.site_id}_final_adj_5mpp_toterr.tif"
-        with rasterio.open(p_toterr) as s:
-            self._toterr = s.read(1)
-
-        p_slperr = self.raw_dir / f"{self.site_id}_final_adj_5mpp_slperr.tif"
-        with rasterio.open(p_slperr) as s:
-            self._slperr = s.read(1)
-
-        p_ldec = self.raw_dir / f"{self.site_id}_final_adj_5mpp_ldec.tif"
-        with rasterio.open(p_ldec) as s:
-            self._ldec = s.read(1)
-
-        # Combined hazard & quality screens
-        p_comb = self.processed_dir / f"{self.site_id}_combined_hazard_screen.tif"
-        if p_comb.exists():
-            with rasterio.open(p_comb) as s:
-                self._hazard_combined = s.read(1)
-        else:
-            self._hazard_combined = np.zeros_like(self._dem, dtype=np.uint8)
-
-        p_qual = self.processed_dir / f"{self.site_id}_data_quality_screen.tif"
-        if p_qual.exists():
-            with rasterio.open(p_qual) as s:
-                self._data_quality = s.read(1)
-        else:
-            self._data_quality = np.zeros_like(self._dem, dtype=np.uint8)
-
+        maximum = np.zeros(self._dem.shape, dtype=np.uint8)
+        missing = np.zeros(self._dem.shape, dtype=bool)
+        for key in ("slope", "roughness_small", "roughness_medium", "roughness_large"):
+            codes = read_aligned(self.processed_dir / f"{self.site_id}_hazard_{key}.tif", categorical=True)
+            if not np.isin(codes, [0, 1, 2, 3]).all():
+                raise ValueError(f"Invalid physical hazard codes: {self.site_id}/{key}")
+            np.maximum(maximum, codes, out=maximum)
+            missing |= codes == 0
+        maximum[missing & (maximum < 2)] = 0
+        self._physical_hazard = maximum
         self._loaded = True
 
     def query_point(
@@ -221,19 +230,7 @@ class TerrainService:
         qual_code = int(self._data_quality[r_idx, c_idx]) if self._data_quality is not None else 0
         qual_class = CODE_TO_SEVERITY.get(qual_code, "UNKNOWN")
 
-        # Determine physical hazard class from slope and roughness
-        # Physical severity = max of slope and roughness codes
-        phys_code = 0
-        if np.isfinite(slope_val) and np.isfinite(r15_val) and np.isfinite(r35_val) and np.isfinite(r75_val):
-            s_code = 1 if slope_val <= 5.0 else (2 if slope_val <= 15.0 else 3)
-            r15_code = 1 if r15_val <= 0.5 else (2 if r15_val <= 1.5 else 3)
-            r35_code = 1 if r35_val <= 1.0 else (2 if r35_val <= 2.5 else 3)
-            r75_code = 1 if r75_val <= 2.0 else (2 if r75_val <= 4.0 else 3)
-            phys_code = max(s_code, r15_code, r35_code, r75_code)
-        elif np.isfinite(slope_val) and slope_val > 15.0:
-            phys_code = 3
-        elif np.isfinite(slope_val) and slope_val > 5.0:
-            phys_code = 2
+        phys_code = int(self._physical_hazard[r_idx, c_idx])
         phys_class = CODE_TO_SEVERITY.get(phys_code, "UNKNOWN")
 
         is_interp = ldec_val == 0 if ldec_val is not None else False
@@ -279,7 +276,7 @@ class TerrainService:
                 "is_direct_observation": is_direct,
             },
             "provenance": {
-                "source_dataset": "NASA LOLA 5m South Polar PGDA (Site04 Shackleton Rim)",
+                "source_dataset": f"NASA LOLA 5m South Polar PGDA ({self.site_id}: {self.config['name']})",
                 "dem_product_id": f"{self.site_id}_final_adj_5mpp_surf",
                 "grid_resolution_m": [self._meta.resolution[0], self._meta.resolution[1]],
                 "vertical_datum": "1737.4 km lunar spherical datum",
@@ -303,7 +300,7 @@ class TerrainService:
         assert self._dem is not None
         assert self._transform is not None
 
-        return compute_terrain_horizon_profile(
+        result = compute_terrain_horizon_profile(
             dem=self._dem,
             transform=self._transform,
             observer_x=observer_x,
@@ -314,7 +311,11 @@ class TerrainService:
             max_range_m=max_range_m,
             sample_interval_m=sample_interval_m,
             include_curvature=include_curvature,
+            site_id=self.site_id,
         )
+
+        result["site_id"] = self.site_id
+        return result
 
     def get_site_summary(self) -> Dict[str, Any]:
         """Return comprehensive site-level metadata, statistics, and distributions."""
@@ -338,11 +339,15 @@ class TerrainService:
         if p1_report_path.exists():
             p1_data = json.loads(p1_report_path.read_text(encoding="utf-8"))
 
+        for report in (p1_data, p2_data, p3_data):
+            if report and report.get("site") != self.site_id:
+                raise ValueError(f"Incorrect report/site association for {self.site_id}")
+
         left, bottom, right, top = self._meta.bounds
 
         return {
             "site_id": self.site_id,
-            "site_name": "Shackleton Crater Rim",
+            "site_name": self.config.get("display_name", self.config["name"]),
             "region": "Lunar South Pole",
             "coordinate_system": {
                 "name": "Lunar South-Polar Stereographic",
@@ -397,10 +402,10 @@ class TerrainService:
                 "source": "NASA Planetary Geosciences Data Node (PGDA) LOLA Polar Digital Elevation Models",
                 "dataset_id": f"{self.site_id}_final_adj_5mpp",
                 "ephemeris": "JPL DE421",
-                "processing_phases_completed": ["Phase 1: Ingestion & Validation", "Phase 2: Terrain Computation", "Phase 3: Hazard Intelligence", "Phase 4: Integration"],
+                "processing_phases_completed": [label for label, passed in (("Phase 1: Ingestion & Validation", p1_data.get("phase1_gate_passed")), ("Phase 2: Terrain Computation", p2_data.get("phase2_complete")), ("Phase 3: Hazard Intelligence", p3_data.get("phase3_complete"))) if passed],
             },
             "scientific_limitations": p3_data.get("scientific_limitations", [
-                "5m pixel spacing represents continuous-curvature interpolation between LOLA ground tracks; 90.85% of cells lack direct laser spot support.",
+                "Pixel spacing is not measurement spacing; consult this site's LDEC coverage.",
                 "Roughness and hazard thresholds are provisional and unsupported by vehicle-specific dimensions.",
                 "This is a decision-support preliminary screening layer, NOT a certified landing-site safety assessment.",
             ]),

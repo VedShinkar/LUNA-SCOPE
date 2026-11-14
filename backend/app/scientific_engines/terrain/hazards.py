@@ -258,6 +258,7 @@ def write_indicator_geotiff(
             LUNAR_REFERENCE_FRAME="MOON_ME associated with DE421 ephemeris",
             PROJECTION="Lunar South-Polar Stereographic",
             UNITS="category",
+            SOURCE_DEM_SHA256=meta.sha256_hash,
             CLASS_0="UNKNOWN",
             CLASS_1="LOW",
             CLASS_2="MODERATE",
@@ -345,6 +346,7 @@ def generate_hazard_screening(
     metadata_dir: Path = Path("data/metadata/terrain"),
     site: str = "Site04",
     thresholds: Optional[Dict[str, Any]] = None,
+    roughness_results: Optional[Dict[str, Any]] = None,
 ) -> Dict[str, Any]:
     """Generate Phase 3 hazard screening products under Option B policy.
 
@@ -361,6 +363,8 @@ def generate_hazard_screening(
     """
     if thresholds is None:
         thresholds = HAZARD_THRESHOLDS
+    if site_dataset.site_id != site:
+        raise ValueError(f"Dataset {site_dataset.site_id} cannot be processed as {site}")
 
     timestamp = datetime.now(timezone.utc).isoformat()
     processed_dir.mkdir(parents=True, exist_ok=True)
@@ -379,7 +383,7 @@ def generate_hazard_screening(
         PROVISIONAL_ROUGHNESS_SCALES_M,
         compute_multi_scale_roughness,
     )
-    roughness_dict = compute_multi_scale_roughness(
+    roughness_dict = roughness_results if roughness_results is not None else compute_multi_scale_roughness(
         dem,
         transform=meta.transform,
         scales_m=PROVISIONAL_ROUGHNESS_SCALES_M,
@@ -463,7 +467,8 @@ def generate_hazard_screening(
     phys_stack = np.stack(list(phys_arrays.values()), axis=0)
     any_phys_unknown = np.any(phys_stack == SEVERITY_TO_CODE["UNKNOWN"], axis=0)
     max_phys = np.max(phys_stack, axis=0)
-    physical_summary = np.where(any_phys_unknown, SEVERITY_TO_CODE["UNKNOWN"], max_phys).astype(np.uint8)
+    physical_summary = np.where(any_phys_unknown & (max_phys < SEVERITY_TO_CODE["MODERATE"]),
+                                SEVERITY_TO_CODE["UNKNOWN"], max_phys).astype(np.uint8)
     physical_class_counts = _count_classes(physical_summary)
 
     # ── Statistics & JSON report ─────────────────────────────────────────

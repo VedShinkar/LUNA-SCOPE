@@ -1,7 +1,7 @@
 {
   "report_type": "LUNA-SCOPE Phase 1 Terrain Validation Report",
   "site": "Site04",
-  "timestamp_utc": "2026-11-13T13:43:59.144497+00:00",
+  "timestamp_utc": "2026-11-14T06:17:34.850672+00:00",
   "phase1_gate_passed": true,
   "status": "PASS",
   "summary": {
@@ -398,6 +398,7 @@
     "zero_count_percentage": 90.8459,
     "positive_count_pixels": 937381,
     "positive_count_percentage": 9.1541,
+    "missing_invalid_count_pixels": 0,
     "maximum_spots_per_pixel": 5,
     "mean_spots_per_pixel": 0.09608525037765503,
     "histogram": {
@@ -432,7 +433,7 @@
         "percentage": 1.953125e-05
       }
     },
-    "scientific_interpretation": "LOLA polar ground tracks have spacing wider than the 5 m grid spacing. Pixels with LDEC == 0 (90.85% at Site04) represent mathematically valid interpolated surface elevations between ground tracks. Direct laser-spot measurements are available for 9.15% of pixels (LDEC >= 1). LDEC == 0 must NOT be treated as invalid elevation or NoData."
+    "scientific_interpretation": "LOLA polar ground tracks have spacing wider than the 5 m grid spacing. Pixels with LDEC == 0 represent mathematically valid interpolated surface elevations between ground tracks. Direct laser-spot measurements are available where LDEC >= 1. LDEC == 0 must NOT be treated as invalid elevation or NoData."
   },
   "dem_validity_vs_direct_observation_coverage": {
     "status": "PASS",
@@ -443,6 +444,7 @@
     "valid_dem_percentage": 100.0,
     "direct_observation_pixels": 937381,
     "direct_observation_percentage": 9.1541,
+    "missing_observation_support_dem_pixels": 0,
     "interpolated_dem_pixels": 9302619,
     "interpolated_dem_percentage": 90.8459,
     "elevation_comparison": {
@@ -495,7 +497,7 @@
       "interpolated_elevations": {
         "pixel_count": 9302619,
         "percentage": 90.8459,
-        "meaning": "Finite elevation values where no direct laser spot fell within the 5 m cell (LDEC == 0). These are mathematically gridded continuous-curvature approximations between orbital tracks. They are not NoData, but their local physical accuracy varies with distance from ground tracks and is bounded by the accompanying toterr uncertainty layer (up to 7.64 m RMS)."
+        "meaning": "Finite elevation values where no direct laser spot fell within the 5 m cell (LDEC == 0). These are mathematically gridded continuous-curvature approximations between orbital tracks. They are not NoData, but their local physical accuracy varies with distance from ground tracks and is bounded by the accompanying toterr uncertainty layer; see the site-specific statistics."
       },
       "scientifically_validated_terrain": {
         "status": "VALIDATED_WITH_DOCUMENTED_UNCERTAINTY",
@@ -521,7 +523,7 @@
     },
     "site_id": "Site04",
     "site_directory": "F:\\Dell\\OneDrive\\\ubb38\uc11c\\GitHub\\LUNA-SCOPE\\data\\raw\\terrain\\site04",
-    "validation_timestamp_utc": "2026-11-13T13:43:59.144497+00:00",
+    "validation_timestamp_utc": "2026-11-14T06:17:34.850672+00:00",
     "software_environment": {
       "rasterio": "1.5.2",
       "numpy": "2.5.4",

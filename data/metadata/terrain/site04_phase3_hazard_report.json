@@ -2,7 +2,7 @@
   "report_type": "LUNA-SCOPE Phase 3 Terrain Hazard Screening Report",
   "policy": "Option B: Decoupled Decisional Screening",
   "site": "Site04",
-  "timestamp_utc": "2026-11-13T18:28:24.457841+00:00",
+  "timestamp_utc": "2026-11-14T05:43:07.409961+00:00",
   "phase3_complete": true,
   "classification_encoding": {
     "codes": {
@@ -203,16 +203,16 @@
   "valid_coverage_percentage": 96.7829,
   "total_pixels": 10240000,
   "indicator_geotiffs": {
-    "slope": "data\\processed\\terrain\\site04\\Site04_hazard_slope.tif",
-    "roughness_small": "data\\processed\\terrain\\site04\\Site04_hazard_roughness_small.tif",
-    "roughness_medium": "data\\processed\\terrain\\site04\\Site04_hazard_roughness_medium.tif",
-    "roughness_large": "data\\processed\\terrain\\site04\\Site04_hazard_roughness_large.tif",
-    "elevation_uncertainty": "data\\processed\\terrain\\site04\\Site04_hazard_elevation_uncertainty.tif",
-    "slope_uncertainty": "data\\processed\\terrain\\site04\\Site04_hazard_slope_uncertainty.tif",
-    "observation_coverage": "data\\processed\\terrain\\site04\\Site04_hazard_observation_coverage.tif"
+    "slope": "F:\\Dell\\OneDrive\\\ubb38\uc11c\\GitHub\\LUNA-SCOPE\\data\\processed\\terrain\\site04\\Site04_hazard_slope.tif",
+    "roughness_small": "F:\\Dell\\OneDrive\\\ubb38\uc11c\\GitHub\\LUNA-SCOPE\\data\\processed\\terrain\\site04\\Site04_hazard_roughness_small.tif",
+    "roughness_medium": "F:\\Dell\\OneDrive\\\ubb38\uc11c\\GitHub\\LUNA-SCOPE\\data\\processed\\terrain\\site04\\Site04_hazard_roughness_medium.tif",
+    "roughness_large": "F:\\Dell\\OneDrive\\\ubb38\uc11c\\GitHub\\LUNA-SCOPE\\data\\processed\\terrain\\site04\\Site04_hazard_roughness_large.tif",
+    "elevation_uncertainty": "F:\\Dell\\OneDrive\\\ubb38\uc11c\\GitHub\\LUNA-SCOPE\\data\\processed\\terrain\\site04\\Site04_hazard_elevation_uncertainty.tif",
+    "slope_uncertainty": "F:\\Dell\\OneDrive\\\ubb38\uc11c\\GitHub\\LUNA-SCOPE\\data\\processed\\terrain\\site04\\Site04_hazard_slope_uncertainty.tif",
+    "observation_coverage": "F:\\Dell\\OneDrive\\\ubb38\uc11c\\GitHub\\LUNA-SCOPE\\data\\processed\\terrain\\site04\\Site04_hazard_observation_coverage.tif"
   },
-  "combined_geotiff": "data\\processed\\terrain\\site04\\Site04_combined_hazard_screen.tif",
-  "data_quality_geotiff": "data\\processed\\terrain\\site04\\Site04_data_quality_screen.tif",
+  "combined_geotiff": "F:\\Dell\\OneDrive\\\ubb38\uc11c\\GitHub\\LUNA-SCOPE\\data\\processed\\terrain\\site04\\Site04_combined_hazard_screen.tif",
+  "data_quality_geotiff": "F:\\Dell\\OneDrive\\\ubb38\uc11c\\GitHub\\LUNA-SCOPE\\data\\processed\\terrain\\site04\\Site04_data_quality_screen.tif",
   "scientific_limitations": [
     "All thresholds are provisional and not tied to any specific lunar vehicle or lander design.",
     "LDEC observation count is an epistemic (data-quality) measure, not a physical terrain hazard. LDEC=0 represents mathematically interpolated terrain between orbital tracks, not invalid elevation or physical danger.",

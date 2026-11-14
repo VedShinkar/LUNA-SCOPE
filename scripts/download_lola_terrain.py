@@ -107,6 +107,7 @@ def download(url: str, destination: Path, expected: str) -> dict:
 
             partial.replace(destination)
             return {"status": "downloaded", "path": str(destination), "url": url,
+                    "downloaded_utc": datetime.now(timezone.utc).isoformat(),
                     "bytes": destination.stat().st_size, "sha256": sha256_file(destination),
                     "content_type": content_type}
         except Exception as exc:
@@ -119,6 +120,9 @@ def download(url: str, destination: Path, expected: str) -> dict:
 
 
 def main() -> int:
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
+        sys.stderr.reconfigure(encoding="utf-8")
     parser = argparse.ArgumentParser(description="Download LOLA terrain products from NASA PGDA.")
     parser.add_argument("--sites", nargs="+", choices=sorted(SITES), default=["Site04", "Site11", "Site23"],
                         help="PGDA site codes (default: all three LUNA-SCOPE comparison regions)")
@@ -211,6 +215,17 @@ def main() -> int:
     metadata_dir = repo / "data" / "metadata" / "terrain"
     metadata_dir.mkdir(parents=True, exist_ok=True)
     manifest_path = metadata_dir / "download_manifest.json"
+    if manifest_path.exists():
+        previous = json.loads(manifest_path.read_text(encoding="utf-8"))
+        for site, entry in previous.get("sites", {}).items():
+            if site not in manifest["sites"]:
+                manifest["sites"][site] = entry
+            else:
+                for key, product in manifest["sites"][site]["products"].items():
+                    old = entry.get("products", {}).get(key, {})
+                    if product.get("status") == "already_present" and old.get("sha256") == product.get("sha256"):
+                        product.update({k: v for k, v in old.items() if k not in product})
+        manifest["previous_created_utc"] = previous.get("created_utc")
     manifest_path.write_text(json.dumps(manifest, indent=2), encoding="utf-8")
 
     print(f"\\nManifest written to: {manifest_path}")

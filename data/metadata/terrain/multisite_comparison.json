@@ -1,0 +1,1479 @@
+{
+  "report_type": "Comparable whole-grid metrics; no mission safety ranking",
+  "all_three_sites_processed": true,
+  "sites": [
+    {
+      "site_id": "Site04",
+      "site_name": "Shackleton rim",
+      "status": "PROCESSED",
+      "error": null,
+      "grid": {
+        "coordinate_system": "Lunar South-Polar Stereographic",
+        "reference_frame": "MOON_ME associated with DE421 ephemeris",
+        "semi_major_axis_m": 1737400.0,
+        "origin_latitude": -90.0,
+        "central_meridian": 0.0,
+        "linear_units": "metre",
+        "grid_resolution_m": [
+          5.0,
+          5.0
+        ],
+        "bounds": [
+          -9000.0,
+          -15000.0,
+          7000.0,
+          1000.0
+        ],
+        "transform": [
+          5.0,
+          0.0,
+          -9000.0,
+          0.0,
+          -5.0,
+          1000.0
+        ],
+        "width": 3200,
+        "height": 3200
+      },
+      "elevation": {
+        "total_pixels": 10240000,
+        "valid_pixels": 10240000,
+        "invalid_pixels": 0,
+        "coverage_percentage": 100.0,
+        "statistics": {
+          "minimum_m": -2847.8772,
+          "maximum_m": 1805.0726,
+          "range_m": 4652.9498,
+          "mean_m": 245.3438,
+          "std_dev_m": 1246.3163,
+          "median_m": 668.1879,
+          "percentiles_m": {
+            "p01": -2735.6899,
+            "p05": -2428.6751,
+            "p25": -482.8885,
+            "p75": 1250.5992,
+            "p95": 1582.9215,
+            "p99": 1685.4905
+          },
+          "interquartile_range_m": 1733.4877
+        },
+        "hypsometric_distribution": {
+          "bin_count": 30,
+          "bins": [
+            {
+              "bin_index": 0,
+              "range_m": [
+                -2847.88,
+                -2692.78
+              ],
+              "pixel_count": 188031,
+              "percentage": 1.8362
+            },
+            {
+              "bin_index": 1,
+              "range_m": [
+                -2692.78,
+                -2537.68
+              ],
+              "pixel_count": 205566,
+              "percentage": 2.0075
+            },
+            {
+              "bin_index": 2,
+              "range_m": [
+                -2537.68,
+                -2382.58
+              ],
+              "pixel_count": 165356,
+              "percentage": 1.6148
+            },
+            {
+              "bin_index": 3,
+              "range_m": [
+                -2382.58,
+                -2227.48
+              ],
+              "pixel_count": 139431,
+              "percentage": 1.3616
+            },
+            {
+              "bin_index": 4,
+              "range_m": [
+                -2227.48,
+                -2072.39
+              ],
+              "pixel_count": 135938,
+              "percentage": 1.3275
+            },
+            {
+              "bin_index": 5,
+              "range_m": [
+                -2072.39,
+                -1917.29
+              ],
+              "pixel_count": 139976,
+              "percentage": 1.367
+            },
+            {
+              "bin_index": 6,
+              "range_m": [
+                -1917.29,
+                -1762.19
+              ],
+              "pixel_count": 145495,
+              "percentage": 1.4208
+            },
+            {
+              "bin_index": 7,
+              "range_m": [
+                -1762.19,
+                -1607.09
+              ],
+              "pixel_count": 151179,
+              "percentage": 1.4764
+            },
+            {
+              "bin_index": 8,
+              "range_m": [
+                -1607.09,
+                -1451.99
+              ],
+              "pixel_count": 157585,
+              "percentage": 1.5389
+            },
+            {
+              "bin_index": 9,
+              "range_m": [
+                -1451.99,
+                -1296.89
+              ],
+              "pixel_count": 164082,
+              "percentage": 1.6024
+            },
+            {
+              "bin_index": 10,
+              "range_m": [
+                -1296.89,
+                -1141.8
+              ],
+              "pixel_count": 170175,
+              "percentage": 1.6619
+            },
+            {
+              "bin_index": 11,
+              "range_m": [
+                -1141.8,
+                -986.7
+              ],
+              "pixel_count": 176802,
+              "percentage": 1.7266
+            },
+            {
+              "bin_index": 12,
+              "range_m": [
+                -986.7,
+                -831.6
+              ],
+              "pixel_count": 183076,
+              "percentage": 1.7879
+            },
+            {
+              "bin_index": 13,
+              "range_m": [
+                -831.6,
+                -676.5
+              ],
+              "pixel_count": 189751,
+              "percentage": 1.853
+            },
+            {
+              "bin_index": 14,
+              "range_m": [
+                -676.5,
+                -521.4
+              ],
+              "pixel_count": 197443,
+              "percentage": 1.9282
+            },
+            {
+              "bin_index": 15,
+              "range_m": [
+                -521.4,
+                -366.3
+              ],
+              "pixel_count": 203959,
+              "percentage": 1.9918
+            },
+            {
+              "bin_index": 16,
+              "range_m": [
+                -366.3,
+                -211.21
+              ],
+              "pixel_count": 223316,
+              "percentage": 2.1808
+            },
+            {
+              "bin_index": 17,
+              "range_m": [
+                -211.21,
+                -56.11
+              ],
+              "pixel_count": 316518,
+              "percentage": 3.091
+            },
+            {
+              "bin_index": 18,
+              "range_m": [
+                -56.11,
+                98.99
+              ],
+              "pixel_count": 347586,
+              "percentage": 3.3944
+            },
+            {
+              "bin_index": 19,
+              "range_m": [
+                98.99,
+                254.09
+              ],
+              "pixel_count": 357191,
+              "percentage": 3.4882
+            },
+            {
+              "bin_index": 20,
+              "range_m": [
+                254.09,
+                409.19
+              ],
+              "pixel_count": 380040,
+              "percentage": 3.7113
+            },
+            {
+              "bin_index": 21,
+              "range_m": [
+                409.19,
+                564.29
+              ],
+              "pixel_count": 414537,
+              "percentage": 4.0482
+            },
+            {
+              "bin_index": 22,
+              "range_m": [
+                564.29,
+                719.38
+              ],
+              "pixel_count": 600411,
+              "percentage": 5.8634
+            },
+            {
+              "bin_index": 23,
+              "range_m": [
+                719.38,
+                874.48
+              ],
+              "pixel_count": 578364,
+              "percentage": 5.6481
+            },
+            {
+              "bin_index": 24,
+              "range_m": [
+                874.48,
+                1029.58
+              ],
+              "pixel_count": 524024,
+              "percentage": 5.1174
+            },
+            {
+              "bin_index": 25,
+              "range_m": [
+                1029.58,
+                1184.68
+              ],
+              "pixel_count": 724212,
+              "percentage": 7.0724
+            },
+            {
+              "bin_index": 26,
+              "range_m": [
+                1184.68,
+                1339.78
+              ],
+              "pixel_count": 1194089,
+              "percentage": 11.661
+            },
+            {
+              "bin_index": 27,
+              "range_m": [
+                1339.78,
+                1494.88
+              ],
+              "pixel_count": 922575,
+              "percentage": 9.0095
+            },
+            {
+              "bin_index": 28,
+              "range_m": [
+                1494.88,
+                1649.97
+              ],
+              "pixel_count": 722453,
+              "percentage": 7.0552
+            },
+            {
+              "bin_index": 29,
+              "range_m": [
+                1649.97,
+                1805.07
+              ],
+              "pixel_count": 220839,
+              "percentage": 2.1566
+            }
+          ]
+        }
+      },
+      "slope_comparison": {
+        "primary_method": "zevenbergen_thorne_central_difference",
+        "alternative_method_evaluated": "horn_1981_weighted",
+        "zevenbergen_thorne_vs_nasa_supplied": {
+          "comparison_coverage": {
+            "valid_comparison_pixels": 10240000,
+            "total_pixels": 10240000,
+            "coverage_percentage": 100.0
+          },
+          "metrics_deg": {
+            "bias_mean_error": -0.000581,
+            "mean_absolute_error_mae": 0.001155,
+            "root_mean_square_error_rmse": 0.065393,
+            "median_absolute_error_medae": 0.000103,
+            "max_absolute_error": 25.878507,
+            "std_dev_of_difference": 0.06539,
+            "difference_quantiles": {
+              "p05": -0.000395,
+              "p25": -0.000105,
+              "median_p50": 0.0,
+              "p75": 0.000103,
+              "p95": 0.000392
+            }
+          },
+          "match_quality": "DIFFERENCES_MEASURED",
+          "investigation_and_findings": "Across 10,240,000 compared pixels, the MAE is 0.00115493 deg, RMSE is 0.0653926 deg, median absolute error is 0.000102997 deg, and maximum absolute error is 25.8785 deg."
+        },
+        "horn_vs_nasa_supplied": {
+          "comparison_coverage": {
+            "valid_comparison_pixels": 10240000,
+            "total_pixels": 10240000,
+            "coverage_percentage": 100.0
+          },
+          "metrics_deg": {
+            "bias_mean_error": -0.020956,
+            "mean_absolute_error_mae": 0.253064,
+            "root_mean_square_error_rmse": 0.469442,
+            "median_absolute_error_medae": 0.118174,
+            "max_absolute_error": 25.878507,
+            "std_dev_of_difference": 0.468974,
+            "difference_quantiles": {
+              "p05": -0.69449,
+              "p25": -0.128244,
+              "median_p50": -0.002592,
+              "p75": 0.109064,
+              "p95": 0.581814
+            }
+          },
+          "match_quality": "DIFFERENCES_MEASURED",
+          "investigation_and_findings": "Across 10,240,000 compared pixels, the MAE is 0.253064 deg, RMSE is 0.469442 deg, median absolute error is 0.118174 deg, and maximum absolute error is 25.8785 deg."
+        }
+      },
+      "roughness": {
+        "scale_classification": "provisional_analytical_scales",
+        "qualification_status": "provisional_analytical_scales_unsupported_by_specific_mission_hardware_dimensions",
+        "scale_justifications": {
+          "small_15m": "Provisional analytical micro-scale (3x3 pixels / 15m span): captures short-baseline elevation variability and local breaks-of-slope without certified vehicle wheel/chassis constraints.",
+          "medium_35m": "Provisional analytical meso-scale (7x7 pixels / 35m span): captures intermediate crater relief and touchdown-scale topographic variation without certified lander gear constraints.",
+          "large_75m": "Provisional analytical macro-scale (15x15 pixels / 75m span): captures regional undulating relief and mesoscale crater rim texture."
+        },
+        "scales": {
+          "small": {
+            "scale_key": "small",
+            "scale_classification": "provisional_analytical_scale",
+            "scale_qualification_note": "Designated as a provisional analytical scale. Certified vehicle or lander dimensions are not yet integrated into the repository configuration.",
+            "nominal_scale_m": 15.0,
+            "effective_scale_m": 15.0,
+            "window_size_pixels": 3,
+            "window_shape": [
+              3,
+              3
+            ],
+            "window_centering": "symmetrically_centred_on_focal_pixel",
+            "edge_mode": "valid_only",
+            "ddof": 1,
+            "min_samples": 2,
+            "metric": "unbiased_sample_elevation_standard_deviation_ddof1",
+            "units": "metre",
+            "statistics": {
+              "minimum_m": 0.0039,
+              "maximum_m": 9.5068,
+              "mean_m": 1.6961,
+              "std_dev_m": 0.8872,
+              "median_m": 1.6284
+            }
+          },
+          "medium": {
+            "scale_key": "medium",
+            "scale_classification": "provisional_analytical_scale",
+            "scale_qualification_note": "Designated as a provisional analytical scale. Certified vehicle or lander dimensions are not yet integrated into the repository configuration.",
+            "nominal_scale_m": 35.0,
+            "effective_scale_m": 35.0,
+            "window_size_pixels": 7,
+            "window_shape": [
+              7,
+              7
+            ],
+            "window_centering": "symmetrically_centred_on_focal_pixel",
+            "edge_mode": "valid_only",
+            "ddof": 1,
+            "min_samples": 2,
+            "metric": "unbiased_sample_elevation_standard_deviation_ddof1",
+            "units": "metre",
+            "statistics": {
+              "minimum_m": 0.0498,
+              "maximum_m": 11.3246,
+              "mean_m": 3.9364,
+              "std_dev_m": 2.0324,
+              "median_m": 3.7735
+            }
+          },
+          "large": {
+            "scale_key": "large",
+            "scale_classification": "provisional_analytical_scale",
+            "scale_qualification_note": "Designated as a provisional analytical scale. Certified vehicle or lander dimensions are not yet integrated into the repository configuration.",
+            "nominal_scale_m": 75.0,
+            "effective_scale_m": 75.0,
+            "window_size_pixels": 15,
+            "window_shape": [
+              15,
+              15
+            ],
+            "window_centering": "symmetrically_centred_on_focal_pixel",
+            "edge_mode": "valid_only",
+            "ddof": 1,
+            "min_samples": 2,
+            "metric": "unbiased_sample_elevation_standard_deviation_ddof1",
+            "units": "metre",
+            "statistics": {
+              "minimum_m": 0.1296,
+              "maximum_m": 17.6085,
+              "mean_m": 8.395,
+              "std_dev_m": 4.3209,
+              "median_m": 8.0241
+            }
+          }
+        }
+      },
+      "observations": {
+        "total_pixels": 10240000,
+        "interpolated_cells_ldec_zero": 9302619,
+        "interpolated_percentage": 90.8459,
+        "direct_observation_cells_ldec_positive": 937381,
+        "direct_observation_percentage": 9.1541,
+        "missing_invalid_ldec_cells": 0
+      },
+      "hazard_counts": {
+        "UNKNOWN": 329429,
+        "LOW": 32296,
+        "MODERATE": 1730510,
+        "HIGH": 8147765
+      },
+      "hazard_percentages": {
+        "UNKNOWN": 3.2171,
+        "LOW": 0.3154,
+        "MODERATE": 16.8995,
+        "HIGH": 79.568
+      },
+      "elapsed_seconds": 71.581
+    },
+    {
+      "site_id": "Site11",
+      "site_name": "de Gerlache rim",
+      "status": "PROCESSED",
+      "error": null,
+      "grid": {
+        "coordinate_system": "Lunar South-Polar Stereographic",
+        "reference_frame": "MOON_ME associated with DE421 ephemeris",
+        "semi_major_axis_m": 1737400.0,
+        "origin_latitude": -90.0,
+        "central_meridian": 0.0,
+        "linear_units": "metre",
+        "grid_resolution_m": [
+          5.0,
+          5.0
+        ],
+        "bounds": [
+          -45000.0,
+          7000.0,
+          -29000.0,
+          23000.0
+        ],
+        "transform": [
+          5.0,
+          0.0,
+          -45000.0,
+          0.0,
+          -5.0,
+          23000.0
+        ],
+        "width": 3200,
+        "height": 3200
+      },
+      "elevation": {
+        "total_pixels": 10240000,
+        "valid_pixels": 10240000,
+        "invalid_pixels": 0,
+        "coverage_percentage": 100.0,
+        "statistics": {
+          "minimum_m": -805.1648,
+          "maximum_m": 1815.9869,
+          "range_m": 2621.1517,
+          "mean_m": 639.289,
+          "std_dev_m": 579.5694,
+          "median_m": 694.3688,
+          "percentiles_m": {
+            "p01": -634.8005,
+            "p05": -346.1551,
+            "p25": 199.0826,
+            "p75": 1044.236,
+            "p95": 1559.7167,
+            "p99": 1743.1542
+          },
+          "interquartile_range_m": 845.1534
+        },
+        "hypsometric_distribution": {
+          "bin_count": 30,
+          "bins": [
+            {
+              "bin_index": 0,
+              "range_m": [
+                -805.16,
+                -717.79
+              ],
+              "pixel_count": 50479,
+              "percentage": 0.493
+            },
+            {
+              "bin_index": 1,
+              "range_m": [
+                -717.79,
+                -630.42
+              ],
+              "pixel_count": 54994,
+              "percentage": 0.5371
+            },
+            {
+              "bin_index": 2,
+              "range_m": [
+                -630.42,
+                -543.05
+              ],
+              "pixel_count": 79289,
+              "percentage": 0.7743
+            },
+            {
+              "bin_index": 3,
+              "range_m": [
+                -543.05,
+                -455.68
+              ],
+              "pixel_count": 105333,
+              "percentage": 1.0286
+            },
+            {
+              "bin_index": 4,
+              "range_m": [
+                -455.68,
+                -368.31
+              ],
+              "pixel_count": 169245,
+              "percentage": 1.6528
+            },
+            {
+              "bin_index": 5,
+              "range_m": [
+                -368.31,
+                -280.93
+              ],
+              "pixel_count": 230602,
+              "percentage": 2.252
+            },
+            {
+              "bin_index": 6,
+              "range_m": [
+                -280.93,
+                -193.56
+              ],
+              "pixel_count": 269522,
+              "percentage": 2.6321
+            },
+            {
+              "bin_index": 7,
+              "range_m": [
+                -193.56,
+                -106.19
+              ],
+              "pixel_count": 302449,
+              "percentage": 2.9536
+            },
+            {
+              "bin_index": 8,
+              "range_m": [
+                -106.19,
+                -18.82
+              ],
+              "pixel_count": 274710,
+              "percentage": 2.6827
+            },
+            {
+              "bin_index": 9,
+              "range_m": [
+                -18.82,
+                68.55
+              ],
+              "pixel_count": 343989,
+              "percentage": 3.3593
+            },
+            {
+              "bin_index": 10,
+              "range_m": [
+                68.55,
+                155.92
+              ],
+              "pixel_count": 464335,
+              "percentage": 4.5345
+            },
+            {
+              "bin_index": 11,
+              "range_m": [
+                155.92,
+                243.3
+              ],
+              "pixel_count": 422456,
+              "percentage": 4.1255
+            },
+            {
+              "bin_index": 12,
+              "range_m": [
+                243.3,
+                330.67
+              ],
+              "pixel_count": 399286,
+              "percentage": 3.8993
+            },
+            {
+              "bin_index": 13,
+              "range_m": [
+                330.67,
+                418.04
+              ],
+              "pixel_count": 464068,
+              "percentage": 4.5319
+            },
+            {
+              "bin_index": 14,
+              "range_m": [
+                418.04,
+                505.41
+              ],
+              "pixel_count": 462151,
+              "percentage": 4.5132
+            },
+            {
+              "bin_index": 15,
+              "range_m": [
+                505.41,
+                592.78
+              ],
+              "pixel_count": 491270,
+              "percentage": 4.7976
+            },
+            {
+              "bin_index": 16,
+              "range_m": [
+                592.78,
+                680.15
+              ],
+              "pixel_count": 457818,
+              "percentage": 4.4709
+            },
+            {
+              "bin_index": 17,
+              "range_m": [
+                680.15,
+                767.53
+              ],
+              "pixel_count": 526671,
+              "percentage": 5.1433
+            },
+            {
+              "bin_index": 18,
+              "range_m": [
+                767.53,
+                854.9
+              ],
+              "pixel_count": 665529,
+              "percentage": 6.4993
+            },
+            {
+              "bin_index": 19,
+              "range_m": [
+                854.9,
+                942.27
+              ],
+              "pixel_count": 747248,
+              "percentage": 7.2973
+            },
+            {
+              "bin_index": 20,
+              "range_m": [
+                942.27,
+                1029.64
+              ],
+              "pixel_count": 599725,
+              "percentage": 5.8567
+            },
+            {
+              "bin_index": 21,
+              "range_m": [
+                1029.64,
+                1117.01
+              ],
+              "pixel_count": 447301,
+              "percentage": 4.3682
+            },
+            {
+              "bin_index": 22,
+              "range_m": [
+                1117.01,
+                1204.38
+              ],
+              "pixel_count": 374034,
+              "percentage": 3.6527
+            },
+            {
+              "bin_index": 23,
+              "range_m": [
+                1204.38,
+                1291.76
+              ],
+              "pixel_count": 348022,
+              "percentage": 3.3987
+            },
+            {
+              "bin_index": 24,
+              "range_m": [
+                1291.76,
+                1379.13
+              ],
+              "pixel_count": 330184,
+              "percentage": 3.2245
+            },
+            {
+              "bin_index": 25,
+              "range_m": [
+                1379.13,
+                1466.5
+              ],
+              "pixel_count": 311992,
+              "percentage": 3.0468
+            },
+            {
+              "bin_index": 26,
+              "range_m": [
+                1466.5,
+                1553.87
+              ],
+              "pixel_count": 317287,
+              "percentage": 3.0985
+            },
+            {
+              "bin_index": 27,
+              "range_m": [
+                1553.87,
+                1641.24
+              ],
+              "pixel_count": 207320,
+              "percentage": 2.0246
+            },
+            {
+              "bin_index": 28,
+              "range_m": [
+                1641.24,
+                1728.62
+              ],
+              "pixel_count": 180822,
+              "percentage": 1.7658
+            },
+            {
+              "bin_index": 29,
+              "range_m": [
+                1728.62,
+                1815.99
+              ],
+              "pixel_count": 141869,
+              "percentage": 1.3854
+            }
+          ]
+        }
+      },
+      "slope_comparison": {
+        "primary_method": "zevenbergen_thorne_central_difference",
+        "alternative_method_evaluated": "horn_1981_weighted",
+        "zevenbergen_thorne_vs_nasa_supplied": {
+          "comparison_coverage": {
+            "valid_comparison_pixels": 10240000,
+            "total_pixels": 10240000,
+            "coverage_percentage": 100.0
+          },
+          "metrics_deg": {
+            "bias_mean_error": -2.8e-05,
+            "mean_absolute_error_mae": 0.000548,
+            "root_mean_square_error_rmse": 0.038245,
+            "median_absolute_error_medae": 6.8e-05,
+            "max_absolute_error": 20.866463,
+            "std_dev_of_difference": 0.038245,
+            "difference_quantiles": {
+              "p05": -0.000271,
+              "p25": -6.9e-05,
+              "median_p50": 0.0,
+              "p75": 6.8e-05,
+              "p95": 0.000271
+            }
+          },
+          "match_quality": "DIFFERENCES_MEASURED",
+          "investigation_and_findings": "Across 10,240,000 compared pixels, the MAE is 0.000547885 deg, RMSE is 0.0382447 deg, median absolute error is 6.81877e-05 deg, and maximum absolute error is 20.8665 deg."
+        },
+        "horn_vs_nasa_supplied": {
+          "comparison_coverage": {
+            "valid_comparison_pixels": 10240000,
+            "total_pixels": 10240000,
+            "coverage_percentage": 100.0
+          },
+          "metrics_deg": {
+            "bias_mean_error": -0.020526,
+            "mean_absolute_error_mae": 0.19651,
+            "root_mean_square_error_rmse": 0.374866,
+            "median_absolute_error_medae": 0.086715,
+            "max_absolute_error": 20.866463,
+            "std_dev_of_difference": 0.374304,
+            "difference_quantiles": {
+              "p05": -0.554782,
+              "p25": -0.094455,
+              "median_p50": -0.001746,
+              "p75": 0.079712,
+              "p95": 0.445453
+            }
+          },
+          "match_quality": "DIFFERENCES_MEASURED",
+          "investigation_and_findings": "Across 10,240,000 compared pixels, the MAE is 0.19651 deg, RMSE is 0.374866 deg, median absolute error is 0.0867152 deg, and maximum absolute error is 20.8665 deg."
+        }
+      },
+      "roughness": {
+        "scale_classification": "provisional_analytical_scales",
+        "qualification_status": "provisional_analytical_scales_unsupported_by_specific_mission_hardware_dimensions",
+        "scale_justifications": {
+          "small_15m": "Provisional analytical micro-scale (3x3 pixels / 15m span): captures short-baseline elevation variability and local breaks-of-slope without certified vehicle wheel/chassis constraints.",
+          "medium_35m": "Provisional analytical meso-scale (7x7 pixels / 35m span): captures intermediate crater relief and touchdown-scale topographic variation without certified lander gear constraints.",
+          "large_75m": "Provisional analytical macro-scale (15x15 pixels / 75m span): captures regional undulating relief and mesoscale crater rim texture."
+        },
+        "scales": {
+          "small": {
+            "scale_key": "small",
+            "scale_classification": "provisional_analytical_scale",
+            "scale_qualification_note": "Designated as a provisional analytical scale. Certified vehicle or lander dimensions are not yet integrated into the repository configuration.",
+            "nominal_scale_m": 15.0,
+            "effective_scale_m": 15.0,
+            "window_size_pixels": 3,
+            "window_shape": [
+              3,
+              3
+            ],
+            "window_centering": "symmetrically_centred_on_focal_pixel",
+            "edge_mode": "valid_only",
+            "ddof": 1,
+            "min_samples": 2,
+            "metric": "unbiased_sample_elevation_standard_deviation_ddof1",
+            "units": "metre",
+            "statistics": {
+              "minimum_m": 0.0045,
+              "maximum_m": 7.275,
+              "mean_m": 1.1258,
+              "std_dev_m": 0.4586,
+              "median_m": 1.1142
+            }
+          },
+          "medium": {
+            "scale_key": "medium",
+            "scale_classification": "provisional_analytical_scale",
+            "scale_qualification_note": "Designated as a provisional analytical scale. Certified vehicle or lander dimensions are not yet integrated into the repository configuration.",
+            "nominal_scale_m": 35.0,
+            "effective_scale_m": 35.0,
+            "window_size_pixels": 7,
+            "window_shape": [
+              7,
+              7
+            ],
+            "window_centering": "symmetrically_centred_on_focal_pixel",
+            "edge_mode": "valid_only",
+            "ddof": 1,
+            "min_samples": 2,
+            "metric": "unbiased_sample_elevation_standard_deviation_ddof1",
+            "units": "metre",
+            "statistics": {
+              "minimum_m": 0.0414,
+              "maximum_m": 9.6852,
+              "mean_m": 2.6102,
+              "std_dev_m": 1.0323,
+              "median_m": 2.5991
+            }
+          },
+          "large": {
+            "scale_key": "large",
+            "scale_classification": "provisional_analytical_scale",
+            "scale_qualification_note": "Designated as a provisional analytical scale. Certified vehicle or lander dimensions are not yet integrated into the repository configuration.",
+            "nominal_scale_m": 75.0,
+            "effective_scale_m": 75.0,
+            "window_size_pixels": 15,
+            "window_shape": [
+              15,
+              15
+            ],
+            "window_centering": "symmetrically_centred_on_focal_pixel",
+            "edge_mode": "valid_only",
+            "ddof": 1,
+            "min_samples": 2,
+            "metric": "unbiased_sample_elevation_standard_deviation_ddof1",
+            "units": "metre",
+            "statistics": {
+              "minimum_m": 0.1049,
+              "maximum_m": 14.4625,
+              "mean_m": 5.5595,
+              "std_dev_m": 2.1617,
+              "median_m": 5.5518
+            }
+          }
+        }
+      },
+      "observations": {
+        "total_pixels": 10240000,
+        "interpolated_cells_ldec_zero": 9406690,
+        "interpolated_percentage": 91.8622,
+        "direct_observation_cells_ldec_positive": 833310,
+        "direct_observation_percentage": 8.1378,
+        "missing_invalid_ldec_cells": 0
+      },
+      "hazard_counts": {
+        "UNKNOWN": 379067,
+        "LOW": 18570,
+        "MODERATE": 2078782,
+        "HIGH": 7763581
+      },
+      "hazard_percentages": {
+        "UNKNOWN": 3.7018,
+        "LOW": 0.1813,
+        "MODERATE": 20.3006,
+        "HIGH": 75.8162
+      },
+      "elapsed_seconds": 60.289
+    },
+    {
+      "site_id": "Site23",
+      "site_name": "Malapert massif",
+      "status": "PROCESSED",
+      "error": null,
+      "grid": {
+        "coordinate_system": "Lunar South-Polar Stereographic",
+        "reference_frame": "MOON_ME associated with DE421 ephemeris",
+        "semi_major_axis_m": 1737400.0,
+        "origin_latitude": -90.0,
+        "central_meridian": 0.0,
+        "linear_units": "metre",
+        "grid_resolution_m": [
+          5.0,
+          5.0
+        ],
+        "bounds": [
+          -11000.0,
+          111000.0,
+          10000.0,
+          132000.0
+        ],
+        "transform": [
+          5.0,
+          0.0,
+          -11000.0,
+          0.0,
+          -5.0,
+          132000.0
+        ],
+        "width": 4200,
+        "height": 4200
+      },
+      "elevation": {
+        "total_pixels": 17640000,
+        "valid_pixels": 17640000,
+        "invalid_pixels": 0,
+        "coverage_percentage": 100.0,
+        "statistics": {
+          "minimum_m": 901.9911,
+          "maximum_m": 5173.563,
+          "range_m": 4271.5719,
+          "mean_m": 3534.9815,
+          "std_dev_m": 1026.2408,
+          "median_m": 3618.438,
+          "percentiles_m": {
+            "p01": 1303.8013,
+            "p05": 1811.1507,
+            "p25": 2708.6497,
+            "p75": 4458.5269,
+            "p95": 4940.9956,
+            "p99": 5107.002
+          },
+          "interquartile_range_m": 1749.8772
+        },
+        "hypsometric_distribution": {
+          "bin_count": 30,
+          "bins": [
+            {
+              "bin_index": 0,
+              "range_m": [
+                901.99,
+                1044.38
+              ],
+              "pixel_count": 37181,
+              "percentage": 0.2108
+            },
+            {
+              "bin_index": 1,
+              "range_m": [
+                1044.38,
+                1186.76
+              ],
+              "pixel_count": 66425,
+              "percentage": 0.3766
+            },
+            {
+              "bin_index": 2,
+              "range_m": [
+                1186.76,
+                1329.15
+              ],
+              "pixel_count": 90145,
+              "percentage": 0.511
+            },
+            {
+              "bin_index": 3,
+              "range_m": [
+                1329.15,
+                1471.53
+              ],
+              "pixel_count": 113116,
+              "percentage": 0.6412
+            },
+            {
+              "bin_index": 4,
+              "range_m": [
+                1471.53,
+                1613.92
+              ],
+              "pixel_count": 183878,
+              "percentage": 1.0424
+            },
+            {
+              "bin_index": 5,
+              "range_m": [
+                1613.92,
+                1756.31
+              ],
+              "pixel_count": 265051,
+              "percentage": 1.5026
+            },
+            {
+              "bin_index": 6,
+              "range_m": [
+                1756.31,
+                1898.69
+              ],
+              "pixel_count": 437168,
+              "percentage": 2.4783
+            },
+            {
+              "bin_index": 7,
+              "range_m": [
+                1898.69,
+                2041.08
+              ],
+              "pixel_count": 484162,
+              "percentage": 2.7447
+            },
+            {
+              "bin_index": 8,
+              "range_m": [
+                2041.08,
+                2183.46
+              ],
+              "pixel_count": 441489,
+              "percentage": 2.5028
+            },
+            {
+              "bin_index": 9,
+              "range_m": [
+                2183.46,
+                2325.85
+              ],
+              "pixel_count": 441871,
+              "percentage": 2.5049
+            },
+            {
+              "bin_index": 10,
+              "range_m": [
+                2325.85,
+                2468.23
+              ],
+              "pixel_count": 599727,
+              "percentage": 3.3998
+            },
+            {
+              "bin_index": 11,
+              "range_m": [
+                2468.23,
+                2610.62
+              ],
+              "pixel_count": 666169,
+              "percentage": 3.7765
+            },
+            {
+              "bin_index": 12,
+              "range_m": [
+                2610.62,
+                2753.01
+              ],
+              "pixel_count": 808564,
+              "percentage": 4.5837
+            },
+            {
+              "bin_index": 13,
+              "range_m": [
+                2753.01,
+                2895.39
+              ],
+              "pixel_count": 753082,
+              "percentage": 4.2692
+            },
+            {
+              "bin_index": 14,
+              "range_m": [
+                2895.39,
+                3037.78
+              ],
+              "pixel_count": 760274,
+              "percentage": 4.3099
+            },
+            {
+              "bin_index": 15,
+              "range_m": [
+                3037.78,
+                3180.16
+              ],
+              "pixel_count": 681233,
+              "percentage": 3.8619
+            },
+            {
+              "bin_index": 16,
+              "range_m": [
+                3180.16,
+                3322.55
+              ],
+              "pixel_count": 651191,
+              "percentage": 3.6916
+            },
+            {
+              "bin_index": 17,
+              "range_m": [
+                3322.55,
+                3464.93
+              ],
+              "pixel_count": 646129,
+              "percentage": 3.6629
+            },
+            {
+              "bin_index": 18,
+              "range_m": [
+                3464.93,
+                3607.32
+              ],
+              "pixel_count": 643802,
+              "percentage": 3.6497
+            },
+            {
+              "bin_index": 19,
+              "range_m": [
+                3607.32,
+                3749.71
+              ],
+              "pixel_count": 640460,
+              "percentage": 3.6307
+            },
+            {
+              "bin_index": 20,
+              "range_m": [
+                3749.71,
+                3892.09
+              ],
+              "pixel_count": 672401,
+              "percentage": 3.8118
+            },
+            {
+              "bin_index": 21,
+              "range_m": [
+                3892.09,
+                4034.48
+              ],
+              "pixel_count": 700329,
+              "percentage": 3.9701
+            },
+            {
+              "bin_index": 22,
+              "range_m": [
+                4034.48,
+                4176.86
+              ],
+              "pixel_count": 734426,
+              "percentage": 4.1634
+            },
+            {
+              "bin_index": 23,
+              "range_m": [
+                4176.86,
+                4319.25
+              ],
+              "pixel_count": 808462,
+              "percentage": 4.5831
+            },
+            {
+              "bin_index": 24,
+              "range_m": [
+                4319.25,
+                4461.63
+              ],
+              "pixel_count": 924163,
+              "percentage": 5.239
+            },
+            {
+              "bin_index": 25,
+              "range_m": [
+                4461.63,
+                4604.02
+              ],
+              "pixel_count": 950316,
+              "percentage": 5.3873
+            },
+            {
+              "bin_index": 26,
+              "range_m": [
+                4604.02,
+                4746.41
+              ],
+              "pixel_count": 1071267,
+              "percentage": 6.0729
+            },
+            {
+              "bin_index": 27,
+              "range_m": [
+                4746.41,
+                4888.79
+              ],
+              "pixel_count": 1148606,
+              "percentage": 6.5114
+            },
+            {
+              "bin_index": 28,
+              "range_m": [
+                4888.79,
+                5031.18
+              ],
+              "pixel_count": 717799,
+              "percentage": 4.0692
+            },
+            {
+              "bin_index": 29,
+              "range_m": [
+                5031.18,
+                5173.56
+              ],
+              "pixel_count": 501114,
+              "percentage": 2.8408
+            }
+          ]
+        }
+      },
+      "slope_comparison": {
+        "primary_method": "zevenbergen_thorne_central_difference",
+        "alternative_method_evaluated": "horn_1981_weighted",
+        "zevenbergen_thorne_vs_nasa_supplied": {
+          "comparison_coverage": {
+            "valid_comparison_pixels": 17640000,
+            "total_pixels": 17640000,
+            "coverage_percentage": 100.0
+          },
+          "metrics_deg": {
+            "bias_mean_error": -0.000233,
+            "mean_absolute_error_mae": 0.001128,
+            "root_mean_square_error_rmse": 0.053625,
+            "median_absolute_error_medae": 0.000418,
+            "max_absolute_error": 24.564617,
+            "std_dev_of_difference": 0.053624,
+            "difference_quantiles": {
+              "p05": -0.001249,
+              "p25": -0.000418,
+              "median_p50": -1e-06,
+              "p75": 0.000418,
+              "p95": 0.001249
+            }
+          },
+          "match_quality": "DIFFERENCES_MEASURED",
+          "investigation_and_findings": "Across 17,640,000 compared pixels, the MAE is 0.00112818 deg, RMSE is 0.0536249 deg, median absolute error is 0.000417709 deg, and maximum absolute error is 24.5646 deg."
+        },
+        "horn_vs_nasa_supplied": {
+          "comparison_coverage": {
+            "valid_comparison_pixels": 17640000,
+            "total_pixels": 17640000,
+            "coverage_percentage": 100.0
+          },
+          "metrics_deg": {
+            "bias_mean_error": -0.029952,
+            "mean_absolute_error_mae": 0.269866,
+            "root_mean_square_error_rmse": 0.511661,
+            "median_absolute_error_medae": 0.119871,
+            "max_absolute_error": 26.465573,
+            "std_dev_of_difference": 0.510783,
+            "difference_quantiles": {
+              "p05": -0.766798,
+              "p25": -0.134758,
+              "median_p50": -0.003984,
+              "p75": 0.106516,
+              "p95": 0.613428
+            }
+          },
+          "match_quality": "DIFFERENCES_MEASURED",
+          "investigation_and_findings": "Across 17,640,000 compared pixels, the MAE is 0.269866 deg, RMSE is 0.511661 deg, median absolute error is 0.119871 deg, and maximum absolute error is 26.4656 deg."
+        }
+      },
+      "roughness": {
+        "scale_classification": "provisional_analytical_scales",
+        "qualification_status": "provisional_analytical_scales_unsupported_by_specific_mission_hardware_dimensions",
+        "scale_justifications": {
+          "small_15m": "Provisional analytical micro-scale (3x3 pixels / 15m span): captures short-baseline elevation variability and local breaks-of-slope without certified vehicle wheel/chassis constraints.",
+          "medium_35m": "Provisional analytical meso-scale (7x7 pixels / 35m span): captures intermediate crater relief and touchdown-scale topographic variation without certified lander gear constraints.",
+          "large_75m": "Provisional analytical macro-scale (15x15 pixels / 75m span): captures regional undulating relief and mesoscale crater rim texture."
+        },
+        "scales": {
+          "small": {
+            "scale_key": "small",
+            "scale_classification": "provisional_analytical_scale",
+            "scale_qualification_note": "Designated as a provisional analytical scale. Certified vehicle or lander dimensions are not yet integrated into the repository configuration.",
+            "nominal_scale_m": 15.0,
+            "effective_scale_m": 15.0,
+            "window_size_pixels": 3,
+            "window_shape": [
+              3,
+              3
+            ],
+            "window_centering": "symmetrically_centred_on_focal_pixel",
+            "edge_mode": "valid_only",
+            "ddof": 1,
+            "min_samples": 2,
+            "metric": "unbiased_sample_elevation_standard_deviation_ddof1",
+            "units": "metre",
+            "statistics": {
+              "minimum_m": 0.0066,
+              "maximum_m": 17.7222,
+              "mean_m": 1.3829,
+              "std_dev_m": 0.5788,
+              "median_m": 1.4015
+            }
+          },
+          "medium": {
+            "scale_key": "medium",
+            "scale_classification": "provisional_analytical_scale",
+            "scale_qualification_note": "Designated as a provisional analytical scale. Certified vehicle or lander dimensions are not yet integrated into the repository configuration.",
+            "nominal_scale_m": 35.0,
+            "effective_scale_m": 35.0,
+            "window_size_pixels": 7,
+            "window_shape": [
+              7,
+              7
+            ],
+            "window_centering": "symmetrically_centred_on_focal_pixel",
+            "edge_mode": "valid_only",
+            "ddof": 1,
+            "min_samples": 2,
+            "metric": "unbiased_sample_elevation_standard_deviation_ddof1",
+            "units": "metre",
+            "statistics": {
+              "minimum_m": 0.0497,
+              "maximum_m": 19.9029,
+              "mean_m": 3.2007,
+              "std_dev_m": 1.2996,
+              "median_m": 3.2676
+            }
+          },
+          "large": {
+            "scale_key": "large",
+            "scale_classification": "provisional_analytical_scale",
+            "scale_qualification_note": "Designated as a provisional analytical scale. Certified vehicle or lander dimensions are not yet integrated into the repository configuration.",
+            "nominal_scale_m": 75.0,
+            "effective_scale_m": 75.0,
+            "window_size_pixels": 15,
+            "window_shape": [
+              15,
+              15
+            ],
+            "window_centering": "symmetrically_centred_on_focal_pixel",
+            "edge_mode": "valid_only",
+            "ddof": 1,
+            "min_samples": 2,
+            "metric": "unbiased_sample_elevation_standard_deviation_ddof1",
+            "units": "metre",
+            "statistics": {
+              "minimum_m": 0.1476,
+              "maximum_m": 20.436,
+              "mean_m": 6.812,
+              "std_dev_m": 2.7412,
+              "median_m": 6.9685
+            }
+          }
+        }
+      },
+      "observations": {
+        "total_pixels": 17640000,
+        "interpolated_cells_ldec_zero": 15847725,
+        "interpolated_percentage": 89.8397,
+        "direct_observation_cells_ldec_positive": 1792275,
+        "direct_observation_percentage": 10.1603,
+        "missing_invalid_ldec_cells": 0
+      },
+      "hazard_counts": {
+        "UNKNOWN": 544909,
+        "LOW": 10774,
+        "MODERATE": 2595100,
+        "HIGH": 14489217
+      },
+      "hazard_percentages": {
+        "UNKNOWN": 3.0891,
+        "LOW": 0.0611,
+        "MODERATE": 14.7115,
+        "HIGH": 82.1384
+      },
+      "elapsed_seconds": 100.075
+    }
+  ]
+}

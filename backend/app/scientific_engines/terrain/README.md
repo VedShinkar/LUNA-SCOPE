@@ -31,3 +31,7 @@ Raw downloads are kept under `data/raw/terrain/` and are intentionally excluded 
 - Do not assume a DEM coordinate system is latitude/longitude. The PGDA products use south-polar stereographic X/Y coordinates in metres, in the MOON_ME frame associated with DE421.
 - Terrain hazard outputs are screening indicators, not certified landing-safety determinations.
 - Local horizon calculations must document observer height, azimuth convention, radial sampling, maximum distance, curvature treatment and DEM coverage.
+
+## Multi-site support
+
+`TerrainService.get_instance("Site11")` selects a catalog site; Site04 remains the default. `scripts/process_lola_sites.py` orchestrates the existing validation and computation functions for each configured site. Source association uses the acquisition manifest and derived grids preserve the site's own transform and lunar CRS. See `docs/PHASE5_IMPLEMENTATION.md` and `docs/api_terrain.md`.

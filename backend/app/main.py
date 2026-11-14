@@ -22,6 +22,6 @@ app.include_router(copilot_router)
 @app.get("/health")
 def health_check():
     return {
-        "status": "OK",
+        "status": "ok",
         "project": "LUNA-SCOPE"
     }

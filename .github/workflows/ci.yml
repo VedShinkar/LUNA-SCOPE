@@ -4,7 +4,9 @@ on:
   pull_request:
     branches: [main]
   push:
-    branches: [main]
+    branches:
+      - main
+      - feature/mission-intelligence
 
 permissions:
   contents: read
@@ -26,7 +28,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r backend/requirements.txt
-      - name: Run unit tests
+      - name: Run unit and integration tests
         env:
           PYTHONPATH: backend
-        run: pytest -q tests/unit
+        run: pytest -q tests/unit tests/integration

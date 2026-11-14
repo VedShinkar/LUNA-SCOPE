@@ -9,6 +9,13 @@ from pathlib import Path
 import numpy as np
 import pytest
 import rasterio
+from rasterio.crs import CRS
+
+# Lunar south‑polar stereographic CRS used by the synthetic fixtures.
+LUNAR_CRS = CRS.from_proj4(
+    "+proj=stere +lat_0=-90 +lat_ts=-90 +lon_0=0 +R=1737400 +units=m +no_defs +type=crs"
+)
+
 from rasterio.transform import from_origin
 
 from app.scientific_engines.terrain.hazards import CODE_TO_SEVERITY
@@ -34,7 +41,7 @@ def terrain_service(tmp_path: Path) -> TerrainService:
         "width": width,
         "count": 1,
         "dtype": "float32",
-        "crs": "EPSG:4326",
+        "crs": LUNAR_CRS,
         "transform": transform,
         "nodata": np.nan,
     }
@@ -83,6 +90,11 @@ def terrain_service(tmp_path: Path) -> TerrainService:
         "Site04_data_quality_screen.tif",
         np.ones((height, width), dtype=np.uint8),
     )
+    # Hazard classification rasters required by TerrainService
+    write_raster(processed_dir, "Site04_hazard_slope.tif", np.zeros((height, width), dtype=np.uint8))
+    write_raster(processed_dir, "Site04_hazard_roughness_small.tif", np.zeros((height, width), dtype=np.uint8))
+    write_raster(processed_dir, "Site04_hazard_roughness_medium.tif", np.zeros((height, width), dtype=np.uint8))
+    write_raster(processed_dir, "Site04_hazard_roughness_large.tif", np.zeros((height, width), dtype=np.uint8))
 
     service = TerrainService(
         raw_dir=raw_dir,

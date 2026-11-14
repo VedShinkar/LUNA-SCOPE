@@ -4,7 +4,10 @@ Tests for LUNA-SCOPE Mission Assessment.
 
 import pytest
 
-from app.mission.decision_engine.assessment import assess_mission
+from app.mission.decision_engine.assessment import (
+    assess_mission,
+    classify_provenance
+)
 from copy import deepcopy
 
 from app.mission.decision_engine import assessment
@@ -152,7 +155,7 @@ def test_unverified_provenance(monkeypatch):
 
     site["data_status"] = "AVAILABLE"
     site["provenance"]["verification_status"] = "NOT_VERIFIED"
-
+    site["provenance"]["quality_flags"] = []
     monkeypatch.setattr(
         assessment,
         "get_lunar_site",
@@ -265,7 +268,7 @@ def test_unknown_verification_status(monkeypatch):
 
     site["data_status"] = "AVAILABLE"
     site["provenance"]["verification_status"] = "FUTURE_STATUS"
-
+    site["provenance"]["quality_flags"] = []
     monkeypatch.setattr(
         assessment,
         "get_lunar_site",
@@ -291,7 +294,7 @@ def test_invalid_quality_flags_are_rejected_as_missing_provenance(
 
     monkeypatch.setattr(
         assessment,
-        "get_lunar_site",
+         "get_lunar_site",
         lambda site_id: site
     )
 
@@ -304,3 +307,133 @@ def test_invalid_quality_flags_are_rejected_as_missing_provenance(
         result["data_quality"]["provenance_status"]
         == "MISSING_PROVENANCE"
     )
+# --------------------------------------------------
+# Final provenance quality-flag tests
+# --------------------------------------------------
+
+@pytest.mark.parametrize(
+    "quality_flag",
+    [
+        "SYNTHETIC",
+        "NOT_SCIENTIFIC_MEASUREMENTS"
+    ]
+)
+def test_contradictory_quality_flags_prevent_verified_status(
+    monkeypatch,
+    quality_flag
+):
+
+    site = deepcopy(LUNAR_SITES["SHACKLETON_RIM"])
+
+    site["data_status"] = "AVAILABLE"
+    site["data_source"] = "NASA Test Fixture"
+
+    site["provenance"]["verification_status"] = "VERIFIED"
+    site["provenance"]["quality_flags"] = [quality_flag]
+
+    monkeypatch.setattr(
+        assessment,
+        "get_lunar_site",
+        lambda site_id: site
+    )
+
+    result = assessment.assess_mission(
+        "SHACKLETON_RIM",
+        PROFILE_ID
+    )
+
+    assert result["data_quality"]["provenance_status"] == "SYNTHETIC"
+
+
+def test_unknown_quality_flag_is_preserved(monkeypatch):
+
+    site = deepcopy(LUNAR_SITES["SHACKLETON_RIM"])
+
+    site["data_status"] = "AVAILABLE"
+    site["data_source"] = "NASA Test Fixture"
+
+    site["provenance"]["verification_status"] = "VERIFIED"
+    site["provenance"]["quality_flags"] = [
+        "FUTURE_QUALITY_FLAG"
+    ]
+
+    monkeypatch.setattr(
+        assessment,
+        "get_lunar_site",
+        lambda site_id: site
+    )
+
+    result = assessment.assess_mission(
+        "SHACKLETON_RIM",
+        PROFILE_ID
+    )
+
+    assert result["data_quality"]["provenance_status"] == "VERIFIED"
+
+    assert (
+        result["data_quality"]["unknown_quality_flags"]
+        == ["FUTURE_QUALITY_FLAG"]
+    )
+
+
+def test_multiple_unknown_quality_flags_are_preserved(monkeypatch):
+
+    site = deepcopy(LUNAR_SITES["SHACKLETON_RIM"])
+
+    site["data_status"] = "AVAILABLE"
+    site["data_source"] = "NASA Test Fixture"
+
+    site["provenance"]["verification_status"] = "VERIFIED"
+    site["provenance"]["quality_flags"] = [
+        "FUTURE_FLAG_A",
+        "FUTURE_FLAG_B"
+    ]
+
+    monkeypatch.setattr(
+        assessment,
+        "get_lunar_site",
+        lambda site_id: site
+    )
+
+    result = assessment.assess_mission(
+        "SHACKLETON_RIM",
+        PROFILE_ID
+    )
+
+    assert result["data_quality"]["unknown_quality_flags"] == [
+        "FUTURE_FLAG_A",
+        "FUTURE_FLAG_B"
+    ]
+
+
+def test_known_and_unknown_quality_flags_are_both_handled(
+    monkeypatch
+):
+
+    site = deepcopy(LUNAR_SITES["SHACKLETON_RIM"])
+
+    site["data_status"] = "AVAILABLE"
+    site["data_source"] = "NASA Test Fixture"
+
+    site["provenance"]["verification_status"] = "VERIFIED"
+    site["provenance"]["quality_flags"] = [
+        "SYNTHETIC",
+        "FUTURE_FLAG_A"
+    ]
+
+    monkeypatch.setattr(
+        assessment,
+        "get_lunar_site",
+        lambda site_id: site
+    )
+
+    result = assessment.assess_mission(
+        "SHACKLETON_RIM",
+        PROFILE_ID
+    )
+
+    assert result["data_quality"]["provenance_status"] == "SYNTHETIC"
+
+    assert result["data_quality"]["unknown_quality_flags"] == [
+        "FUTURE_FLAG_A"
+    ]

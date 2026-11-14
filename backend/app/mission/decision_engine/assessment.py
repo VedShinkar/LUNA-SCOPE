@@ -15,14 +15,10 @@ from .mock_data import get_lunar_site
 
 def classify_provenance(site):
     """
-    Classify the provenance and verification status of site data.
+    Classify provenance and verification status.
 
-    Possible classifications:
-    SYNTHETIC
-    VERIFIED
-    UNVERIFIED
-    MISSING_PROVENANCE
-    UNKNOWN
+    Synthetic or non-scientific quality flags prevent
+    classification as VERIFIED.
     """
 
     source_status = site.get("data_status", "UNKNOWN")
@@ -30,23 +26,18 @@ def classify_provenance(site):
     provenance = site.get("provenance")
     data_source = site.get("data_source")
 
-    # Synthetic data is never treated as scientifically verified.
     if source_status == "SYNTHETIC_EXAMPLE":
         return "SYNTHETIC"
 
-    # Reject unrecognised data statuses.
     if source_status != "AVAILABLE":
         return "UNKNOWN"
 
-    # Provenance must be provided as a dictionary.
     if not isinstance(provenance, dict):
         return "MISSING_PROVENANCE"
 
-    # A data source must be identified.
     if not isinstance(data_source, str) or not data_source.strip():
         return "MISSING_PROVENANCE"
 
-    # Required provenance fields.
     required_fields = [
         "provider",
         "product",
@@ -60,8 +51,6 @@ def classify_provenance(site):
         if field not in provenance:
             return "MISSING_PROVENANCE"
 
-    # Provider, product, version and verification status
-    # must contain valid text.
     text_fields = [
         "provider",
         "product",
@@ -75,22 +64,18 @@ def classify_provenance(site):
         if not isinstance(value, str) or not value.strip():
             return "MISSING_PROVENANCE"
 
-    # Processing lineage must be a non-empty list.
     processing_lineage = provenance.get("processing_lineage")
 
-    if not isinstance(processing_lineage, list):
-        return "MISSING_PROVENANCE"
-
-    if not processing_lineage:
-        return "MISSING_PROVENANCE"
-
-    if not all(
-        isinstance(step, str) and step.strip()
-        for step in processing_lineage
+    if (
+        not isinstance(processing_lineage, list)
+        or not processing_lineage
+        or not all(
+            isinstance(step, str) and step.strip()
+            for step in processing_lineage
+        )
     ):
         return "MISSING_PROVENANCE"
 
-    # Quality flags must be a list of non-empty strings.
     quality_flags = provenance.get("quality_flags")
 
     if not isinstance(quality_flags, list):
@@ -102,7 +87,21 @@ def classify_provenance(site):
     ):
         return "MISSING_PROVENANCE"
 
-    # Verification must be explicitly established.
+    # Normalize flags for case-insensitive comparison.
+    normalized_flags = {
+        flag.strip().upper()
+        for flag in quality_flags
+    }
+
+    # Contradictory flags prevent scientific verification.
+    synthetic_flags = {
+        "SYNTHETIC",
+        "NOT_SCIENTIFIC_MEASUREMENTS"
+    }
+
+    if normalized_flags.intersection(synthetic_flags):
+        return "SYNTHETIC"
+
     verification_status = provenance["verification_status"]
 
     if verification_status == "VERIFIED":
@@ -113,6 +112,36 @@ def classify_provenance(site):
 
     return "UNKNOWN"
 
+
+def get_unknown_quality_flags(site):
+    """
+    Return quality flags that are not currently recognised.
+
+    Unknown flags are preserved exactly as supplied.
+    """
+
+    provenance = site.get("provenance")
+
+    if not isinstance(provenance, dict):
+        return []
+
+    quality_flags = provenance.get("quality_flags")
+
+    if not isinstance(quality_flags, list):
+        return []
+
+    known_flags = {
+        "SYNTHETIC",
+        "NOT_SCIENTIFIC_MEASUREMENTS"
+    }
+
+    return [
+        flag
+        for flag in quality_flags
+        if isinstance(flag, str)
+        and flag.strip()
+        and flag.strip().upper() not in known_flags
+    ]
 
 def assess_mission(
     site_id,
@@ -142,7 +171,7 @@ def assess_mission(
         profile_id,
         feasibility_result=feasibility,
         scoring_result=scoring
-   )  
+   )
 
     # Identify missing information.
     missing_inputs = feasibility["missing_inputs"]
@@ -264,7 +293,9 @@ def assess_mission(
 
             "missing_inputs": missing_inputs,
 
-            "limitations": limitations
+            "limitations": limitations,
+
+            "unknown_quality_flags": get_unknown_quality_flags(site),
 
         },
 

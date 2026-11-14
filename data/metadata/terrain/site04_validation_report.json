@@ -1,0 +1,638 @@
+{
+  "report_type": "LUNA-SCOPE Phase 1 Terrain Validation Report",
+  "site": "Site04",
+  "timestamp_utc": "2026-11-13T13:43:59.144497+00:00",
+  "phase1_gate_passed": true,
+  "status": "PASS",
+  "summary": {
+    "total_rasters_validated": 5,
+    "spatial_alignment": "PASS",
+    "lunar_crs_compliance": "PASS",
+    "data_integrity": "PASS",
+    "dem_coverage_and_decoupling": "PASS",
+    "scientific_constraints": "PASS"
+  },
+  "scientific_constraints_checklist": {
+    "lunar_south_polar_stereographic_preserved": true,
+    "terrestrial_epsg_codes_strictly_prohibited": true,
+    "no_silent_reprojection_or_resampling": true,
+    "ldec_zero_not_interpreted_as_invalid_elevation": true,
+    "finite_pixels_not_assumed_physically_accurate": true,
+    "no_fabricated_missing_metadata_or_measurements": true,
+    "complete_file_readability_verified": true,
+    "spatial_co_registration_verified": true
+  },
+  "spatial_alignment": {
+    "status": "PASS",
+    "passed": true,
+    "reference_raster": "elevation",
+    "grid_shape": [
+      3200,
+      3200
+    ],
+    "pixel_size_m": [
+      5.0,
+      5.0
+    ],
+    "total_rasters_checked": 5,
+    "layers": {
+      "elevation": {
+        "aligned_with_reference": true,
+        "dimensions_match": true,
+        "resolution_match": true,
+        "transform_match": true,
+        "bounds_match": true,
+        "crs_match": true,
+        "band_count_match": true,
+        "dtype_match": true,
+        "width": 3200,
+        "height": 3200,
+        "resolution_m": [
+          5.0,
+          5.0
+        ],
+        "bounds": [
+          -9000.0,
+          -15000.0,
+          7000.0,
+          1000.0
+        ],
+        "transform": [
+          5.0,
+          0.0,
+          -9000.0,
+          0.0,
+          -5.0,
+          1000.0
+        ]
+      },
+      "observation_count": {
+        "aligned_with_reference": true,
+        "dimensions_match": true,
+        "resolution_match": true,
+        "transform_match": true,
+        "bounds_match": true,
+        "crs_match": true,
+        "band_count_match": true,
+        "dtype_match": true,
+        "width": 3200,
+        "height": 3200,
+        "resolution_m": [
+          5.0,
+          5.0
+        ],
+        "bounds": [
+          -9000.0,
+          -15000.0,
+          7000.0,
+          1000.0
+        ],
+        "transform": [
+          5.0,
+          0.0,
+          -9000.0,
+          0.0,
+          -5.0,
+          1000.0
+        ]
+      },
+      "slope": {
+        "aligned_with_reference": true,
+        "dimensions_match": true,
+        "resolution_match": true,
+        "transform_match": true,
+        "bounds_match": true,
+        "crs_match": true,
+        "band_count_match": true,
+        "dtype_match": true,
+        "width": 3200,
+        "height": 3200,
+        "resolution_m": [
+          5.0,
+          5.0
+        ],
+        "bounds": [
+          -9000.0,
+          -15000.0,
+          7000.0,
+          1000.0
+        ],
+        "transform": [
+          5.0,
+          0.0,
+          -9000.0,
+          0.0,
+          -5.0,
+          1000.0
+        ]
+      },
+      "elevation_uncertainty": {
+        "aligned_with_reference": true,
+        "dimensions_match": true,
+        "resolution_match": true,
+        "transform_match": true,
+        "bounds_match": true,
+        "crs_match": true,
+        "band_count_match": true,
+        "dtype_match": true,
+        "width": 3200,
+        "height": 3200,
+        "resolution_m": [
+          5.0,
+          5.0
+        ],
+        "bounds": [
+          -9000.0,
+          -15000.0,
+          7000.0,
+          1000.0
+        ],
+        "transform": [
+          5.0,
+          0.0,
+          -9000.0,
+          0.0,
+          -5.0,
+          1000.0
+        ]
+      },
+      "slope_uncertainty": {
+        "aligned_with_reference": true,
+        "dimensions_match": true,
+        "resolution_match": true,
+        "transform_match": true,
+        "bounds_match": true,
+        "crs_match": true,
+        "band_count_match": true,
+        "dtype_match": true,
+        "width": 3200,
+        "height": 3200,
+        "resolution_m": [
+          5.0,
+          5.0
+        ],
+        "bounds": [
+          -9000.0,
+          -15000.0,
+          7000.0,
+          1000.0
+        ],
+        "transform": [
+          5.0,
+          0.0,
+          -9000.0,
+          0.0,
+          -5.0,
+          1000.0
+        ]
+      }
+    }
+  },
+  "coordinate_reference_systems": {
+    "elevation": {
+      "status": "PASS",
+      "passed": true,
+      "checks": {
+        "is_lunar_crs": true,
+        "no_terrestrial_epsg": true,
+        "epsg_code_is_none": true,
+        "polar_stereographic_in_wkt": true,
+        "lunar_radius_in_wkt": true,
+        "south_pole_origin": true
+      },
+      "crs_wkt": "PROJCS[\"unnamed\",GEOGCS[\"unnamed ellipse\",DATUM[\"unknown\",SPHEROID[\"unnamed\",1737400,0]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Polar_Stereographic\"],PARAMETER[\"latitude_of_origin\",-90],PARAMETER[\"central_meridian\",0],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1],AXIS[\"Easting\",NORTH],AXIS[\"Northing\",NORTH]]",
+      "reference_frame": "MOON_ME associated with DE421",
+      "units": "metre"
+    },
+    "observation_count": {
+      "status": "PASS",
+      "passed": true,
+      "checks": {
+        "is_lunar_crs": true,
+        "no_terrestrial_epsg": true,
+        "epsg_code_is_none": true,
+        "polar_stereographic_in_wkt": true,
+        "lunar_radius_in_wkt": true,
+        "south_pole_origin": true
+      },
+      "crs_wkt": "PROJCS[\"unnamed\",GEOGCS[\"unnamed ellipse\",DATUM[\"unknown\",SPHEROID[\"unnamed\",1737400,0]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Polar_Stereographic\"],PARAMETER[\"latitude_of_origin\",-90],PARAMETER[\"central_meridian\",0],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1],AXIS[\"Easting\",NORTH],AXIS[\"Northing\",NORTH]]",
+      "reference_frame": "MOON_ME associated with DE421",
+      "units": "metre"
+    },
+    "slope": {
+      "status": "PASS",
+      "passed": true,
+      "checks": {
+        "is_lunar_crs": true,
+        "no_terrestrial_epsg": true,
+        "epsg_code_is_none": true,
+        "polar_stereographic_in_wkt": true,
+        "lunar_radius_in_wkt": true,
+        "south_pole_origin": true
+      },
+      "crs_wkt": "PROJCS[\"unnamed\",GEOGCS[\"unnamed ellipse\",DATUM[\"unknown\",SPHEROID[\"unnamed\",1737400,0]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Polar_Stereographic\"],PARAMETER[\"latitude_of_origin\",-90],PARAMETER[\"central_meridian\",0],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1],AXIS[\"Easting\",NORTH],AXIS[\"Northing\",NORTH]]",
+      "reference_frame": "MOON_ME associated with DE421",
+      "units": "metre"
+    },
+    "elevation_uncertainty": {
+      "status": "PASS",
+      "passed": true,
+      "checks": {
+        "is_lunar_crs": true,
+        "no_terrestrial_epsg": true,
+        "epsg_code_is_none": true,
+        "polar_stereographic_in_wkt": true,
+        "lunar_radius_in_wkt": true,
+        "south_pole_origin": true
+      },
+      "crs_wkt": "PROJCS[\"unnamed\",GEOGCS[\"unnamed ellipse\",DATUM[\"unknown\",SPHEROID[\"unnamed\",1737400,0]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Polar_Stereographic\"],PARAMETER[\"latitude_of_origin\",-90],PARAMETER[\"central_meridian\",0],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1],AXIS[\"Easting\",NORTH],AXIS[\"Northing\",NORTH]]",
+      "reference_frame": "MOON_ME associated with DE421",
+      "units": "metre"
+    },
+    "slope_uncertainty": {
+      "status": "PASS",
+      "passed": true,
+      "checks": {
+        "is_lunar_crs": true,
+        "no_terrestrial_epsg": true,
+        "epsg_code_is_none": true,
+        "polar_stereographic_in_wkt": true,
+        "lunar_radius_in_wkt": true,
+        "south_pole_origin": true
+      },
+      "crs_wkt": "PROJCS[\"unnamed\",GEOGCS[\"unnamed ellipse\",DATUM[\"unknown\",SPHEROID[\"unnamed\",1737400,0]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Polar_Stereographic\"],PARAMETER[\"latitude_of_origin\",-90],PARAMETER[\"central_meridian\",0],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1],AXIS[\"Easting\",NORTH],AXIS[\"Northing\",NORTH]]",
+      "reference_frame": "MOON_ME associated with DE421",
+      "units": "metre"
+    }
+  },
+  "data_integrity": {
+    "elevation": {
+      "status": "PASS",
+      "passed": true,
+      "total_pixels": 10240000,
+      "finite_pixels": 10240000,
+      "nan_pixels": 0,
+      "inf_pixels": 0,
+      "nodata_setting": NaN,
+      "statistics": {
+        "minimum": -2847.877197265625,
+        "maximum": 1805.0726318359375,
+        "mean": 245.3437957763672,
+        "std_dev": 1246.3162841796875,
+        "percentiles": {
+          "p25": -482.8885040283203,
+          "median": 668.1879272460938,
+          "p75": 1250.5991516113281
+        }
+      },
+      "checks": {
+        "no_infinities": true,
+        "has_finite_data": true,
+        "within_lunar_elevation_limits": true
+      }
+    },
+    "observation_count": {
+      "status": "PASS",
+      "passed": true,
+      "total_pixels": 10240000,
+      "finite_pixels": 10240000,
+      "nan_pixels": 0,
+      "inf_pixels": 0,
+      "nodata_setting": NaN,
+      "statistics": {
+        "minimum": 0.0,
+        "maximum": 5.0,
+        "mean": 0.09608525037765503,
+        "std_dev": 0.31023547053337097,
+        "percentiles": {
+          "p25": 0.0,
+          "median": 0.0,
+          "p75": 0.0
+        }
+      },
+      "checks": {
+        "no_infinities": true,
+        "has_finite_data": true,
+        "non_negative_counts": true
+      }
+    },
+    "slope": {
+      "status": "PASS",
+      "passed": true,
+      "total_pixels": 10240000,
+      "finite_pixels": 10240000,
+      "nan_pixels": 0,
+      "inf_pixels": 0,
+      "nodata_setting": NaN,
+      "statistics": {
+        "minimum": 0.0,
+        "maximum": 69.64722442626953,
+        "mean": 20.664146423339844,
+        "std_dev": 10.101922035217285,
+        "percentiles": {
+          "p25": 11.629837274551392,
+          "median": 20.550517082214355,
+          "p75": 30.2890567779541
+        }
+      },
+      "checks": {
+        "no_infinities": true,
+        "has_finite_data": true,
+        "within_slope_limits": true
+      }
+    },
+    "elevation_uncertainty": {
+      "status": "PASS",
+      "passed": true,
+      "total_pixels": 10240000,
+      "finite_pixels": 10240000,
+      "nan_pixels": 0,
+      "inf_pixels": 0,
+      "nodata_setting": NaN,
+      "statistics": {
+        "minimum": 0.06385684758424759,
+        "maximum": 7.635095596313477,
+        "mean": 0.41166484355926514,
+        "std_dev": 0.2226252406835556,
+        "percentiles": {
+          "p25": 0.25994979590177536,
+          "median": 0.35968247056007385,
+          "p75": 0.5038973987102509
+        }
+      },
+      "checks": {
+        "no_infinities": true,
+        "has_finite_data": true,
+        "non_negative_uncertainty": true
+      }
+    },
+    "slope_uncertainty": {
+      "status": "PASS",
+      "passed": true,
+      "total_pixels": 10240000,
+      "finite_pixels": 10240000,
+      "nan_pixels": 0,
+      "inf_pixels": 0,
+      "nodata_setting": NaN,
+      "statistics": {
+        "minimum": 0.5000152587890625,
+        "maximum": 28.143030166625977,
+        "mean": 1.7707841396331787,
+        "std_dev": 0.8759035468101501,
+        "percentiles": {
+          "p25": 1.2647052705287933,
+          "median": 1.496445119380951,
+          "p75": 1.9395338296890259
+        }
+      },
+      "checks": {
+        "no_infinities": true,
+        "has_finite_data": true,
+        "non_negative_uncertainty": true
+      }
+    }
+  },
+  "observation_distribution_ldec": {
+    "total_pixels": 10240000,
+    "zero_count_pixels": 9302619,
+    "zero_count_percentage": 90.8459,
+    "positive_count_pixels": 937381,
+    "positive_count_percentage": 9.1541,
+    "maximum_spots_per_pixel": 5,
+    "mean_spots_per_pixel": 0.09608525037765503,
+    "histogram": {
+      "spots_per_pixel_0": {
+        "spot_count": 0,
+        "pixel_count": 9302619,
+        "percentage": 90.845888671875
+      },
+      "spots_per_pixel_1": {
+        "spot_count": 1,
+        "pixel_count": 892370,
+        "percentage": 8.714550781249999
+      },
+      "spots_per_pixel_2": {
+        "spot_count": 2,
+        "pixel_count": 43528,
+        "percentage": 0.42507812500000003
+      },
+      "spots_per_pixel_3": {
+        "spot_count": 3,
+        "pixel_count": 1447,
+        "percentage": 0.014130859374999999
+      },
+      "spots_per_pixel_4": {
+        "spot_count": 4,
+        "pixel_count": 34,
+        "percentage": 0.00033203124999999997
+      },
+      "spots_per_pixel_5": {
+        "spot_count": 5,
+        "pixel_count": 2,
+        "percentage": 1.953125e-05
+      }
+    },
+    "scientific_interpretation": "LOLA polar ground tracks have spacing wider than the 5 m grid spacing. Pixels with LDEC == 0 (90.85% at Site04) represent mathematically valid interpolated surface elevations between ground tracks. Direct laser-spot measurements are available for 9.15% of pixels (LDEC >= 1). LDEC == 0 must NOT be treated as invalid elevation or NoData."
+  },
+  "dem_validity_vs_direct_observation_coverage": {
+    "status": "PASS",
+    "decoupling_verified": true,
+    "valid_dem_pixels": 10240000,
+    "finite_dem_pixels": 10240000,
+    "finite_dem_percentage": 100.0,
+    "valid_dem_percentage": 100.0,
+    "direct_observation_pixels": 937381,
+    "direct_observation_percentage": 9.1541,
+    "interpolated_dem_pixels": 9302619,
+    "interpolated_dem_percentage": 90.8459,
+    "elevation_comparison": {
+      "direct_observations": {
+        "pixel_count": 937381,
+        "percentage_of_dem": 9.1541,
+        "minimum_m": -2847.877197265625,
+        "maximum_m": 1804.15625,
+        "mean_m": 255.3792724609375,
+        "std_dev_m": 1268.285888671875
+      },
+      "interpolated_terrain": {
+        "pixel_count": 9302619,
+        "percentage_of_dem": 90.8459,
+        "minimum_m": -2847.356689453125,
+        "maximum_m": 1805.0726318359375,
+        "mean_m": 244.33255004882812,
+        "std_dev_m": 1244.0765380859375
+      }
+    },
+    "uncertainty_comparison": {
+      "elevation_uncertainty_toterr_m_rms": {
+        "direct_observations_mean": 0.4835229218006134,
+        "direct_observations_median": 0.35695964097976685,
+        "direct_observations_max": 2.5328922271728516,
+        "interpolated_terrain_mean": 0.4044240117073059,
+        "interpolated_terrain_median": 0.35982105135917664,
+        "interpolated_terrain_max": 7.635095596313477
+      },
+      "slope_uncertainty_slperr_deg_rms": {
+        "direct_observations_mean": 1.8544362783432007,
+        "direct_observations_median": 1.5188040733337402,
+        "direct_observations_max": 23.377931594848633,
+        "interpolated_terrain_mean": 1.762354850769043,
+        "interpolated_terrain_median": 1.4944829940795898,
+        "interpolated_terrain_max": 28.143030166625977
+      }
+    },
+    "scientific_evidence_distinction": {
+      "finite_raster_values": {
+        "pixel_count": 10240000,
+        "percentage": 100.0,
+        "meaning": "Pixels containing valid numeric float32 representations within lunar elevation bounds. Finite representation reflects grid population, but does NOT imply physical ground-truth accuracy."
+      },
+      "direct_observations": {
+        "pixel_count": 937381,
+        "percentage": 9.1541,
+        "meaning": "Pixels with direct LOLA laser altimetry spot support (LDEC >= 1). These provide empirical geodetic constraints from spacecraft laser returns."
+      },
+      "interpolated_elevations": {
+        "pixel_count": 9302619,
+        "percentage": 90.8459,
+        "meaning": "Finite elevation values where no direct laser spot fell within the 5 m cell (LDEC == 0). These are mathematically gridded continuous-curvature approximations between orbital tracks. They are not NoData, but their local physical accuracy varies with distance from ground tracks and is bounded by the accompanying toterr uncertainty layer (up to 7.64 m RMS)."
+      },
+      "scientifically_validated_terrain": {
+        "status": "VALIDATED_WITH_DOCUMENTED_UNCERTAINTY",
+        "meaning": "The raster dataset satisfies Phase 1 geodetic integrity standards: lunar south-polar stereographic projection, spherical lunar radius (1,737,400 m), verified spatial co-registration, and absence of terrestrial EPSG codes. Downstream engineering and mission models must account for measurement support and vertical/slope uncertainties rather than treating all finite pixels as ground-truth accurate."
+      }
+    }
+  },
+  "provenance_and_integrity": {
+    "mission": "Lunar Reconnaissance Orbiter (LRO)",
+    "instrument": "Lunar Orbiter Laser Altimeter (LOLA)",
+    "primary_source": "NASA GSFC Planetary Geodesy Data Archive (PGDA)",
+    "product_id": 78,
+    "archive_url": "https://pgda.gsfc.nasa.gov/products/78",
+    "data_url": "https://pgda.gsfc.nasa.gov/data/LOLA_5mpp/Site04/",
+    "geodetic_provenance": {
+      "coordinate_system": "Lunar South-Polar Stereographic",
+      "linear_units": "metre",
+      "grid_resolution_m": 5.0,
+      "embedded_geotiff_wkt": "PROJCS[\"unnamed\",GEOGCS[\"unnamed ellipse\",DATUM[\"unknown\",SPHEROID[\"unnamed\",1737400,0]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Polar_Stereographic\"],PARAMETER[\"latitude_of_origin\",-90],PARAMETER[\"central_meridian\",0],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1],AXIS[\"Easting\",NORTH],AXIS[\"Northing\",NORTH]]",
+      "embedded_datum_note": "SPHEROID['unnamed', 1737400, 0] with zero eccentricity",
+      "documentary_reference_frame": "MOON_ME associated with JPL DE421 ephemeris",
+      "documentary_provenance_source": "NASA GSFC PGDA Product 78 documentation and product README specify that the south-polar regional DEMs are generated in the MOON_ME body-fixed frame referenced to the DE421 ephemeris. The embedded GeoTIFF header defines the Polar Stereographic projection with origin -90 and lunar sphere radius 1,737,400 m, without assigning terrestrial EPSG codes."
+    },
+    "site_id": "Site04",
+    "site_directory": "F:\\Dell\\OneDrive\\\ubb38\uc11c\\GitHub\\LUNA-SCOPE\\data\\raw\\terrain\\site04",
+    "validation_timestamp_utc": "2026-11-13T13:43:59.144497+00:00",
+    "software_environment": {
+      "rasterio": "1.5.2",
+      "numpy": "2.5.4",
+      "pyproj": "3.8.0"
+    },
+    "files": {
+      "elevation": {
+        "file_name": "Site04_final_adj_5mpp_surf.tif",
+        "file_size_bytes": 40980806,
+        "sha256": "38ff70dbdf2f066c2cfa94a646c3a59d653ce7f6b4528b15fc1b43ee397ce758",
+        "is_valid_tiff_header": true,
+        "verbatim_crs_wkt": "PROJCS[\"unnamed\",GEOGCS[\"unnamed ellipse\",DATUM[\"unknown\",SPHEROID[\"unnamed\",1737400,0]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Polar_Stereographic\"],PARAMETER[\"latitude_of_origin\",-90],PARAMETER[\"central_meridian\",0],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1],AXIS[\"Easting\",NORTH],AXIS[\"Northing\",NORTH]]",
+        "gdal_tags": {
+          "NC_GLOBAL#Conventions": "COARDS, CF-1.5",
+          "NC_GLOBAL#GMT_version": "5.4.5 [64-bit]",
+          "NC_GLOBAL#history": "xyz2grd -bi3 -I5 -R-9.00000000000e+03/7.00000000000e+03/-1.50000000000e+04/1.00000000000e+03 -Gtest.grd -r",
+          "NC_GLOBAL#node_offset": "1",
+          "x#actual_range": "{-9000,7000}",
+          "x#long_name": "x",
+          "y#actual_range": "{-15000,1000}",
+          "y#long_name": "y",
+          "z#actual_range": "{-2847.877197265625,1805.072631835938}",
+          "z#long_name": "z",
+          "z#_FillValue": "nan",
+          "AREA_OR_POINT": "Area"
+        }
+      },
+      "observation_count": {
+        "file_name": "Site04_final_adj_5mpp_ldec.tif",
+        "file_size_bytes": 40980740,
+        "sha256": "fcc8c2219ae2368d5b2a1f6aec05fcf96cf725f3035ac8d80efc312a4ff29227",
+        "is_valid_tiff_header": true,
+        "verbatim_crs_wkt": "PROJCS[\"unnamed\",GEOGCS[\"unnamed ellipse\",DATUM[\"unknown\",SPHEROID[\"unnamed\",1737400,0]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Polar_Stereographic\"],PARAMETER[\"latitude_of_origin\",-90],PARAMETER[\"central_meridian\",0],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1],AXIS[\"Easting\",NORTH],AXIS[\"Northing\",NORTH]]",
+        "gdal_tags": {
+          "NC_GLOBAL#Conventions": "COARDS, CF-1.5",
+          "NC_GLOBAL#GMT_version": "5.4.5 [64-bit]",
+          "NC_GLOBAL#history": "xyz2grd -bi3 -I5 -R-9.00000000000e+03/7.00000000000e+03/-1.50000000000e+04/1.00000000000e+03 -Gtest.grd -r",
+          "NC_GLOBAL#node_offset": "1",
+          "x#actual_range": "{-9000,7000}",
+          "x#long_name": "x",
+          "y#actual_range": "{-15000,1000}",
+          "y#long_name": "y",
+          "z#actual_range": "{0,5}",
+          "z#long_name": "z",
+          "z#_FillValue": "nan",
+          "AREA_OR_POINT": "Area"
+        }
+      },
+      "slope": {
+        "file_name": "Site04_final_adj_5mpp_slp.tif",
+        "file_size_bytes": 40980772,
+        "sha256": "ec3cfa184b114d95aff498e7452764a8569737ae829e7ff3efd38d5187182579",
+        "is_valid_tiff_header": true,
+        "verbatim_crs_wkt": "PROJCS[\"unnamed\",GEOGCS[\"unnamed ellipse\",DATUM[\"unknown\",SPHEROID[\"unnamed\",1737400,0]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Polar_Stereographic\"],PARAMETER[\"latitude_of_origin\",-90],PARAMETER[\"central_meridian\",0],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1],AXIS[\"Easting\",NORTH],AXIS[\"Northing\",NORTH]]",
+        "gdal_tags": {
+          "NC_GLOBAL#Conventions": "COARDS, CF-1.5",
+          "NC_GLOBAL#GMT_version": "5.4.5 [64-bit]",
+          "NC_GLOBAL#history": "xyz2grd -bi3 -I5 -R-9.00000000000e+03/7.00000000000e+03/-1.50000000000e+04/1.00000000000e+03 -Gtest.grd -r",
+          "NC_GLOBAL#node_offset": "1",
+          "x#actual_range": "{-9000,7000}",
+          "x#long_name": "x",
+          "y#actual_range": "{-15000,1000}",
+          "y#long_name": "y",
+          "z#actual_range": "{0,69.64722442626953}",
+          "z#long_name": "z",
+          "z#_FillValue": "nan",
+          "AREA_OR_POINT": "Area"
+        }
+      },
+      "elevation_uncertainty": {
+        "file_name": "Site04_final_adj_5mpp_toterr.tif",
+        "file_size_bytes": 40980808,
+        "sha256": "416c4baa3b64def0182bb3379a1a9228482efd8ce32a39309ea8de5d0330fbe6",
+        "is_valid_tiff_header": true,
+        "verbatim_crs_wkt": "PROJCS[\"unnamed\",GEOGCS[\"unnamed ellipse\",DATUM[\"unknown\",SPHEROID[\"unnamed\",1737400,0]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Polar_Stereographic\"],PARAMETER[\"latitude_of_origin\",-90],PARAMETER[\"central_meridian\",0],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1],AXIS[\"Easting\",NORTH],AXIS[\"Northing\",NORTH]]",
+        "gdal_tags": {
+          "NC_GLOBAL#Conventions": "COARDS, CF-1.5",
+          "NC_GLOBAL#GMT_version": "5.4.5 [64-bit]",
+          "NC_GLOBAL#history": "xyz2grd -bi3 -I5 -R-9.00000000000e+03/7.00000000000e+03/-1.50000000000e+04/1.00000000000e+03 -Gtest.grd -r",
+          "NC_GLOBAL#node_offset": "1",
+          "x#actual_range": "{-9000,7000}",
+          "x#long_name": "x",
+          "y#actual_range": "{-15000,1000}",
+          "y#long_name": "y",
+          "z#actual_range": "{0.06385684758424759,7.635095596313477}",
+          "z#long_name": "z",
+          "z#_FillValue": "nan",
+          "AREA_OR_POINT": "Area"
+        }
+      },
+      "slope_uncertainty": {
+        "file_name": "Site04_final_adj_5mpp_slperr.tif",
+        "file_size_bytes": 40980806,
+        "sha256": "067cd4d8e3e8c14a9a5be1915242532f85063f1b300f248407cc8c8b68e90695",
+        "is_valid_tiff_header": true,
+        "verbatim_crs_wkt": "PROJCS[\"unnamed\",GEOGCS[\"unnamed ellipse\",DATUM[\"unknown\",SPHEROID[\"unnamed\",1737400,0]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Polar_Stereographic\"],PARAMETER[\"latitude_of_origin\",-90],PARAMETER[\"central_meridian\",0],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1],AXIS[\"Easting\",NORTH],AXIS[\"Northing\",NORTH]]",
+        "gdal_tags": {
+          "NC_GLOBAL#Conventions": "COARDS, CF-1.5",
+          "NC_GLOBAL#GMT_version": "5.4.5 [64-bit]",
+          "NC_GLOBAL#history": "xyz2grd -bi3 -I5 -R-9.00000000000e+03/7.00000000000e+03/-1.50000000000e+04/1.00000000000e+03 -Gtest.grd -r",
+          "NC_GLOBAL#node_offset": "1",
+          "x#actual_range": "{-9000,7000}",
+          "x#long_name": "x",
+          "y#actual_range": "{-15000,1000}",
+          "y#long_name": "y",
+          "z#actual_range": "{0.5000152587890625,28.14303016662598}",
+          "z#long_name": "z",
+          "z#_FillValue": "nan",
+          "AREA_OR_POINT": "Area"
+        }
+      }
+    }
+  }
+}

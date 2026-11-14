@@ -1,0 +1,52 @@
+{
+  "created_utc": "2026-11-13T12:13:52.404898+00:00",
+  "source": "NASA GSFC Planetary Geodesy Data Archive, LOLA South Pole Landing Site DEMs",
+  "source_product_page": "https://pgda.gsfc.nasa.gov/products/78",
+  "archive_index": "https://pgda.gsfc.nasa.gov/data/LOLA_5mpp/",
+  "evidence_class": "NASA source-derived products",
+  "sites": {
+    "Site04": {
+      "site_name": "Shackleton rim",
+      "products": {
+        "elevation": {
+          "status": "already_present",
+          "path": "F:\\Dell\\OneDrive\\\ubb38\uc11c\\GitHub\\LUNA-SCOPE\\data\\raw\\terrain\\site04\\Site04_final_adj_5mpp_surf.tif",
+          "bytes": 40980806,
+          "sha256": "38ff70dbdf2f066c2cfa94a646c3a59d653ce7f6b4528b15fc1b43ee397ce758"
+        },
+        "observation_count": {
+          "status": "already_present",
+          "path": "F:\\Dell\\OneDrive\\\ubb38\uc11c\\GitHub\\LUNA-SCOPE\\data\\raw\\terrain\\site04\\Site04_final_adj_5mpp_ldec.tif",
+          "bytes": 40980740,
+          "sha256": "fcc8c2219ae2368d5b2a1f6aec05fcf96cf725f3035ac8d80efc312a4ff29227"
+        },
+        "slope": {
+          "status": "already_present",
+          "path": "F:\\Dell\\OneDrive\\\ubb38\uc11c\\GitHub\\LUNA-SCOPE\\data\\raw\\terrain\\site04\\Site04_final_adj_5mpp_slp.tif",
+          "bytes": 40980772,
+          "sha256": "ec3cfa184b114d95aff498e7452764a8569737ae829e7ff3efd38d5187182579"
+        },
+        "elevation_uncertainty": {
+          "status": "already_present",
+          "path": "F:\\Dell\\OneDrive\\\ubb38\uc11c\\GitHub\\LUNA-SCOPE\\data\\raw\\terrain\\site04\\Site04_final_adj_5mpp_toterr.tif",
+          "bytes": 40980808,
+          "sha256": "416c4baa3b64def0182bb3379a1a9228482efd8ce32a39309ea8de5d0330fbe6"
+        },
+        "slope_uncertainty": {
+          "status": "downloaded",
+          "path": "F:\\Dell\\OneDrive\\\ubb38\uc11c\\GitHub\\LUNA-SCOPE\\data\\raw\\terrain\\site04\\Site04_final_adj_5mpp_slperr.tif",
+          "url": "https://pgda.gsfc.nasa.gov/data/LOLA_5mpp/Site04/Site04_final_adj_5mpp_slperr.tif",
+          "bytes": 40980806,
+          "sha256": "067cd4d8e3e8c14a9a5be1915242532f85063f1b300f248407cc8c8b68e90695",
+          "content_type": "image/tiff"
+        }
+      }
+    }
+  },
+  "notes": [
+    "5 m/pixel is raster pixel spacing, not independent measurement spacing.",
+    "LOLA polar LDEMs contain interpolated pixels; consult LDEC and uncertainty layers.",
+    "Original downloads are preserved under data/raw/terrain and should not be edited.",
+    "Computed SHA-256 values identify the exact local files downloaded."
+  ]
+}

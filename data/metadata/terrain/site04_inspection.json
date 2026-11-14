@@ -1,0 +1,172 @@
+{
+  "site": "Site04",
+  "site_directory": "data\\raw\\terrain\\site04",
+  "inspection": {
+    "elevation": {
+      "file": "Site04_final_adj_5mpp_surf.tif",
+      "crs": "PROJCS[\"unnamed\",GEOGCS[\"unnamed ellipse\",DATUM[\"unknown\",SPHEROID[\"unnamed\",1737400,0]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Polar_Stereographic\"],PARAMETER[\"latitude_of_origin\",-90],PARAMETER[\"central_meridian\",0],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1],AXIS[\"Easting\",NORTH],AXIS[\"Northing\",NORTH]]",
+      "width_pixels": 3200,
+      "height_pixels": 3200,
+      "pixel_size_map_units": [
+        5.0,
+        5.0
+      ],
+      "bounds": [
+        -9000.0,
+        -15000.0,
+        7000.0,
+        1000.0
+      ],
+      "transform": [
+        5.0,
+        0.0,
+        -9000.0,
+        0.0,
+        -5.0,
+        1000.0
+      ],
+      "nodata": NaN,
+      "band_count": 1,
+      "dtype": "float32",
+      "valid_pixels": 10240000,
+      "minimum": -2847.877197265625,
+      "maximum": 1805.0726318359375,
+      "mean": 245.3437957763672,
+      "standard_deviation": 1246.3162841796875,
+      "grid_matches_elevation": true
+    },
+    "observation_count": {
+      "file": "Site04_final_adj_5mpp_ldec.tif",
+      "crs": "PROJCS[\"unnamed\",GEOGCS[\"unnamed ellipse\",DATUM[\"unknown\",SPHEROID[\"unnamed\",1737400,0]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Polar_Stereographic\"],PARAMETER[\"latitude_of_origin\",-90],PARAMETER[\"central_meridian\",0],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1],AXIS[\"Easting\",NORTH],AXIS[\"Northing\",NORTH]]",
+      "width_pixels": 3200,
+      "height_pixels": 3200,
+      "pixel_size_map_units": [
+        5.0,
+        5.0
+      ],
+      "bounds": [
+        -9000.0,
+        -15000.0,
+        7000.0,
+        1000.0
+      ],
+      "transform": [
+        5.0,
+        0.0,
+        -9000.0,
+        0.0,
+        -5.0,
+        1000.0
+      ],
+      "nodata": NaN,
+      "band_count": 1,
+      "dtype": "float32",
+      "valid_pixels": 10240000,
+      "minimum": 0.0,
+      "maximum": 5.0,
+      "mean": 0.09608525037765503,
+      "standard_deviation": 0.31023547053337097,
+      "grid_matches_elevation": true
+    },
+    "slope": {
+      "file": "Site04_final_adj_5mpp_slp.tif",
+      "crs": "PROJCS[\"unnamed\",GEOGCS[\"unnamed ellipse\",DATUM[\"unknown\",SPHEROID[\"unnamed\",1737400,0]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Polar_Stereographic\"],PARAMETER[\"latitude_of_origin\",-90],PARAMETER[\"central_meridian\",0],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1],AXIS[\"Easting\",NORTH],AXIS[\"Northing\",NORTH]]",
+      "width_pixels": 3200,
+      "height_pixels": 3200,
+      "pixel_size_map_units": [
+        5.0,
+        5.0
+      ],
+      "bounds": [
+        -9000.0,
+        -15000.0,
+        7000.0,
+        1000.0
+      ],
+      "transform": [
+        5.0,
+        0.0,
+        -9000.0,
+        0.0,
+        -5.0,
+        1000.0
+      ],
+      "nodata": NaN,
+      "band_count": 1,
+      "dtype": "float32",
+      "valid_pixels": 10240000,
+      "minimum": 0.0,
+      "maximum": 69.64722442626953,
+      "mean": 20.664146423339844,
+      "standard_deviation": 10.101922035217285,
+      "grid_matches_elevation": true
+    },
+    "elevation_uncertainty": {
+      "file": "Site04_final_adj_5mpp_toterr.tif",
+      "crs": "PROJCS[\"unnamed\",GEOGCS[\"unnamed ellipse\",DATUM[\"unknown\",SPHEROID[\"unnamed\",1737400,0]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Polar_Stereographic\"],PARAMETER[\"latitude_of_origin\",-90],PARAMETER[\"central_meridian\",0],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1],AXIS[\"Easting\",NORTH],AXIS[\"Northing\",NORTH]]",
+      "width_pixels": 3200,
+      "height_pixels": 3200,
+      "pixel_size_map_units": [
+        5.0,
+        5.0
+      ],
+      "bounds": [
+        -9000.0,
+        -15000.0,
+        7000.0,
+        1000.0
+      ],
+      "transform": [
+        5.0,
+        0.0,
+        -9000.0,
+        0.0,
+        -5.0,
+        1000.0
+      ],
+      "nodata": NaN,
+      "band_count": 1,
+      "dtype": "float32",
+      "valid_pixels": 10240000,
+      "minimum": 0.06385684758424759,
+      "maximum": 7.635095596313477,
+      "mean": 0.41166484355926514,
+      "standard_deviation": 0.2226252406835556,
+      "grid_matches_elevation": true
+    },
+    "slope_uncertainty": {
+      "file": "Site04_final_adj_5mpp_slperr.tif",
+      "crs": "PROJCS[\"unnamed\",GEOGCS[\"unnamed ellipse\",DATUM[\"unknown\",SPHEROID[\"unnamed\",1737400,0]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0.0174532925199433,AUTHORITY[\"EPSG\",\"9122\"]]],PROJECTION[\"Polar_Stereographic\"],PARAMETER[\"latitude_of_origin\",-90],PARAMETER[\"central_meridian\",0],PARAMETER[\"false_easting\",0],PARAMETER[\"false_northing\",0],UNIT[\"metre\",1],AXIS[\"Easting\",NORTH],AXIS[\"Northing\",NORTH]]",
+      "width_pixels": 3200,
+      "height_pixels": 3200,
+      "pixel_size_map_units": [
+        5.0,
+        5.0
+      ],
+      "bounds": [
+        -9000.0,
+        -15000.0,
+        7000.0,
+        1000.0
+      ],
+      "transform": [
+        5.0,
+        0.0,
+        -9000.0,
+        0.0,
+        -5.0,
+        1000.0
+      ],
+      "nodata": NaN,
+      "band_count": 1,
+      "dtype": "float32",
+      "valid_pixels": 10240000,
+      "minimum": 0.5000152587890625,
+      "maximum": 28.143030166625977,
+      "mean": 1.7707841396331787,
+      "standard_deviation": 0.8759035468101501,
+      "grid_matches_elevation": true
+    }
+  },
+  "warning": "Check lunar CRS, datum, units and pixel registration against the exact PGDA product README before coordinate transformations or combining rasters."
+}

@@ -5,7 +5,7 @@ Stores and validates mission requirements and scoring weights.
 
 Initial profile values follow the team's API contract example.
 """
-
+import copy
 import math
 from numbers import Real
 
@@ -138,9 +138,9 @@ def validate_mission_profile(profile):
                 f"Requirement '{name}' must be a finite number."
             )
 
-        if value < 0:
+        if value <= 0:
             raise ValueError(
-                f"Requirement '{name}' cannot be negative."
+                f"Requirement '{name}' must be greater than zero."
             )
 
     hazard_limit = requirements["maximum_terrain_hazard_score"]
@@ -168,6 +168,9 @@ def validate_mission_profile(profile):
 def get_mission_profile(profile_id):
     """
     Retrieve and validate a mission profile.
+
+    Returns a defensive copy so callers cannot accidentally
+    modify the shared mission profile configuration.
     """
 
     if profile_id not in MISSION_PROFILES:
@@ -175,7 +178,7 @@ def get_mission_profile(profile_id):
             f"Mission profile '{profile_id}' was not found."
         )
 
-    profile = MISSION_PROFILES[profile_id]
+    profile = copy.deepcopy(MISSION_PROFILES[profile_id])
 
     validate_mission_profile(profile)
 

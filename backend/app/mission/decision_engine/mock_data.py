@@ -1,3 +1,4 @@
+
 """
 LUNA-SCOPE Synthetic Test Data
 
@@ -23,7 +24,27 @@ LUNAR_SITES = {
 
         "terrain_hazard_score": 0.3,
 
-        "data_status": "SYNTHETIC_EXAMPLE"
+        "data_status": "SYNTHETIC_EXAMPLE",
+
+        "data_source": "LUNA-SCOPE Synthetic Test Fixture",
+
+        "provenance": {
+            "provider": "LUNA-SCOPE",
+            "product": "Synthetic Test Dataset",
+            "product_version": "1.0",
+            "processing_lineage": [
+                "Values manually created for software testing"
+            ],
+            "verification_status": "NOT_VERIFIED",
+            "quality_flags": [
+                "SYNTHETIC",
+                "NOT_SCIENTIFIC_MEASUREMENTS"
+            ]
+        },
+
+        "limitations": [
+            "Values are illustrative and must not be used for real lunar mission planning."
+        ]
 
     },
 
@@ -41,7 +62,27 @@ LUNAR_SITES = {
 
         "terrain_hazard_score": 0.2,
 
-        "data_status": "SYNTHETIC_EXAMPLE"
+        "data_status": "SYNTHETIC_EXAMPLE",
+
+        "data_source": "LUNA-SCOPE Synthetic Test Fixture",
+
+        "provenance": {
+            "provider": "LUNA-SCOPE",
+            "product": "Synthetic Test Dataset",
+            "product_version": "1.0",
+            "processing_lineage": [
+                "Values manually created for software testing"
+            ],
+            "verification_status": "NOT_VERIFIED",
+            "quality_flags": [
+                "SYNTHETIC",
+                "NOT_SCIENTIFIC_MEASUREMENTS"
+            ]
+        },
+
+        "limitations": [
+            "Values are illustrative and must not be used for real lunar mission planning."
+        ]
 
     },
 
@@ -59,7 +100,27 @@ LUNAR_SITES = {
 
         "terrain_hazard_score": 0.6,
 
-        "data_status": "SYNTHETIC_EXAMPLE"
+        "data_status": "SYNTHETIC_EXAMPLE",
+
+        "data_source": "LUNA-SCOPE Synthetic Test Fixture",
+
+        "provenance": {
+            "provider": "LUNA-SCOPE",
+            "product": "Synthetic Test Dataset",
+            "product_version": "1.0",
+            "processing_lineage": [
+                "Values manually created for software testing"
+            ],
+            "verification_status": "NOT_VERIFIED",
+            "quality_flags": [
+                "SYNTHETIC",
+                "NOT_SCIENTIFIC_MEASUREMENTS"
+            ]
+        },
+
+        "limitations": [
+            "Values are illustrative and must not be used for real lunar mission planning."
+        ]
 
     }
 
@@ -92,10 +153,23 @@ if __name__ == "__main__":
 
         print("Sunlight:", site["sunlight_hours"], "hours")
 
-        print("Earth Visibility:",
-              site["earth_visibility_hours"], "hours")
+        print(
+            "Earth Visibility:",
+            site["earth_visibility_hours"],
+            "hours"
+        )
 
-        print("Solar Energy:",
-              site["solar_energy_wh"], "Wh")
+        print(
+            "Solar Energy:",
+            site["solar_energy_wh"],
+            "Wh"
+        )
 
         print("Data Status:", site["data_status"])
+
+        print("Data Source:", site["data_source"])
+
+        print(
+            "Verification Status:",
+            site["provenance"]["verification_status"]
+        )

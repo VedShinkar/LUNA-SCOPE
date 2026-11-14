@@ -5,6 +5,10 @@ Tests for LUNA-SCOPE Mission Assessment.
 import pytest
 
 from app.mission.decision_engine.assessment import assess_mission
+from copy import deepcopy
+
+from app.mission.decision_engine import assessment
+from app.mission.decision_engine.mock_data import LUNAR_SITES
 
 
 PROFILE_ID = "ROVER_EXPLORATION_V1"
@@ -80,3 +84,178 @@ def test_invalid_profile_is_rejected():
             "SHACKLETON_RIM",
             "INVALID_PROFILE"
         )
+
+def test_synthetic_data_provenance():
+
+    result = assess_mission(
+        "SHACKLETON_RIM",
+        PROFILE_ID
+    )
+
+    assert result["data_quality"]["provenance_status"] == "SYNTHETIC"
+
+
+def test_verified_provenance(monkeypatch):
+
+    site = deepcopy(LUNAR_SITES["SHACKLETON_RIM"])
+
+    site["data_status"] = "AVAILABLE"
+    site["data_source"] = "NASA Test Fixture"
+
+    site["provenance"] = {
+        "provider": "NASA",
+        "product": "LOLA Test Fixture",
+        "product_version": "1.0",
+        "processing_lineage": ["Test processing step"],
+        "verification_status": "VERIFIED",
+        "quality_flags": []
+    }
+
+    monkeypatch.setattr(
+        assessment,
+        "get_lunar_site",
+        lambda site_id: site
+    )
+
+    result = assessment.assess_mission(
+        "SHACKLETON_RIM",
+        PROFILE_ID
+    )
+
+    assert result["data_quality"]["provenance_status"] == "VERIFIED"
+
+
+def test_missing_provenance(monkeypatch):
+
+    site = deepcopy(LUNAR_SITES["SHACKLETON_RIM"])
+
+    site["data_status"] = "AVAILABLE"
+    site.pop("provenance", None)
+
+    monkeypatch.setattr(
+        assessment,
+        "get_lunar_site",
+        lambda site_id: site
+    )
+
+    result = assessment.assess_mission(
+        "SHACKLETON_RIM",
+        PROFILE_ID
+    )
+
+    assert result["data_quality"]["provenance_status"] == "MISSING_PROVENANCE"
+
+
+def test_unverified_provenance(monkeypatch):
+
+    site = deepcopy(LUNAR_SITES["SHACKLETON_RIM"])
+
+    site["data_status"] = "AVAILABLE"
+    site["provenance"]["verification_status"] = "NOT_VERIFIED"
+
+    monkeypatch.setattr(
+        assessment,
+        "get_lunar_site",
+        lambda site_id: site
+    )
+
+    result = assessment.assess_mission(
+        "SHACKLETON_RIM",
+        PROFILE_ID
+    )
+
+    assert result["data_quality"]["provenance_status"] == "UNVERIFIED"
+
+
+def test_unknown_data_status(monkeypatch):
+
+    site = deepcopy(LUNAR_SITES["SHACKLETON_RIM"])
+
+    site["data_status"] = "UNKNOWN_FUTURE_STATUS"
+
+    monkeypatch.setattr(
+        assessment,
+        "get_lunar_site",
+        lambda site_id: site
+    )
+
+    result = assessment.assess_mission(
+        "SHACKLETON_RIM",
+        PROFILE_ID
+    )
+
+    assert result["data_quality"]["provenance_status"] == "UNKNOWN"
+def test_assessment_calculates_feasibility_and_scoring_once(monkeypatch):
+
+    call_counts = {
+        "feasibility": 0,
+        "scoring": 0
+    }
+
+    original_feasibility = assessment.check_feasibility
+    original_scoring = assessment.calculate_site_score
+
+    def counted_feasibility(*args, **kwargs):
+        call_counts["feasibility"] += 1
+        return original_feasibility(*args, **kwargs)
+
+    def counted_scoring(*args, **kwargs):
+        call_counts["scoring"] += 1
+        return original_scoring(*args, **kwargs)
+
+    monkeypatch.setattr(
+        assessment,
+        "check_feasibility",
+        counted_feasibility
+    )
+
+    monkeypatch.setattr(
+        assessment,
+        "calculate_site_score",
+        counted_scoring
+    )
+
+    assessment.assess_mission(
+        "SHACKLETON_RIM",
+        PROFILE_ID
+    )
+
+    assert call_counts["feasibility"] == 1
+    assert call_counts["scoring"] == 1
+def test_assessment_does_not_repeat_calculations(monkeypatch):
+
+    call_counts = {
+        "feasibility": 0,
+        "scoring": 0
+    }
+
+    original_feasibility = assessment.check_feasibility
+    original_scoring = assessment.calculate_site_score
+
+    def counted_feasibility(*args, **kwargs):
+        call_counts["feasibility"] += 1
+        return original_feasibility(*args, **kwargs)
+
+    def counted_scoring(*args, **kwargs):
+        call_counts["scoring"] += 1
+        return original_scoring(*args, **kwargs)
+
+    monkeypatch.setattr(
+        assessment,
+        "check_feasibility",
+        counted_feasibility
+    )
+
+    monkeypatch.setattr(
+        assessment,
+        "calculate_site_score",
+        counted_scoring
+    )
+
+    assessment.assess_mission(
+        "SHACKLETON_RIM",
+        PROFILE_ID
+    )
+
+    assert call_counts["feasibility"] == 1
+    assert call_counts["scoring"] == 1

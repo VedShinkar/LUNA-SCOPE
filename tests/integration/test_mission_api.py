@@ -162,3 +162,124 @@ def test_compare_missing_profile():
     )
 
     assert response.status_code == 422
+# --------------------------------------------------
+# Additional API Request Validation Tests
+# --------------------------------------------------
+
+def test_assess_whitespace_site_id():
+
+    response = client.post(
+        "/api/v1/mission/assess",
+        json={
+            "site_id": "   ",
+            "mission_profile_id": PROFILE_ID
+        }
+    )
+
+    assert response.status_code == 422
+
+
+def test_assess_whitespace_profile_id():
+
+    response = client.post(
+        "/api/v1/mission/assess",
+        json={
+            "site_id": "SHACKLETON_RIM",
+            "mission_profile_id": "   "
+        }
+    )
+
+    assert response.status_code == 422
+
+
+def test_assess_rejects_unsupported_scenario_id():
+
+    response = client.post(
+        "/api/v1/mission/assess",
+        json={
+            "site_id": "SHACKLETON_RIM",
+            "mission_profile_id": PROFILE_ID,
+            "scenario_id": "UNSUPPORTED_SCENARIO"
+        }
+    )
+
+    assert response.status_code == 422
+
+
+def test_compare_whitespace_site_id():
+
+    response = client.post(
+        "/api/v1/mission/compare",
+        json={
+            "site_ids": ["   "],
+            "mission_profile_id": PROFILE_ID
+        }
+    )
+
+    assert response.status_code == 422
+
+
+def test_compare_duplicate_site_ids():
+
+    response = client.post(
+        "/api/v1/mission/compare",
+        json={
+            "site_ids": [
+                "SHACKLETON_RIM",
+                "SHACKLETON_RIM"
+            ],
+            "mission_profile_id": PROFILE_ID
+        }
+    )
+
+    assert response.status_code == 422
+
+
+def test_compare_more_than_ten_sites():
+
+    response = client.post(
+        "/api/v1/mission/compare",
+        json={
+            "site_ids": [
+                "SHACKLETON_RIM",
+                "MALAPERT_MASSIF",
+                "DE_GERLACHE_RIM",
+                "SHACKLETON_RIM_4",
+                "SHACKLETON_RIM_5",
+                "SHACKLETON_RIM_6",
+                "SHACKLETON_RIM_7",
+                "SHACKLETON_RIM_8",
+                "SHACKLETON_RIM_9",
+                "SHACKLETON_RIM_10",
+                "SHACKLETON_RIM_11"
+            ],
+            "mission_profile_id": PROFILE_ID
+        }
+    )
+
+    assert response.status_code == 422
+
+
+def test_compare_rejects_unsupported_scenario_id():
+
+    response = client.post(
+        "/api/v1/mission/compare",
+        json={
+            "site_ids": ["SHACKLETON_RIM"],
+            "mission_profile_id": PROFILE_ID,
+            "scenario_id": "UNSUPPORTED_SCENARIO"
+        }
+    )
+
+    assert response.status_code == 422
+def test_compare_whitespace_site_id():
+
+    response = client.post(
+        "/api/v1/mission/compare",
+        json={
+            "site_ids": ["   "],
+            "mission_profile_id": PROFILE_ID
+        }
+    )
+
+    assert response.status_code == 422

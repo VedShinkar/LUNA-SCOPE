@@ -31,7 +31,17 @@ def calculate_percentage(actual, target, higher_is_better=True):
     return min(100, max(0, score))
 
 
-def calculate_site_score(site_id, profile_id):
+def calculate_site_score(
+    site_id,
+    profile_id,
+    feasibility_result=None
+):
+    """
+    Calculate the weighted mission suitability score.
+
+    An existing feasibility result can be supplied to
+    avoid recalculating feasibility.
+    """
 
     profile = get_mission_profile(profile_id)
     site = get_lunar_site(site_id)
@@ -39,13 +49,15 @@ def calculate_site_score(site_id, profile_id):
     requirements = profile["requirements"]
     weights = profile["weights"]
 
-    # Check mandatory mission requirements
-    feasibility_result = check_feasibility(
-        site_id,
-        profile_id
-    )
+    # Calculate feasibility only if no result was supplied.
+    if feasibility_result is None:
 
-    # Check whether required measurements are available
+        feasibility_result = check_feasibility(
+            site_id,
+            profile_id
+        )
+
+    # Check whether required measurements are available.
     required_fields = [
         "sunlight_hours",
         "earth_visibility_hours",
@@ -108,7 +120,7 @@ def calculate_site_score(site_id, profile_id):
         "illumination": round(illumination_score, 2)
     }
 
-    # Calculate weighted overall score
+    # Calculate weighted overall score.
     overall_score = sum(
         criterion_scores[name] * weights[name]
         for name in weights

@@ -11,25 +11,48 @@ from .feasibility import check_feasibility
 from .scoring_engine import calculate_site_score
 
 
-def generate_recommendation(site_id, profile_id):
+def generate_recommendation(
+    site_id,
+    profile_id,
+    feasibility_result=None,
+    scoring_result=None
+):
+    """
+    Generate mission recommendations.
 
-    # Get feasibility and scoring results
-    feasibility = check_feasibility(site_id, profile_id)
+    Existing feasibility and scoring results can be supplied
+    to avoid repeating calculations.
+    """
 
-    scoring = calculate_site_score(site_id, profile_id)
+    # Calculate feasibility only if no result was supplied.
+    if feasibility_result is None:
+
+        feasibility_result = check_feasibility(
+            site_id,
+            profile_id
+        )
+
+    # Calculate scoring only if no result was supplied.
+    if scoring_result is None:
+
+        scoring_result = calculate_site_score(
+            site_id,
+            profile_id,
+            feasibility_result=feasibility_result
+        )
 
     risks = []
     explanations = []
 
-    # Handle missing data
-    if feasibility["feasibility"] == "INSUFFICIENT_DATA":
+    # Handle missing data.
+    if feasibility_result["feasibility"] == "INSUFFICIENT_DATA":
 
         return {
             "site_id": site_id,
-            "site_name": feasibility["site_name"],
+            "site_name": feasibility_result["site_name"],
             "feasibility": "INSUFFICIENT_DATA",
             "overall_score": None,
-            "missing_inputs": feasibility["missing_inputs"],
+            "missing_inputs": feasibility_result["missing_inputs"],
             "risk_factors": [
                 "Required mission data is missing."
             ],
@@ -37,11 +60,11 @@ def generate_recommendation(site_id, profile_id):
                 "More reliable scientific data is required "
                 "before evaluating this location."
             ),
-            "data_status": feasibility["data_status"]
+            "data_status": feasibility_result["data_status"]
         }
 
-    # Identify failed requirements
-    for failure in feasibility["failed_constraints"]:
+    # Identify failed requirements.
+    for failure in feasibility_result["failed_constraints"]:
 
         requirement = failure["requirement"]
 
@@ -57,8 +80,8 @@ def generate_recommendation(site_id, profile_id):
             f"required value is {required}."
         )
 
-    # Generate recommendation
-    if feasibility["feasibility"] == "FEASIBLE":
+    # Generate recommendation.
+    if feasibility_result["feasibility"] == "FEASIBLE":
 
         recommendation = (
             "This location satisfies all configured "
@@ -74,8 +97,8 @@ def generate_recommendation(site_id, profile_id):
             "before considering it for the mission."
         )
 
-    # Add data limitation
-    if feasibility["data_status"] == "SYNTHETIC_EXAMPLE":
+    # Add data limitation.
+    if feasibility_result["data_status"] == "SYNTHETIC_EXAMPLE":
 
         risks.append("Synthetic test data")
 
@@ -88,12 +111,13 @@ def generate_recommendation(site_id, profile_id):
 
         "site_id": site_id,
 
-        "site_name": feasibility["site_name"],
+        "site_name": feasibility_result["site_name"],
 
-        "feasibility": feasibility["feasibility"],
+        "feasibility": feasibility_result["feasibility"],
 
-        "overall_score": scoring["overall_score"],
-        "criterion_scores": scoring.get("criterion_scores"),
+        "overall_score": scoring_result["overall_score"],
+
+        "criterion_scores": scoring_result.get("criterion_scores"),
 
         "risk_factors": risks,
 
@@ -101,7 +125,7 @@ def generate_recommendation(site_id, profile_id):
 
         "recommendation": recommendation,
 
-        "data_status": feasibility["data_status"]
+        "data_status": feasibility_result["data_status"]
 
     }
 

@@ -1,4 +1,4 @@
-"""Bounded, co-registered terrain grids for the Site04 browser explorer."""
+"""Bounded, co-registered terrain grids for catalogued landing sites."""
 from contextlib import ExitStack
 from pathlib import Path
 
@@ -7,22 +7,39 @@ import rasterio
 from rasterio.errors import RasterioIOError
 from rasterio.transform import Affine
 from rasterio.windows import Window
+from pyproj import CRS
+from app.scientific_engines.terrain.catalog import ROOT as REPO, get_site_config
 
 ROOT = Path(__file__).resolve().parents[4] / "data"
-SITE = "Site04"
 LAYERS = {
     "slope": ("processed", "calculated_slope_deg", "deg"),
     "aspect": ("processed", "calculated_aspect_deg", "deg"),
     "roughness": ("processed", "roughness_15m", "m"),
-    "coverage": ("raw", "final_adj_5mpp_ldec", "returns"),
-    "uncertainty": ("raw", "final_adj_5mpp_slperr", "deg RMS"),
-    "elevation_uncertainty": ("raw", "final_adj_5mpp_toterr", "m RMS"),
+    "roughness_35m": ("processed", "roughness_35m", "m"),
+    "roughness_75m": ("processed", "roughness_75m", "m"),
+    "nasa_slope": ("raw", "slope", "deg"),
+    "coverage": ("raw", "observation_count", "returns"),
+    "uncertainty": ("raw", "slope_uncertainty", "deg RMS"),
+    "elevation_uncertainty": ("raw", "elevation_uncertainty", "m RMS"),
     "hazards": ("processed", "combined_hazard_screen", "class"),
 }
 
 
-def _path(root: Path, stage: str, product: str) -> Path:
-    return root / stage / "terrain" / SITE.lower() / f"{SITE}_{product}.tif"
+def _path(root: Path, stage: str, product: str, config: dict) -> Path:
+    if stage == "raw":
+        relative = (REPO / config["rasters"][product]["path"]).relative_to(ROOT)
+    else:
+        relative = config["processed_dir"].relative_to(ROOT) / f"{config['site_id']}_{product}.tif"
+    return root / relative
+
+
+def site_elevation_path(site_id: str, root: Path = ROOT) -> Path:
+    return _path(root, "processed", "processed_elevation", get_site_config(site_id))
+
+
+def _same_crs(a, b):
+    return a == b or (a is not None and b is not None and
+                      CRS.from_wkt(a.to_wkt()).to_dict() == CRS.from_wkt(b.to_wkt()).to_dict())
 
 
 def _band(dataset, window=None):
@@ -48,12 +65,13 @@ def _quad_validity(valid, rows, cols):
     return ~np.logical_or.reduceat(row_blocks, cols[:-1] - cols[0], axis=1)
 
 
-def load_explorer_grid(max_dimension: int, root: Path = ROOT, *, centre=None) -> dict:
+def load_explorer_grid(max_dimension: int, root: Path = ROOT, *, centre=None, site_id: str = "Site04") -> dict:
     """Sample exact source pixel centres on a regular, decimated affine grid."""
     if not 2 <= max_dimension <= 384:
         raise ValueError("Grid limit must be between 2 and 384.")
+    config = get_site_config(site_id)
     with ExitStack() as stack:
-        source = stack.enter_context(rasterio.open(_path(root, "processed", "processed_elevation")))
+        source = stack.enter_context(rasterio.open(_path(root, "processed", "processed_elevation", config)))
         if source.crs is None:
             raise ValueError("The processed elevation grid has no CRS.")
         source_shape = source.shape
@@ -61,7 +79,7 @@ def load_explorer_grid(max_dimension: int, root: Path = ROOT, *, centre=None) ->
         if centre is not None:
             row, col = source.index(*centre)
             if not (0 <= row < source.height and 0 <= col < source.width):
-                raise ValueError("The inspection point is outside Site04.")
+                raise ValueError(f"The inspection point is outside {site_id}.")
             width, height = min(source.width, max_dimension), min(source.height, max_dimension)
             window = Window(min(max(0, col - width // 2), source.width - width),
                             min(max(0, row - height // 2), source.height - height), width, height)
@@ -82,28 +100,46 @@ def load_explorer_grid(max_dimension: int, root: Path = ROOT, *, centre=None) ->
 
         layers = {}
         unavailable = {}
+        layer_sources = {}
+        observation_support = None
+        source_hash = source.tags().get("SOURCE_DEM_SHA256")
         for name, (stage, product, unit) in LAYERS.items():
-            path = _path(root, stage, product)
+            path = _path(root, stage, product, config)
             if not path.is_file():
                 unavailable[name] = "Raster is unavailable."
                 continue
             try:
                 with rasterio.open(path) as dataset:
-                    if (dataset.shape, dataset.transform, dataset.crs) != (source_shape, source.transform, source.crs):
+                    if (dataset.shape, dataset.transform) != (source_shape, source.transform) or not _same_crs(dataset.crs, source.crs):
                         unavailable[name] = "Raster grid differs from the elevation grid."
+                        continue
+                    if stage == "processed" and source_hash and dataset.tags().get("SOURCE_DEM_SHA256") != source_hash:
+                        unavailable[name] = "Raster provenance differs from the elevation grid."
                         continue
                     values, layer_valid = _band(dataset, window)
             except RasterioIOError:
                 unavailable[name] = "Raster could not be read."
                 continue
             layers[name] = _encode(values[samples], layer_valid[samples] & valid[samples], unit)
+            layer_sources[name] = {"file": path.name, "kind": stage,
+                                   "url": config["rasters"][product]["url"] if stage == "raw" else None}
+            if name == "coverage":
+                supported = layer_valid & valid
+                count = np.count_nonzero(valid)
+                if count:
+                    observation_support = {
+                        "direct_percent": 100 * np.count_nonzero(supported & (values > 0)) / count,
+                        "interpolated_percent": 100 * np.count_nonzero(supported & (values == 0)) / count,
+                        "missing_percent": 100 * np.count_nonzero(valid & ~layer_valid) / count,
+                    }
 
         return {
-            "site_id": SITE,
-            "site_name": "Shackleton Rim",
+            "site_id": site_id,
+            "site_name": config.get("display_name", config["name"]),
             "source": "NASA GSFC PGDA · LOLA",
             "source_file": Path(source.name).name,
-            "source_url": "https://pgda.gsfc.nasa.gov/products/78",
+            "source_url": config["identity_source_url"],
+            "elevation_source_url": config["rasters"]["elevation"]["url"],
             "width": int(cols.size),
             "height": int(rows.size),
             "source_width": source.width,
@@ -124,5 +160,7 @@ def load_explorer_grid(max_dimension: int, root: Path = ROOT, *, centre=None) ->
             "valid": valid[samples].ravel().tolist(),
             "quad_valid": quad_valid.ravel().tolist(),
             "layers": layers,
+            "layer_sources": layer_sources,
+            "observation_support": observation_support,
             "unavailable": unavailable,
         }

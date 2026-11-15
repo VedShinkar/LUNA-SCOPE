@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from math import isfinite
+import json
 from typing import Any, Dict, List, Literal, Optional
 from fastapi import APIRouter, HTTPException, Query
 from fastapi.responses import FileResponse, Response
@@ -16,9 +17,13 @@ from app.models.terrain import (
     TerrainPointQueryResponse,
 )
 from app.scientific_engines.terrain.service import TerrainService
-from app.scientific_engines.terrain.catalog import UnknownSiteError
+from app.scientific_engines.terrain.catalog import CATALOG_PATH, UnknownSiteError, get_site_config, list_site_ids
 from app.scientific_engines.terrain.explorer import load_explorer_grid
-from app.scientific_engines.terrain.lunar_context import CACHE, PDS, RADIUS, SVS, elevation_profile, global_elevation, regional_grid, site04_context
+from app.scientific_engines.terrain.analysis import site_cross_section, site_statistics
+from app.scientific_engines.terrain.lunar_context import (
+    CACHE, PDS, RADIUS, SVS, elevation_profile, global_elevation,
+    inspect_lunar_surface, regional_grid, site_context,
+)
 
 router = APIRouter(prefix="/terrain", tags=["Terrain Intelligence"])
 
@@ -31,17 +36,16 @@ class LunarCoordinate(BaseModel):
 class LunarProfileRequest(BaseModel):
     start: LunarCoordinate
     end: LunarCoordinate
-    level: Literal["moon", "polar", "site04"]
+    level: Literal["moon", "polar", "site", "site04"]
+    site_id: str = "Site04"
 
 
 @router.get("/explorer/context")
 def get_lunar_context():
-    try:
-        site = site04_context()
-    except (RasterioIOError, OSError):
-        site = None
+    sites = [site_context(site_id) for site_id in list_site_ids()]
+    site = next((entry for entry in sites if entry["site_id"] == "Site04" and entry["available"]), None)
     return {
-        "radius_m": RADIUS, "site04": site, "global_shape": [720, 1440],
+        "radius_m": RADIUS, "site04": site, "sites": sites, "global_shape": [720, 1440],
         "global_resolution_deg": 0.25, "global_source_url": SVS, "polar_source_url": PDS,
         "imagery": (CACHE / "lroc_color_2k.jpg").is_file(),
     }
@@ -64,9 +68,12 @@ def get_lunar_elevation():
 
 
 @router.get("/explorer/polar")
-def get_polar_grid(detail: Literal["overview", "approach"] = "overview"):
+def get_polar_grid(detail: Literal["overview", "approach"] = "overview", site_id: str = "Site04"):
     try:
-        return regional_grid(detail)
+        get_site_config(site_id)
+        return regional_grid(detail, site_id if detail == "approach" else "Site04")
+    except UnknownSiteError as error:
+        raise HTTPException(404, str(error)) from error
     except (RasterioIOError, OSError, ValueError) as error:
         raise HTTPException(503, "The PDS polar elevation grid is unavailable.") from error
 
@@ -78,26 +85,115 @@ def get_lunar_profile(request: LunarProfileRequest):
             (request.start.longitude, request.start.latitude),
             (request.end.longitude, request.end.latitude),
             request.level,
+            request.site_id if request.level != "site04" else "Site04",
         )
+    except UnknownSiteError as error:
+        raise HTTPException(404, str(error)) from error
     except (RasterioIOError, OSError, ValueError) as error:
         raise HTTPException(503, "The selected elevation source is unavailable.") from error
 
 
-@router.get("/explorer/grid", summary="Get bounded Site04 mesh samples and aligned science layers")
+@router.get("/explorer/surface")
+def get_lunar_surface(
+    longitude: float = Query(ge=-180, le=180),
+    latitude: float = Query(ge=-90, le=90),
+    level: Literal["moon", "polar"] = "moon",
+):
+    try:
+        return inspect_lunar_surface(longitude, latitude, level)
+    except (RasterioIOError, OSError, ValueError) as error:
+        raise HTTPException(503, "The selected elevation source is unavailable.") from error
+
+
+@router.get("/explorer/statistics")
+def get_raster_statistics(
+    site_id: str,
+    layer: Literal["elevation", "slope", "roughness", "coverage", "uncertainty", "elevation_uncertainty"],
+    threshold: float | None = Query(default=None, ge=0),
+):
+    if threshold is not None and (not isfinite(threshold) or layer not in ("slope", "roughness")):
+        raise HTTPException(422, "Screening requires a finite slope or roughness threshold in the source layer's units.")
+    try:
+        return site_statistics(site_id, layer, threshold)
+    except UnknownSiteError as error:
+        raise HTTPException(404, str(error)) from error
+    except (OSError, ValueError, RasterioIOError) as error:
+        raise HTTPException(503, f"Native statistics unavailable for {site_id} / {layer}.") from error
+
+
+class CrossSectionRequest(BaseModel):
+    site_id: str
+    vertices: list[LunarCoordinate] = Field(min_length=2, max_length=32)
+
+
+@router.post("/explorer/cross-section")
+def get_site_cross_section(request: CrossSectionRequest):
+    try:
+        return site_cross_section(request.site_id, [(point.longitude, point.latitude) for point in request.vertices])
+    except UnknownSiteError as error:
+        raise HTTPException(404, str(error)) from error
+    except ValueError as error:
+        raise HTTPException(422, str(error)) from error
+    except (OSError, RasterioIOError) as error:
+        raise HTTPException(503, f"Native elevation unavailable for {request.site_id}.") from error
+
+
+@router.get("/explorer/comparison")
+def get_explorer_comparison():
+    """Expose archived whole-grid summaries, independent of decimated display data."""
+    try:
+        report = json.loads(CATALOG_PATH.with_name("multisite_comparison.json").read_text(encoding="utf-8"))
+    except (OSError, ValueError) as error:
+        raise HTTPException(503, "The verified terrain comparison report is unavailable.") from error
+    by_id = {entry["site_id"]: entry for entry in report.get("sites", [])}
+    sites = []
+    for site_id in list_site_ids():
+        entry = by_id.get(site_id, {})
+        if entry.get("status") != "PROCESSED":
+            sites.append({"site_id": site_id, "metrics": None})
+            continue
+        try:
+            validation_path = CATALOG_PATH.with_name(f"{site_id.lower()}_validation_report.json")
+            validation = json.loads(validation_path.read_text(encoding="utf-8"))
+            integrity = validation.get("data_integrity", {}) if validation.get("site") == site_id and validation.get("phase1_gate_passed") else {}
+        except (OSError, ValueError):
+            integrity = {}
+
+        def median(product):
+            record = integrity.get(product, {})
+            value = record.get("statistics", {}).get("percentiles", {}).get("median")
+            return value if record.get("passed") and isinstance(value, (int, float)) and isfinite(value) else None
+
+        sites.append({"site_id": site_id, "metrics": {
+            "elevation": entry.get("elevation", {}).get("statistics"),
+            "observations": entry.get("observations"),
+            "roughness": entry.get("roughness", {}).get("scales"),
+            "hazards": entry.get("hazard_percentages"),
+            "nasa_slope_median_deg": median("slope"),
+            "slope_uncertainty_median_deg": median("slope_uncertainty"),
+            "elevation_uncertainty_median_m": median("elevation_uncertainty"),
+        }})
+    return {"source": "Archived whole-grid terrain and source validation reports", "sites": sites}
+
+
+@router.get("/explorer/grid", summary="Get bounded site mesh samples and aligned science layers")
 def get_explorer_grid(
     max_dimension: int = Query(default=256, ge=2, le=384),
     easting_m: float | None = Query(default=None, allow_inf_nan=False),
     northing_m: float | None = Query(default=None, allow_inf_nan=False),
+    site_id: str = "Site04",
 ) -> Dict[str, Any]:
     if (easting_m is None) != (northing_m is None):
         raise HTTPException(422, "Supply both coordinates for a native inspection window.")
     centre = None if easting_m is None else (easting_m, northing_m)
     try:
-        return load_explorer_grid(max_dimension, centre=centre)
+        return load_explorer_grid(max_dimension, centre=centre, site_id=site_id)
+    except UnknownSiteError as error:
+        raise HTTPException(404, str(error)) from error
     except ValueError as error:
         raise HTTPException(422, str(error)) from error
-    except RasterioIOError as error:
-        raise HTTPException(status_code=503, detail="The processed Site04 grid could not be loaded.") from error
+    except (RasterioIOError, OSError) as error:
+        raise HTTPException(status_code=503, detail=f"The processed {site_id} grid could not be loaded.") from error
 
 
 @router.get(

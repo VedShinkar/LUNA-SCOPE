@@ -1,0 +1,301 @@
+{
+  "retrieved_utc": "2026-11-15T06:49:58.262378+00:00",
+  "queries": [
+    {
+      "site_id": "Site04",
+      "target": "sun",
+      "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=json&COMMAND=%2710%27&CENTER=%27coord%40301%27&COORD_TYPE=%27GEODETIC%27&SITE_COORD=%27188.130102354156%2C-89.766811452150%2C0.767978637695%27&TLIST=%272025-06-21+12%3A00%3A00%27+%272026-01-01+00%3A00%3A00%27+%272026-01-15+06%3A00%3A00%27&TIME_TYPE=%27UT%27&EPHEM_TYPE=%27OBSERVER%27&OBJ_DATA=%27NO%27&APPARENT=%27AIRLESS%27&QUANTITIES=%274%2C13%27&CSV_FORMAT=%27YES%27&EXTRA_PREC=%27YES%27",
+      "horizons_header": [
+        "Target body name: Sun (10)                        {source: DE441}",
+        "Center body name: Moon (301)                      {source: DE441}",
+        "Center geodetic : 188.1301024,-89.7668115,.767979 {E-lon(deg),Lat(deg),Alt(km)}",
+        "Center pole/equ : MEAN_ME (high precision)        {East-longitude positive}",
+        "Center radii    : 1737.4, 1737.4, 1737.4 km       {Equator_a, b, pole_c}",
+        "Atmos refraction: NO (AIRLESS)"
+      ]
+    },
+    {
+      "site_id": "Site04",
+      "target": "earth",
+      "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=json&COMMAND=%27399%27&CENTER=%27coord%40301%27&COORD_TYPE=%27GEODETIC%27&SITE_COORD=%27188.130102354156%2C-89.766811452150%2C0.767978637695%27&TLIST=%272025-06-21+12%3A00%3A00%27+%272026-01-01+00%3A00%3A00%27+%272026-01-15+06%3A00%3A00%27&TIME_TYPE=%27UT%27&EPHEM_TYPE=%27OBSERVER%27&OBJ_DATA=%27NO%27&APPARENT=%27AIRLESS%27&QUANTITIES=%274%2C13%27&CSV_FORMAT=%27YES%27&EXTRA_PREC=%27YES%27",
+      "horizons_header": [
+        "Target body name: Earth (399)                     {source: DE441}",
+        "Center body name: Moon (301)                      {source: DE441}",
+        "Center geodetic : 188.1301024,-89.7668115,.767979 {E-lon(deg),Lat(deg),Alt(km)}",
+        "Center pole/equ : MEAN_ME (high precision)        {East-longitude positive}",
+        "Center radii    : 1737.4, 1737.4, 1737.4 km       {Equator_a, b, pole_c}",
+        "Atmos refraction: NO (AIRLESS)"
+      ]
+    },
+    {
+      "site_id": "Site11",
+      "target": "sun",
+      "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=json&COMMAND=%2710%27&CENTER=%27coord%40301%27&COORD_TYPE=%27GEODETIC%27&SITE_COORD=%27292.067899562410%2C-88.683418150776%2C1.793664428711%27&TLIST=%272025-06-21+12%3A00%3A00%27+%272026-01-01+00%3A00%3A00%27+%272026-01-15+06%3A00%3A00%27&TIME_TYPE=%27UT%27&EPHEM_TYPE=%27OBSERVER%27&OBJ_DATA=%27NO%27&APPARENT=%27AIRLESS%27&QUANTITIES=%274%2C13%27&CSV_FORMAT=%27YES%27&EXTRA_PREC=%27YES%27",
+      "horizons_header": [
+        "Target body name: Sun (10)                        {source: DE441}",
+        "Center body name: Moon (301)                      {source: DE441}",
+        "Center geodetic : 292.0678996,-88.6834182,1.79366 {E-lon(deg),Lat(deg),Alt(km)}",
+        "Center pole/equ : MEAN_ME (high precision)        {East-longitude positive}",
+        "Center radii    : 1737.4, 1737.4, 1737.4 km       {Equator_a, b, pole_c}",
+        "Atmos refraction: NO (AIRLESS)"
+      ]
+    },
+    {
+      "site_id": "Site11",
+      "target": "earth",
+      "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=json&COMMAND=%27399%27&CENTER=%27coord%40301%27&COORD_TYPE=%27GEODETIC%27&SITE_COORD=%27292.067899562410%2C-88.683418150776%2C1.793664428711%27&TLIST=%272025-06-21+12%3A00%3A00%27+%272026-01-01+00%3A00%3A00%27+%272026-01-15+06%3A00%3A00%27&TIME_TYPE=%27UT%27&EPHEM_TYPE=%27OBSERVER%27&OBJ_DATA=%27NO%27&APPARENT=%27AIRLESS%27&QUANTITIES=%274%2C13%27&CSV_FORMAT=%27YES%27&EXTRA_PREC=%27YES%27",
+      "horizons_header": [
+        "Target body name: Earth (399)                     {source: DE441}",
+        "Center body name: Moon (301)                      {source: DE441}",
+        "Center geodetic : 292.0678996,-88.6834182,1.79366 {E-lon(deg),Lat(deg),Alt(km)}",
+        "Center pole/equ : MEAN_ME (high precision)        {East-longitude positive}",
+        "Center radii    : 1737.4, 1737.4, 1737.4 km       {Equator_a, b, pole_c}",
+        "Atmos refraction: NO (AIRLESS)"
+      ]
+    },
+    {
+      "site_id": "Site23",
+      "target": "sun",
+      "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=json&COMMAND=%2710%27&CENTER=%27coord%40301%27&COORD_TYPE=%27GEODETIC%27&SITE_COORD=%27359.764216230123%2C-85.994784683561%2C4.783629394531%27&TLIST=%272025-06-21+12%3A00%3A00%27+%272026-01-01+00%3A00%3A00%27+%272026-01-15+06%3A00%3A00%27&TIME_TYPE=%27UT%27&EPHEM_TYPE=%27OBSERVER%27&OBJ_DATA=%27NO%27&APPARENT=%27AIRLESS%27&QUANTITIES=%274%2C13%27&CSV_FORMAT=%27YES%27&EXTRA_PREC=%27YES%27",
+      "horizons_header": [
+        "Target body name: Sun (10)                        {source: DE441}",
+        "Center body name: Moon (301)                      {source: DE441}",
+        "Center geodetic : 359.7642162,-85.9947847,4.78363 {E-lon(deg),Lat(deg),Alt(km)}",
+        "Center pole/equ : MEAN_ME (high precision)        {East-longitude positive}",
+        "Center radii    : 1737.4, 1737.4, 1737.4 km       {Equator_a, b, pole_c}",
+        "Atmos refraction: NO (AIRLESS)"
+      ]
+    },
+    {
+      "site_id": "Site23",
+      "target": "earth",
+      "url": "https://ssd.jpl.nasa.gov/api/horizons.api?format=json&COMMAND=%27399%27&CENTER=%27coord%40301%27&COORD_TYPE=%27GEODETIC%27&SITE_COORD=%27359.764216230123%2C-85.994784683561%2C4.783629394531%27&TLIST=%272025-06-21+12%3A00%3A00%27+%272026-01-01+00%3A00%3A00%27+%272026-01-15+06%3A00%3A00%27&TIME_TYPE=%27UT%27&EPHEM_TYPE=%27OBSERVER%27&OBJ_DATA=%27NO%27&APPARENT=%27AIRLESS%27&QUANTITIES=%274%2C13%27&CSV_FORMAT=%27YES%27&EXTRA_PREC=%27YES%27",
+      "horizons_header": [
+        "Target body name: Earth (399)                     {source: DE441}",
+        "Center body name: Moon (301)                      {source: DE441}",
+        "Center geodetic : 359.7642162,-85.9947847,4.78363 {E-lon(deg),Lat(deg),Alt(km)}",
+        "Center pole/equ : MEAN_ME (high precision)        {East-longitude positive}",
+        "Center radii    : 1737.4, 1737.4, 1737.4 km       {Equator_a, b, pole_c}",
+        "Atmos refraction: NO (AIRLESS)"
+      ]
+    }
+  ],
+  "comparisons": [
+    {
+      "site_id": "Site04",
+      "body": "sun",
+      "utc": "2025-06-21T12:00:00Z",
+      "azimuth_deg": 44.00056107,
+      "elevation_deg": -1.329000331,
+      "diameter_arcsec": 1890.463,
+      "azimuth_delta_arcsec": -1.6363844679290196e-05,
+      "elevation_delta_arcsec": 6.641087679781776e-08,
+      "direction_delta_arcsec": 1.6359550718881882e-05,
+      "diameter_delta_arcsec": -0.0001388907578530052
+    },
+    {
+      "site_id": "Site04",
+      "body": "sun",
+      "utc": "2026-01-01T00:00:00Z",
+      "azimuth_deg": 204.387278683,
+      "elevation_deg": 1.133365868,
+      "diameter_arcsec": 1947.038,
+      "azimuth_delta_arcsec": -6.671143637504429e-08,
+      "elevation_delta_arcsec": 2.5435389794381535e-06,
+      "direction_delta_arcsec": 2.5444111345228646e-06,
+      "diameter_delta_arcsec": 2.4255598418676527e-05
+    },
+    {
+      "site_id": "Site04",
+      "body": "sun",
+      "utc": "2026-01-15T06:00:00Z",
+      "azimuth_deg": 31.322853354,
+      "elevation_deg": 1.330994908,
+      "diameter_arcsec": 1954.362,
+      "azimuth_delta_arcsec": -1.5430600797117222e-05,
+      "elevation_delta_arcsec": -7.503126120411707e-07,
+      "direction_delta_arcsec": 1.5444673913555196e-05,
+      "diameter_delta_arcsec": 0.0002984615409786784
+    },
+    {
+      "site_id": "Site04",
+      "body": "earth",
+      "utc": "2025-06-21T12:00:00Z",
+      "azimuth_deg": 169.570733432,
+      "elevation_deg": 4.03579027,
+      "diameter_arcsec": 7210.119,
+      "azimuth_delta_arcsec": -0.0017830862930168223,
+      "elevation_delta_arcsec": -0.0001506171187770633,
+      "direction_delta_arcsec": 0.0017850304902145774,
+      "diameter_delta_arcsec": 0.0003740347074199235
+    },
+    {
+      "site_id": "Site04",
+      "body": "earth",
+      "utc": "2026-01-01T00:00:00Z",
+      "azimuth_deg": 170.595396853,
+      "elevation_deg": 6.052068874,
+      "diameter_arcsec": 7292.633,
+      "azimuth_delta_arcsec": -0.001915656753226358,
+      "elevation_delta_arcsec": -4.123868926342311e-05,
+      "direction_delta_arcsec": 0.0019054262612595231,
+      "diameter_delta_arcsec": -0.00011101974178018281
+    },
+    {
+      "site_id": "Site04",
+      "body": "earth",
+      "utc": "2026-01-15T06:00:00Z",
+      "azimuth_deg": 171.207184881,
+      "elevation_deg": -7.156897697,
+      "diameter_arcsec": 6502.214,
+      "azimuth_delta_arcsec": -0.0016191494864870037,
+      "elevation_delta_arcsec": 2.9710371762803334e-05,
+      "direction_delta_arcsec": 0.001606809016164192,
+      "diameter_delta_arcsec": -0.0004524412042883341
+    },
+    {
+      "site_id": "Site11",
+      "body": "sun",
+      "utc": "2025-06-21T12:00:00Z",
+      "azimuth_deg": 300.089949752,
+      "elevation_deg": -0.836864197,
+      "diameter_arcsec": 1890.463,
+      "azimuth_delta_arcsec": -1.6148874237842392e-05,
+      "elevation_delta_arcsec": -2.139668842104925e-06,
+      "direction_delta_arcsec": 1.6288338282025913e-05,
+      "diameter_delta_arcsec": 4.685144426730403e-05
+    },
+    {
+      "site_id": "Site11",
+      "body": "sun",
+      "utc": "2026-01-01T00:00:00Z",
+      "azimuth_deg": 100.479293806,
+      "elevation_deg": 1.106589093,
+      "diameter_arcsec": 1947.038,
+      "azimuth_delta_arcsec": -7.391463441308588e-07,
+      "elevation_delta_arcsec": 1.7913134975344747e-06,
+      "direction_delta_arcsec": 1.9377356296747478e-06,
+      "diameter_delta_arcsec": 1.3731438912145677e-05
+    },
+    {
+      "site_id": "Site11",
+      "body": "sun",
+      "utc": "2026-01-15T06:00:00Z",
+      "azimuth_deg": 287.353296626,
+      "elevation_deg": 1.524812981,
+      "diameter_arcsec": 1954.362,
+      "azimuth_delta_arcsec": -1.4963006833568215e-05,
+      "elevation_delta_arcsec": -2.0447100013143427e-06,
+      "direction_delta_arcsec": 1.509670505681994e-05,
+      "diameter_delta_arcsec": 0.00037710782021349587
+    },
+    {
+      "site_id": "Site11",
+      "body": "earth",
+      "utc": "2025-06-21T12:00:00Z",
+      "azimuth_deg": 65.730597849,
+      "elevation_deg": 4.807476375,
+      "diameter_arcsec": 7210.582,
+      "azimuth_delta_arcsec": -0.0017852622931968654,
+      "elevation_delta_arcsec": -0.0001159628137514801,
+      "direction_delta_arcsec": 0.0017827571443883613,
+      "diameter_delta_arcsec": 0.0002823862450895831
+    },
+    {
+      "site_id": "Site11",
+      "body": "earth",
+      "utc": "2026-01-01T00:00:00Z",
+      "azimuth_deg": 66.797874968,
+      "elevation_deg": 6.802612322,
+      "diameter_arcsec": 7293.092,
+      "azimuth_delta_arcsec": -0.0019178665183972043,
+      "elevation_delta_arcsec": -3.4059922882079263e-06,
+      "direction_delta_arcsec": 0.001904368052884858,
+      "diameter_delta_arcsec": 0.00048401749882032163
+    },
+    {
+      "site_id": "Site11",
+      "body": "earth",
+      "utc": "2026-01-15T06:00:00Z",
+      "azimuth_deg": 67.136904275,
+      "elevation_deg": -6.41686482,
+      "diameter_arcsec": 6502.57,
+      "azimuth_delta_arcsec": -0.0016155549474206055,
+      "elevation_delta_arcsec": 6.456543140131998e-05,
+      "direction_delta_arcsec": 0.001606731424996442,
+      "diameter_delta_arcsec": 0.0002669578707354958
+    },
+    {
+      "site_id": "Site23",
+      "body": "sun",
+      "utc": "2025-06-21T12:00:00Z",
+      "azimuth_deg": 232.521187373,
+      "elevation_deg": -3.938586786,
+      "diameter_arcsec": 1890.462,
+      "azimuth_delta_arcsec": -1.4796330560784554e-05,
+      "elevation_delta_arcsec": -1.4707643103406554e-06,
+      "direction_delta_arcsec": 1.4834445848267828e-05,
+      "diameter_delta_arcsec": -0.0001269065510314249
+    },
+    {
+      "site_id": "Site23",
+      "body": "sun",
+      "utc": "2026-01-01T00:00:00Z",
+      "azimuth_deg": 32.870170877,
+      "elevation_deg": 4.712320196,
+      "diameter_arcsec": 1947.039,
+      "azimuth_delta_arcsec": -1.212265487993136e-06,
+      "elevation_delta_arcsec": 2.6083998960757526e-06,
+      "direction_delta_arcsec": 2.874620988264915e-06,
+      "diameter_delta_arcsec": 0.0004605844458183128
+    },
+    {
+      "site_id": "Site23",
+      "body": "sun",
+      "utc": "2026-01-15T06:00:00Z",
+      "azimuth_deg": 219.704387695,
+      "elevation_deg": -1.950545504,
+      "diameter_arcsec": 1954.361,
+      "azimuth_delta_arcsec": -1.3421788480627583e-05,
+      "elevation_delta_arcsec": 4.5687773564395684e-07,
+      "direction_delta_arcsec": 1.342173370917092e-05,
+      "diameter_delta_arcsec": -2.7944148541791947e-05
+    },
+    {
+      "site_id": "Site23",
+      "body": "earth",
+      "utc": "2025-06-21T12:00:00Z",
+      "azimuth_deg": 357.916726178,
+      "elevation_deg": 8.269252701,
+      "diameter_arcsec": 7212.653,
+      "azimuth_delta_arcsec": -0.0017960650438908488,
+      "elevation_delta_arcsec": -0.00015944548721336105,
+      "direction_delta_arcsec": 0.0017845288606547242,
+      "diameter_delta_arcsec": 0.00036351218295749277
+    },
+    {
+      "site_id": "Site23",
+      "body": "earth",
+      "utc": "2026-01-01T00:00:00Z",
+      "azimuth_deg": 358.945945164,
+      "elevation_deg": 10.288938286,
+      "diameter_arcsec": 7295.218,
+      "azimuth_delta_arcsec": -0.0019351946093593142,
+      "elevation_delta_arcsec": -4.697681603715864e-05,
+      "direction_delta_arcsec": 0.0019046550758383429,
+      "diameter_delta_arcsec": -7.041696517262608e-05
+    },
+    {
+      "site_id": "Site23",
+      "body": "earth",
+      "utc": "2026-01-15T06:00:00Z",
+      "azimuth_deg": 359.579731601,
+      "elevation_deg": -2.923507561,
+      "diameter_arcsec": 6504.267,
+      "azimuth_delta_arcsec": -0.0016084293065432576,
+      "elevation_delta_arcsec": 2.9391777012222065e-05,
+      "direction_delta_arcsec": 0.0016066048299076805,
+      "diameter_delta_arcsec": 0.00035248504264018266
+    }
+  ]
+}

@@ -50,6 +50,11 @@ def test_global_and_regional_products_use_documented_registration():
     values = np.frombuffer(global_response.content, dtype="<f4").reshape(720, 1440)
     assert values.min() == pytest.approx(-8878.5)
     assert values.max() == pytest.approx(10504.001)
+    sample = client.get("/terrain/explorer/surface?longitude=0.125&latitude=0.125").json()
+    assert sample["elevation_m"] == float(values[359, 720])
+    assert sample["sampling"] == "nearest native cell"
+    assert client.get("/terrain/explorer/surface?longitude=0&latitude=91").status_code == 422
+    assert client.get("/terrain/explorer/surface?longitude=0&latitude=-84&level=polar").json()["elevation_m"] is None
     assert client.get("/terrain/explorer/moon/albedo").headers["content-type"] == "image/jpeg"
 
     with open_polar() as source:

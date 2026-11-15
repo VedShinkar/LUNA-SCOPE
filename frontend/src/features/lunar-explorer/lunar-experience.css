@@ -1,51 +1,473 @@
-.lunar-workspace { grid-template-columns: 238px minmax(0, 1fr) 263px; }
-.moon-viewport {
-  background: radial-gradient(ellipse at 50% 49%, #1c2939, #101823 62%, #0e141e 89%);
+:root {
+  --glass-text: #e7f1fa;
+  --glass-edge: #a9cdea40;
+  --glass-fill: #0c1725c7;
+  --glass-active: #194557bb;
+  --obs-deep: #080f1b;
+  --obs-panel: #0d1725;
+  --obs-raised: #132033;
+  --obs-cyan: #69d8f0;
+  --obs-radius: 7px;
+  --obs-stroke: #293a50;
+  --obs-ink: #eaf2fa;
+  --obs-glass: #101b2bf5;
+  --obs-focus: #91e4f3;
+  --obs-muted: #91a4b9;
+  --obs-ground: #050912;
+  --obs-speed: 160ms;
 }
-.moon-viewport .viewport-heading h2 { font-size: clamp(28px, 4vw, 54px); }
-.lunar-destinations .mode { justify-content: start; }
-.lunar-destinations button:disabled, .lunar-site button:disabled { opacity: .45; cursor: default; }
-.location-search > div { display: flex; gap: 6px; margin-top: 10px; }
-.location-search input {
-  min-width: 0; width: 100%; border: 1px solid var(--border); border-radius: 6px;
-  color: inherit; background: #101720; padding: 0 9px; font-size: 12px;
+.mission-workspace main:has(.comparative-terrain) { width:100%;max-width:1600px;padding:24px clamp(12px,3vw,42px); }
+.mission-workspace .mission-sheet:has(.comparative-terrain) { padding:clamp(12px,2vw,28px); }
+.comparison-controls { display:flex;align-items:center;flex-wrap:wrap;gap:14px;margin:14px 0; }
+.comparison-controls label { display:flex;align-items:center;gap:8px;font-size:13px; }
+.comparison-controls select { padding:6px;color:#eaf2fa; }
+.comparison-controls input { width:auto; }
+.comparison-controls .comparison-mobile-picker { display:none; }
+.comparison-panels { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0; }
+.comparison-site { min-width:0;border-top:1px solid var(--glass-edge);padding:12px 0; }
+.comparison-site h2 { margin:4px 0;font:600 25px var(--display); }
+.comparison-site p { color:#b3c5d6;font:11px var(--mono);margin:5px 0;overflow-wrap:anywhere; }
+.comparison-viewport { position:relative;height:clamp(230px,39vh,490px);background:radial-gradient(ellipse at 55% 45%,#21354c,#080f1b 75%);border:1px solid var(--glass-edge);border-radius:8px;overflow:hidden; }
+.comparison-viewport > p { padding:16px; }
+.comparison-legend,.comparison-metrics { display:flex;flex-wrap:wrap;gap:8px 14px;margin:9px 0;font:11px var(--mono);color:#bdcfe1; }
+.comparison-legend i { display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:4px; }
+.comparison-metrics dd { margin:3px 0;color:#eaf2fa; }
+.scientific-report { color:#eaf2fa;border-radius:12px;padding:22px;width:min(710px,92vw);max-height:85dvh;overflow:auto;background:#101c2c; }
+.scientific-report::backdrop { background:#020710b8; }
+.scientific-report p,.scientific-report section { margin:10px 0;overflow-wrap:anywhere; }
+.scientific-report h2 { font:600 36px var(--display);margin:4px 0; }
+.scientific-report h3 { font:600 16px var(--font);margin:12px 0 4px; }
+.scientific-report footer { margin-top:18px; }
+.scientific-report figure { margin:14px 0;break-inside:avoid; }
+.scientific-report img { display:block;max-width:100%;max-height:240px;object-fit:contain;background:#0b1724; }
+@media (max-width:1020px) and (min-width:701px) { .comparison-panels { grid-template-columns:repeat(3,minmax(315px,1fr));overflow-x:auto; } }
+@media (max-width:700px) { .comparison-panels { grid-template-columns:1fr; }.comparison-site[data-mobile-active=false] { display:none; }.comparison-controls .comparison-mobile-picker { display:flex; } }
+@media print {
+  html:has(.scientific-report[open]), body:has(.scientific-report[open]) { height:auto;overflow:visible;background:#fff; }
+  body:has(.scientific-report[open]) > :not(.scientific-report[open]) { display:none; }
+  .scientific-report[open] { position:static;margin:0;padding:0;width:100%;max-width:none;max-height:none;overflow:visible;color:#111;background:#fff;border:0;box-shadow:none;backdrop-filter:none; }
+  .scientific-report[open]::backdrop { display:none; }
+  .scientific-report[open] .eyebrow,.scientific-report[open] a { color:#164960; }
+  .scientific-report[open] h3 { break-after:avoid; }
+  .scientific-report[open] footer { display:none; }
 }
-.lunar-layers label { justify-content: start; gap: 9px; min-height: 22px; }
-.lunar-layers label input { margin: 0; }
-.lunar-site-icon { width: 42px; height: 42px; display: grid; place-items: center; margin-bottom: 17px; color: var(--accent); border: 1px solid #355565; border-radius: 8px; background: #1b2b36; }
-.lunar-site h2 { margin-top: 5px; font: 600 29px/1 var(--display); }
-.lunar-location { margin: 10px 0 18px; color: var(--muted); font: 11px var(--mono); }
-.lunar-site button { width: 100%; min-height: 38px; margin-bottom: 7px; display: flex; align-items: center; justify-content: space-between; gap: 6px; padding: 0 10px; text-align: left; font-size: 12px; font-weight: 600; }
-.lunar-site .lunar-primary { background: #223d48; border-color: #3c6774; color: #c2f5f5; }
-.lunar-site .lunar-primary:hover { background: #2e5260; }
-.lunar-viewport-footer { position: absolute; bottom: 0; inset-inline: 0; z-index: 1; padding: 14px 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; pointer-events: none; color: #b4c4d6; font: 11px var(--mono); background: linear-gradient(transparent,#101720d9); }
-.lunar-viewport-footer span { display: flex; gap: 7px; align-items: center; }
-.lunar-viewport-footer svg { color: var(--accent); }
-.lunar-metadata { display: grid; grid-template-columns: 1fr 1.55fr 1.3fr .8fr 1.15fr; gap: 10px; padding: 12px 22px; min-height: 65px; align-items: center; border-top: 1px solid var(--border); background: #121924; }
-.lunar-metadata > div { display: grid; gap: 4px; }
-.lunar-metadata span { font: 10px var(--mono); text-transform: uppercase; color: var(--muted); }
-.lunar-metadata strong, .lunar-metadata a { font-size: 11px; font-weight: 600; }
-.lunar-measurement { border-top: 1px solid var(--border); }
-.lunar-measurement h2 { font-size: 13px; }
+.lunar-locator { position:absolute; z-index:3; top:22px; right:var(--obs-gutter,24px); width:174px; padding:9px; border-radius:12px; color:var(--glass-text); box-shadow:inset 0 1px #c1e4ff3b; }
+.locator-heading,.locator-sites,.history-actions { display:flex; align-items:center; justify-content:space-between; gap:4px; }
+.locator-heading strong,.locator-heading span,.lunar-locator small { font:10px var(--mono); }
+.locator-heading span,.lunar-locator small { color:#acc5d8; }
+.lunar-locator small { display:block; text-align:center; margin-top:5px; }
+.locator-disc { position:relative; margin:3px auto; width:132px; height:132px; touch-action:none; cursor:grab; }
+.locator-disc canvas,.locator-disc svg { position:absolute; inset:0; width:100%; height:100%; }
+.locator-disc { overflow:hidden;border-radius:5px; }
+.locator-zoom { padding:0 4px;font:10px var(--mono);color:#daedf9; }
+.locator-disc svg { pointer-events:none; }
+.locator-disc path { stroke:#c9e6f767; stroke-width:.6; fill:none; }
+.locator-disc polygon { stroke:#a6edff; stroke-width:1; fill:#54d5e969; }
+.locator-marker { position:absolute; width:9px;height:9px;padding:0;border-radius:50%;transform:translate(-50%,-50%);border:1px solid #e8f8ff;background:#2a6179; }
+.locator-marker[aria-pressed=true] { background:#b6f6ff;outline:1px solid #97e5ff;outline-offset:2px;z-index:1; }
+.locator-sites .glass-control { flex:1;min-width:0;min-height:29px;padding:0 3px;font:9px var(--mono); }
+.workspace .lunar-locator { top:auto; bottom:56px;right:14px; }
+.observatory-view:has(.context-inspector) .lunar-locator { display:none; }
+.measurement-history { position:fixed;top:76px;right:21px;z-index:15;width:min(360px,calc(100vw - 28px));max-height:calc(100dvh - 105px);overflow:auto;border-radius:12px;background-color:#0b1725ee; }
+.measurement-history details { border-top:1px solid var(--glass-edge);padding:10px 0;font-size:12px; }
+.measurement-history summary { cursor:pointer; }
+.measurement-history p { margin:6px 0; }
+.measurement-history label { display:grid;gap:3px;margin:8px 0; }
+.measurement-history input:not([type=range]) { color:inherit;background:#101e30;border:1px solid #436179;border-radius:5px;padding:6px; }
+.history-actions { justify-content:flex-start; flex-wrap:wrap; }
+.history-actions .glass-control { min-height:32px; }
+.refined-inspector h3 { margin:15px 0 5px;font:11px var(--mono);color:#b8d0e1; }
+.refined-inspector { animation: reveal .22s ease-out; }
+@media(max-width:700px){
+  .lunar-locator { top:16px;right:10px;width:133px;padding:5px; }
+  .locator-disc { width:96px;height:96px; }
+  .workspace .lunar-locator { bottom:50px; }
+  .observatory .observatory-title { max-width:calc(100% - 155px); }
+}
+@media(max-width:390px){
+  .observatory-tools.glass-dock { display:grid;grid-template-columns:repeat(4,44px);gap:1px; }
+  .observatory-tools.glass-dock button:last-child { margin:0; }
+  .observatory-tools.glass-dock button:last-child::before { display:none; }
+  .observatory-view .observatory-site,.observatory-view .observatory-readout { bottom:123px; }
+  .observatory-view .observatory-readout[data-hover=true] { bottom:176px; }
+  .observatory-view .floating-tools { bottom:120px; }
+}
+@media(prefers-reduced-motion:reduce){.refined-inspector{animation:none}}
+.glass-surface { border: 1px solid var(--glass-edge); background-color: var(--glass-fill); backdrop-filter: blur(16px) saturate(145%); }
+button.glass-control { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 40px; padding: 0 11px; border: 1px solid transparent; border-radius: 12px; color: var(--glass-text); background: transparent; font-size: 12px; font-weight: 550; white-space: nowrap; transition: background .17s, border-color .17s, box-shadow .17s, transform .17s; }
+button.glass-control:where(:not(.glass-dock button)) { border-color: #9bc4e62b; background: linear-gradient(180deg,#80bbec14,#14253633); }
+button.glass-control:hover { background: linear-gradient(145deg,#9ed6f627,#31577548 56%,#101c2b45); border-color: #a9d3ee42; box-shadow: inset 0 1px #d4edff26; transform: translateY(-1px); }
+button.glass-control:is([aria-pressed=true],[aria-expanded=true]) { color: #d8f9ff; background: var(--glass-active); border-color: #85def092; box-shadow: inset 0 1px #b9ebff36; }
+button.glass-control:active { transform: scale(.97); background-color: #0b1925; }
+button.glass-control:focus-visible { outline: 2px solid #a5e8fb; outline-offset: 2px; z-index: 1; }
+button.glass-control:disabled { color: #a6b5c3; opacity: .65; cursor: default; transform: none; }
+.glass-icon { display: inline-flex; flex: none; color: #c0dbee; }
+.glass-icon svg { width: 17px; height: 17px; stroke-width: 1.7; }
+button.glass-control[data-icon-only=true] { width: 40px; padding: 0; }
+.observatory-tools.glass-dock { gap: 2px; padding: 5px; border-radius: 19px; border-color: var(--glass-edge); background: radial-gradient(ellipse at 22% -18%,#74b4e03d,transparent 60%),linear-gradient(165deg,#5278962e,transparent 58%),var(--glass-fill); box-shadow: inset 0 1px #e0f3ff50,inset 0 -1px #8cb5da22,0 10px 25px #02060c7a; }
+.observatory-tools.glass-dock button:last-child { margin-inline-start: 4px; }
+.observatory-tools.glass-dock button:last-child::before { content:''; position:absolute; left:-4px; top:10px; bottom:10px; border-left: 1px solid #97b7d546; }
+.observatory-panel:is(.context-inspector,.floating-tools,.command-palette,.mission-sheet) { backdrop-filter: blur(18px) saturate(140%); box-shadow: inset 0 1px #bedfff21,0 12px 34px #03070d80; }
+@media(max-width: 600px) {
+  .glass-dock .glass-control, .glass-dock .glass-control[data-icon-only=true] { min-width: 44px; min-height: 44px; padding-inline: 0; }
+  .glass-dock .glass-label, .observatory .top-actions .glass-label, .observatory .top-actions kbd { display:none; }
+  .observatory .top-actions .glass-control { min-height: 44px; }
+}
+@media(prefers-reduced-motion: reduce) {
+  button.glass-control { transition: none; }
+  button.glass-control:hover, button.glass-control:active { transform: none; }
+}
+button.metal-action { position: relative; isolation: isolate; min-height: 42px; padding-inline: 13px; color: #effaff; border-color: #58788c; background: linear-gradient(130deg,#2b4153,#13202d 49%,#334d60); box-shadow: inset 0 1px #b7e6ff55; }
+button.metal-action:hover { color: white; background: linear-gradient(130deg,#385b71,#192e40 49%,#46677a); border-color: #a6d5e6; }
+button.metal-action:active { transform: translateY(1px) scale(.985); }
+.metal-shader,.metal-ripple-clip { position: absolute; inset: 0; border-radius: inherit; overflow: hidden; pointer-events: none; }
+.metal-shader { opacity: 0; transition: opacity .2s; }
+.metal-shader[data-shader=ready] { opacity: .52; }
+.metal-action:hover .metal-shader[data-shader=ready], .metal-action:focus-visible .metal-shader[data-shader=ready] { opacity: .8; }
+.metal-shader::after { content: ''; position: absolute; inset: 1px; border-radius: inherit; background: linear-gradient(0deg,#081320f0,#132232a0 57%,#14253876); }
+.metal-shader canvas { position: absolute; inset: 0; width: 100% !important; height: 100% !important; }
+.metal-label { display: inline-flex; align-items: center; gap: 9px; position: relative; text-shadow: 0 1px 3px #000; }
+.metal-label > span { display: flex; }
+.metal-ripple-clip > span { position: absolute; width: 22px; height: 22px; border: 1px solid #c7f4ff; opacity: 0; border-radius: 50%; }
+button.obs-button, .icon-button, .lunar-return {
+  min-height: 38px; border-radius: var(--obs-radius); border: 1px solid var(--obs-stroke);
+  color: var(--obs-ink); background: #141e2be6;
+  transition: background var(--obs-speed), border-color var(--obs-speed), color var(--obs-speed), transform var(--obs-speed);
+}
+button.obs-button, .lunar-return {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 0 12px; font-size: 12px; font-weight: 600; white-space: nowrap;
+}
+button.obs-button:hover, .icon-button:hover, .lunar-return:hover { background: #263644; border-color: #627987; }
+button.obs-button:active, .icon-button:active, .lunar-return:active { transform: translateY(1px); }
+button.obs-button:focus-visible, .icon-button:focus-visible, .lunar-return:focus-visible { outline: 2px solid var(--obs-focus); outline-offset: 3px; }
+button.obs-button:disabled, .icon-button:disabled { opacity: .5; cursor: default; transform: none; }
+button.metal-action.obs-button { color: #effaff; border-color: #58788c; background: linear-gradient(130deg,#2b4153,#13202d 49%,#334d60); }
+button.metal-action.obs-button:hover { border-color: #a6d5e6; background: linear-gradient(130deg,#385b71,#192e40 49%,#46677a); }
+button.obs-primary {
+  color: #0b1820; border-color: #d3e1eb; box-shadow: inset 0 1px #fff9;
+  background: linear-gradient(115deg, #b5cbd7, #eaf3f7 43%, #aabfce 69%, #e5f1f8);
+  background-size: 180% 100%; background-position: 5% 50%;
+  transition: background-position 280ms, border-color var(--obs-speed), transform var(--obs-speed);
+}
+button.obs-primary:hover { color: #091b23; background-color: #b9d9dc; background-position: 100% 50%; border-color: #eefafa; }
+button.obs-button[aria-expanded=true], .icon-button[aria-pressed=true] { background: #203940; color: #a4e3e5; border-color: #4c7980; }
+.app-shell.observatory { --obs-gutter: clamp(16px, 4vw, 72px); height: 100dvh; min-height: 0; overflow: hidden; background: #06090f; }
+.topbar.observatory-bar { min-height: 62px; background: #090e17; }
+.observatory .observatory-bar { padding-inline: var(--obs-gutter); gap: 24px; }
+.observatory-bar .brand-icon { border-color: #39495b; background: #14202e; color: #c5e4ee; }
+.observatory-bar .identity small { display: block; color: #9daec1; font: 9px var(--mono); letter-spacing: .06em; margin-top: 2px; }
+.observatory-mode { display: flex; align-items: center; gap: 7px; color: #aab9c9; font: 11px var(--mono); border-left: 1px solid var(--border); padding-left: 19px; white-space: nowrap; }
+.viewport.observatory-view {
+  flex: 1; min-height: 0; isolation: isolate; background: radial-gradient(ellipse at 53% 50%, #101a2b 0%, #090e19 56%, #05080e 100%);
+}
+.observatory-view::after { content: ''; position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(0deg, #050810cf, transparent 22%, transparent 83%, #05081045); }
+.observatory-title { position: absolute; top: clamp(26px, 7vh, 74px); left: var(--obs-gutter); max-width: 310px; z-index: 2; pointer-events: none; text-shadow: 0 2px 18px #050810; }
+.observatory-title > span { display: flex; align-items: center; gap: 10px; color: #bad1e4; font: 10px var(--mono); letter-spacing: .16em; text-transform: uppercase; }
+.observatory-title i { width: 18px; height: 1px; background: #91c6d5; }
+.observatory-title h1 { margin-top: 9px; font: 600 clamp(39px, 4.8vw, 80px)/.98 var(--display); letter-spacing: -.035em; color: var(--obs-ink); text-wrap: balance; }
+.observatory-title p { max-width: 26ch; margin-top: 14px; color: #aebed2; font-size: 13px; line-height: 1.5; }
+.observatory-tools { position: absolute; z-index: 4; bottom: 25px; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 6px; padding: 5px; background: #0b111de8; border: 1px solid #283649; border-radius: 10px; }
+.observatory-tools .icon-button { width: 39px; }
+.observatory-panel {
+  color: var(--obs-ink); background: var(--obs-glass); border: 1px solid var(--obs-stroke);
+  border-radius: var(--obs-radius); box-shadow: 0 12px 38px #060a1160;
+  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+}
+.floating-tools, .context-inspector { position: absolute; z-index: 5; width: min(265px, calc(100% - 24px)); max-height: calc(100% - 136px); overflow: auto; animation: panel-arrive 190ms ease-out both; }
+@keyframes panel-arrive { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: none; } }
+.floating-tools { bottom: 87px; left: 50%; margin-left: -132px; }
+.context-inspector { top: 32px; right: var(--obs-gutter); }
+.obs-panel-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 9px 10px 9px 14px; border-bottom: 1px solid #34404d; }
+.obs-panel-heading h2 { font-size: 13px; font-weight: 650; }
+.obs-panel-heading .icon-button { min-height: 32px; height: 32px; width: 32px; }
+.obs-panel-body { padding: 12px 13px; }
+button.panel-row { width: 100%; justify-content: flex-start; margin-top: 6px; }
+button.panel-row svg:last-child { margin-left: auto; }
+button.panel-row svg:first-child { margin-left: 0; }
+.panel-row kbd { margin-left: auto; }
+.layer-option { display: flex; gap: 12px; justify-content: space-between; align-items: center; min-height: 35px; font-size: 12px; }
+.obs-coordinates { font: 11px var(--mono); color: #a7bdcd; }
+.obs-elevation { margin-top: 9px; color: #f0f5f7; font: 24px var(--display); }
+.context-inspector .panel-row { margin-top: 12px; }
+.observatory-readout, .observatory-site { position: absolute; z-index: 2; bottom: 25px; display: flex; align-items: center; }
+.observatory-readout { left: var(--obs-gutter); gap: 10px; min-height: 48px; font: 12px var(--mono); color: #b3c6d7; pointer-events: none; text-shadow: 0 1px 6px #050810; }
+.observatory-readout svg, .observatory-site svg { color: var(--obs-focus); flex: none; }
+.observatory-readout strong { display: block; color: var(--obs-ink); margin-top: 3px; font-weight: 500; }
+.observatory-readout span, .observatory-readout small, .observatory-site small { display: block; color: #acbdd0; font: 10px var(--mono); }
+.observatory-readout small { margin-top: 4px; }
+.observatory-readout b { margin-left: 4px; color: var(--obs-focus); font-weight: 500; }
+.observatory-site { right: var(--obs-gutter); gap: 13px; padding: 5px 5px 5px 12px; background: #0b111de8; border: 1px solid #283649; border-radius: 10px; }
+.observatory-site > div { display: flex; align-items: center; gap: 9px; }
+.observatory-site strong { display: block; margin-top: 2px; font-size: 12px; color: #e3e9ef; }
+.observatory-site .obs-primary svg { color: inherit; }
+.observatory-tools + .floating-tools .muted a { color: var(--obs-focus); }
+.floating-tools:has(.destination-list) { width: min(370px, calc(100% - 32px)); margin-left: 0; transform: translateX(-50%); animation: none; }
+.destination-list { display: grid; }
+.destination-list article { padding: 11px 0; border-bottom: 1px solid var(--obs-stroke); }
+.destination-list article:first-child { padding-top: 0; }
+.destination-list h3 { display: flex; align-items: center; gap: 7px; margin: 0 0 5px; font-size: 14px; font-weight: 600; }
+.destination-list h3 small { margin-left: auto; font: 10px var(--mono); color: var(--obs-muted); }
+.destination-list article[data-selected=true] h3 svg { color: var(--obs-focus); }
+.destination-list a, .destination-list p { font: 10px var(--mono); line-height: 1.6; }
+.destination-list p { margin: 3px 0 7px; color: var(--obs-muted); }
+.destination-list article > div, .quick-locations { display: flex; flex-wrap: wrap; gap: 6px; }
+.quick-locations { margin-top: 6px; }
+.quick-locations button.panel-row { width: auto; }
+.workspace-site-picker { font-size: 12px; min-height: 38px; padding-inline: 8px; max-width: 220px; }
+.science-workspace .viewport { background: radial-gradient(ellipse at 50% 46%, #1c2c3f, #0a1220 75%); }
+.science-workspace .panel-heading { color: #c5d8ed; font: 11px var(--mono); text-transform: uppercase; letter-spacing: .08em; }
+.legend-provenance { margin-top: 7px; color: var(--obs-muted); font: 10px var(--mono); }
+.mission-workspace { background: var(--obs-ground); }
+.mission-workspace main { width: min(1200px, 100%); margin: 0 auto; padding: clamp(16px, 5vw, 58px); }
+.mission-workspace nav { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 14px; }
+.mission-workspace button[aria-pressed=true] { border-color: #4d8093; color: var(--obs-focus); }
+.mission-sheet { padding: clamp(16px, 4vw, 36px); }
+.mission-sheet h1 { margin: 9px 0 15px; font: 600 clamp(30px, 5vw, 52px)/1 var(--display); }
+.mission-table { margin-top: 22px; overflow: auto; }
+.mission-table table { border-collapse: collapse; width: 100%; min-width: 650px; text-align: left; font-size: 13px; }
+.mission-table th, .mission-table td { padding: 12px; border-bottom: 1px solid var(--obs-stroke); }
+.mission-table th small { display: block; color: var(--obs-muted); margin-top: 3px; }
+.mission-table td, .mission-table th small { font-family: var(--mono); }
+.mission-inputs { display: flex; flex-wrap: wrap; align-items: end; gap: 12px; margin: 24px 0; }
+.mission-inputs label, .mission-scrub { display: grid; gap: 7px; color: var(--obs-muted); font-size: 12px; }
+.mission-inputs input, .mission-inputs select { min-height: 38px; padding-inline: 10px; border: 1px solid var(--obs-stroke); border-radius: var(--obs-radius); color: var(--obs-ink); background: #0a1220; }
+.mission-unavailable div, .mission-events li { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; border-bottom: 1px solid var(--obs-stroke); padding: 10px 0; font-size: 13px; }
+.mission-unavailable dd { color: var(--obs-muted); margin-left: auto; font: 12px var(--mono); }
+.mission-events { list-style: none; padding: 0; }
+.mission-events li[data-reached=true] span { color: var(--obs-focus); }
+.mission-events li span, .mission-events li small { font-family: var(--mono); }
+.mission-events button { margin-left: auto; }
+.mission-workspace main:has(.celestial-observatory) { width: min(1480px,100%); padding: 24px clamp(12px,3vw,42px); }
+.mission-sheet:has(.celestial-observatory) { padding: clamp(14px,2vw,28px); }
+.celestial-layout { display:grid;grid-template-columns:minmax(0,1.18fr) minmax(0,1fr);gap:clamp(16px,2.4vw,34px);align-items:start; }
+.celestial-layout > section { min-width:0; }
+.celestial-inputs { margin: 18px 0 24px; }
+.celestial-inputs .celestial-series { display:flex;align-items:center;min-height:38px; }
+.celestial-inputs .celestial-series input { min-height:0; }
+.celestial-view-bar { display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:36px; }
+.celestial-view-bar h2 { margin:0;font:600 22px var(--display); }
+.celestial-view-bar span,.celestial-terrain-actions p,.celestial-epoch { color:#a4bfd3;font:12px var(--mono); }
+.celestial-terrain-viewport { height:clamp(250px,42vh,480px);border:1px solid var(--obs-stroke);border-radius:8px;overflow:hidden;background:radial-gradient(ellipse at 50% 60%,#23364b,#080e19 74%); }
+.celestial-terrain-viewport > p { margin:18px;color:var(--obs-muted); }
+.celestial-terrain-actions { flex-wrap:wrap; }
+.celestial-terrain .muted { font-size:12px; }
+.horizon-plot { display:block;width:100%;height:auto;margin:4px 0 10px; }
+.horizon-plot text { font:11px var(--mono);fill:#b7ccdc; }
+.sky-grid { stroke:#31455b;stroke-width:.8; }
+.sky-horizon { stroke:#7ba0ba;stroke-width:1.3; }
+.celestial-readouts { width:100%;border-collapse:collapse;text-align:left; }
+.celestial-readouts th,.celestial-readouts td { padding:9px 4px;border-bottom:1px solid var(--obs-stroke); }
+.celestial-readouts thead { color:var(--obs-muted);font:11px var(--mono); }
+.celestial-readouts td { font:clamp(11px,1vw,14px) var(--mono);font-variant-numeric:tabular-nums; }
+.celestial-readouts small { display:block;color:var(--obs-muted);font:10px var(--mono);margin-top:4px; }
+.celestial-epoch,.celestial-error { min-height:22px;margin:12px 0; }
+.celestial-error { color:#ffd1b1; }
+.celestial-time-controls { display:flex;align-items:center;flex-wrap:wrap;gap:10px; }
+.celestial-time-controls label { display:grid;flex:1 1 100px;gap:3px;font:11px var(--mono);color:#a4bfd3; }
+.celestial-provenance { margin-top:18px;padding-top:14px;border-top:1px solid var(--obs-stroke);font-size:13px;line-height:1.6; }
+.celestial-provenance summary { cursor:pointer;color:var(--obs-ink); }
+.solar-state { display:grid;gap:5px;margin:12px 0;color:var(--obs-muted);font-size:13px; }
+.solar-state strong { font:600 clamp(23px,3vw,32px) var(--display); }
+.solar-state strong[data-state=shadowed] { color:#9cbfe1 !important; }
+.solar-metrics { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px 16px;margin:14px 0; }
+.solar-metrics dt { color:var(--obs-muted);font-size:12px; }
+.solar-metrics dd { margin:4px 0 0;color:var(--obs-ink);font:13px var(--mono); }
+.solar-analysis .muted,.solar-observatory .celestial-layout .muted { font-size:12px; }
+.solar-map-block,.solar-temporal { margin-top:18px;padding-top:14px;border-top:1px solid var(--obs-stroke); }
+.solar-map-block h3,.solar-temporal h2 { margin:0;font:600 22px var(--display); }
+.solar-map-block label { color:var(--obs-muted);font-size:12px; }
+.solar-map-block select { padding:6px;font:12px var(--mono); }
+.solar-map-layout { display:grid;grid-template-columns:minmax(80px,140px) minmax(0,1fr);gap:16px;margin:7px 0; }
+.solar-cell-map { width:100%;border:1px solid var(--obs-stroke);border-radius:4px;shape-rendering:crispEdges; }
+.solar-legend { display:flex;flex-wrap:wrap;gap:8px 14px;list-style:none;padding:0;color:#b7ccdc;font-size:11px; }
+.solar-legend i { display:inline-block;width:9px;height:9px;margin-right:5px;border:1px solid #93a9bb5e; }
+.solar-observatory .mission-table { overflow:auto; }
+.solar-temporal details > div { margin:8px 0; }
+.earth-status { display:flex;align-items:center;flex-wrap:wrap;gap:7px 14px;margin:10px 0 14px; }
+.earth-status strong { color:#bcdae9;font:600 13px var(--mono);padding:5px 0;border-bottom:1px solid #63798a; }
+.earth-disc-plot { display:block;width:100%;height:auto;max-height:246px; }
+.earth-disc-plot text { fill:#adc0ce;font:9px var(--mono); }
+.earth-disc-plot .earth-horizon-label { fill:#e3bc87; }
+.earth-angle-metrics { grid-template-columns:repeat(3,minmax(0,1fr)); }
+.earth-map-controls { display:flex;align-items:center;flex-wrap:wrap;gap:8px 14px; }
+.earth-map-controls label { font:12px var(--mono);color:var(--obs-muted); }
+.earth-map-controls select { padding:6px;font-size:12px; }
+.earth-observatory .celestial-view-bar { flex-wrap:wrap; }
+
+.mission-workspace main:has(.mission-timeline) { width:min(1500px,100%); padding:24px clamp(12px,3vw,42px); }
+.mission-sheet:has(.mission-timeline) { padding:clamp(14px,2vw,30px); }
+.mission-timeline { display:grid; gap:16px; }
+.mission-timeline form { display:grid; gap:14px; }
+.mission-timeline fieldset { min-width:0; margin:0; padding:14px 16px; border:1px solid var(--obs-border,#334557); border-radius:10px; }
+.mission-timeline legend { padding-inline:6px; font-weight:600; }
+.mission-fields { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr)); gap:14px 16px; }
+.mission-fields label,.mission-jump { display:grid; gap:5px; min-width:0; }
+.mission-fields :is(select,input:not([type=checkbox])),.mission-jump select { min-width:0; max-width:100%; width:100%; padding:8px 10px; border:1px solid #3e5366; border-radius:6px; background:#0b1624; color:#e4edf8; color-scheme:dark; font:inherit; }
+.mission-fields .mission-check { display:flex; align-items:center; }
+.mission-check input { width:18px; height:18px; accent-color:#83c9bd; flex:none; }
+.mission-heading,.mission-actions { display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+.mission-heading { justify-content:space-between; }
+.mission-results,.mission-inspector { min-width:0; padding:16px; border:1px solid var(--obs-border,#334557); border-radius:10px; background:#0d1825; }
+.mission-results h2,.mission-inspector h2 { margin-block:0 10px; }
+.mission-legend,.mission-totals { display:flex; gap:8px 18px; flex-wrap:wrap; }
+.mission-legend { padding:0; list-style:none; }
+.mission-legend li { display:flex; gap:6px; align-items:center; }
+.mission-legend i { width:13px; height:13px; border-radius:2px; border:1px solid #a7b5ca; }
+.mission-legend i[data-tone=unresolved] { background-image:repeating-linear-gradient(140deg,transparent 0 3px,#263447 3px 4px); }
+.mission-legend i[data-tone=invalid] { background-image:repeating-linear-gradient(140deg,transparent 0 3px,#a7b5ca 3px 4px),repeating-linear-gradient(40deg,transparent 0 3px,#a7b5ca 3px 4px); }
+.mission-totals dt { font-size:.79rem; color:#b4c4d5; }
+.mission-totals dd { margin:3px 0 0; font-variant-numeric:tabular-nums; font-weight:600; }
+.mission-site-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; }
+.mission-site-grid .mission-site-card { min-width:0; padding:10px; border:1px solid #2d4155; border-radius:8px; }
+.mission-site-card > p { margin-block:9px; }
+.mission-chart-wrap { overflow-x:auto; }
+.mission-chart { display:block; width:100%; min-width:580px; font:12px var(--mono,monospace); }
+.mission-chart-wrap.compact .mission-chart { min-width:0; }
+.mission-chart text { fill:#cfdceb; }
+.mission-chart .mission-chart-key { font-weight:700; }
+.mission-chart-grid { stroke:#6d8199; stroke-width:.5; }
+.mission-inspector .mission-scrub { display:grid; }
+.mission-inspector input[type=range] { width:100%; accent-color:#74c2b8; }
+.mission-jump { margin-top:14px; }
+.mission-timeline a,.mission-report-site a { color:inherit; text-decoration:underline; }
+.mission-report-site code { overflow-wrap:anywhere; }
+.mission-workspace .mission-timeline + details { margin-block:20px 4px; }
+@media(max-width:1000px) { .mission-site-grid { grid-template-columns:1fr; } }
+@media print {
+  .mission-report-site .mission-chart-wrap { break-inside:avoid; overflow:visible; }
+  .mission-report-site .mission-chart { min-width:0; print-color-adjust:exact; }
+  .mission-report-site .mission-chart text { fill:#1b2735; }
+}
+@media (max-width:550px) { .earth-angle-metrics { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media (max-width: 800px) { .celestial-layout { grid-template-columns:minmax(0,1fr); } }
+@media (max-width: 430px) {
+  .celestial-inputs > label:not(.celestial-series) { width:100%; }
+  .celestial-terrain-viewport { height:250px; }
+}
+.celestial-preview { margin: 0; min-height: 340px; position: relative; isolation: isolate; overflow: hidden; border: 1px solid var(--obs-stroke); border-radius: var(--obs-radius); background: radial-gradient(ellipse,#172e46,#07101d 67%); }
+.celestial-preview > div { position: absolute !important; inset: 0; }
+.celestial-preview figcaption { position: absolute; bottom: 14px; left: 16px; font: 10px var(--mono); color: #b3ccdd; pointer-events: none; }
+.mission-workspace .mission-sheet { border-top: 2px solid #4d7796; box-shadow: none; }
+.mission-workspace .mission-table thead { background: var(--obs-raised); }
+.mission-workspace .mission-table tbody tr:nth-child(even) { background: #10203465; }
+.survey-reference { margin-top: 29px; padding-left: 13px; border-left: 1px solid #45647e; display: grid; gap: 11px; }
+.survey-reference dt { font: 9px var(--mono); text-transform: uppercase; color: var(--obs-muted); letter-spacing: .08em; }
+.survey-reference dd { margin: 4px 0 0; color: #d6e6f2; font: 11px var(--mono); }
+.observatory-title h1 { font-size: clamp(35px, 4.05vw, 64px); font-weight: 500; }
+.observatory-title p { max-width: 27ch; }
+.observatory-view .observatory-site { display: grid; min-width: 235px; gap: 10px; align-items: stretch; padding: 13px; background: #0b1421ed; border-radius: var(--obs-radius); }
+.observatory-view .observatory-site > div { display: flex; }
+.observatory-view .observatory-site strong { font: 600 25px/1.1 var(--display); margin: 5px 0; }
+.observatory-view .observatory-site small:first-child { text-transform: uppercase; letter-spacing: .05em; }
+.observatory-tools { background: #0b1421ed; border-radius: var(--obs-radius); }
+.observatory-tools .obs-button, .observatory-tools .icon-button { background: #101b2a; }
+.floating-tools[data-enter-panel] { animation: none; }
+.floating-tools:has(.destination-list) { left: auto; right: var(--obs-gutter); transform: none; bottom: 25px; }
+.floating-tools[data-panel=workspaces], .floating-tools[data-panel=settings] { top: 16px; right: var(--obs-gutter); bottom: auto; left: auto; margin-left: 0; }
+.observatory-view:has(.floating-tools[data-panel=locations]) .observatory-site { visibility: hidden; }
+.science-workspace .viewport { background: radial-gradient(ellipse at 55% 45%,#1c324b,#080f1b 73%); }
+.science-workspace .controls, .science-workspace .inspector { background: var(--obs-panel); }
+.science-workspace .metadata { background: var(--obs-deep); }
+.science-workspace .native-window { width: 100%; min-width: 0; white-space: normal; }
+.science-workspace .legend { border-left: 2px solid #74c3d6; }
+.science-workspace .inspector-selection { border-bottom: 1px solid var(--obs-stroke); padding-bottom: 11px; }
+.obs-error { position: absolute; z-index: 4; top: 100px; left: 24px; padding: 8px 10px; background: #251d23; color: #ffb9aa; font-size: 12px; border-radius: 5px; }
+.observatory-footer { min-height: 35px; display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 0 var(--obs-gutter); border-top: 1px solid #202b3a; background: #090e17; color: #a4b0bf; font: 10px var(--mono); }
+.observatory-footer a { color: #9bd0d6; }
+.command-palette { width: min(510px, calc(100% - 24px)); padding: 0; margin: min(16dvh, 130px) auto auto; overflow: hidden; }
+.command-palette[open] { animation: panel-arrive 180ms ease-out both; }
+.command-palette::backdrop { background: #05081088; }
+.command-input { display: flex; align-items: center; gap: 10px; padding: 11px 13px; border-bottom: 1px solid #34404d; color: #a4bdce; }
+.command-input input { flex: 1; min-width: 0; color: var(--obs-ink); background: transparent; border: 0; padding: 7px 4px; outline-offset: 2px; font-size: 14px; }
+.command-results { max-height: min(50dvh, 420px); overflow: auto; padding: 7px; }
+.command-result { display: flex; gap: 10px; align-items: center; text-align: left; width: 100%; min-height: 38px; padding: 7px 10px; border-color: transparent; background: transparent; font-size: 12px; }
+.command-result small { margin-left: auto; color: #a6b5c6; }
+.command-result[data-active=true] { background: #233745; border-color: #3a5768; }
+.command-results .muted { padding: 8px; }
+.command-palette footer { display: flex; gap: 13px; padding: 9px 12px; border-top: 1px solid #34404d; color: #a6b5c6; font: 10px var(--mono); }
+kbd { border: 1px solid #53616d; border-radius: 4px; padding: 2px 4px; color: #b6c5d3; font: 10px var(--mono); }
 .profile-result { margin-top: 11px; }
 .profile-distance { font: 16px var(--mono); color: var(--accent); }
 .profile-distance small { font-size: 10px; color: var(--muted); }
 .profile-labels { display: flex; justify-content: space-between; font: 10px var(--mono); color: var(--muted); margin-top: 9px; }
 .profile-result svg { width: 100%; display: block; }
-.lunar-return { min-height: 34px; display: flex; align-items: center; gap: 5px; padding: 0 9px; color: var(--accent); font-size: 11px; }
 .native-window { margin-top: 12px; }
 .native-window:disabled { opacity: .55; cursor: default; }
-@media (max-width: 1000px) {
-  .lunar-workspace { grid-template-columns: 208px minmax(0, 1fr) 218px; }
+.science-workspace .side, .science-workspace .metadata { background: #111923; }
+.science-workspace .mode, .science-workspace .layer, .science-workspace select {
+  border-radius: var(--obs-radius); border-color: var(--obs-stroke);
 }
-@media (max-width: 850px) {
-  .lunar-workspace { grid-template-columns: 1fr; }
-  .lunar-destinations { grid-template-columns: 1fr; }
-  .lunar-metadata { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.science-workspace .mode:not([aria-pressed=true]) { border-color: transparent; }
+.science-workspace .layer[aria-pressed=true], .science-workspace .mode[aria-pressed=true] { border-color: #4c7980; }
+.science-workspace .hover-tooltip, .science-workspace .legend { background: var(--obs-glass); border-color: var(--obs-stroke); border-radius: var(--obs-radius); }
+.science-workspace .panel-heading .icon-button { min-height: 29px; }
+@media (max-width: 1100px) {
+  .observatory-title { max-width: 220px; }
+  .observatory-site > div { display: none; }
+  .observatory-site { padding: 5px; }
+  .workspace-launch .glass-label { display: none; }
+  .observatory-view .observatory-site { min-width: 0; }
+}
+@media (max-width: 700px) {
+  .celestial-preview { min-height: 270px; }
+  .survey-reference { display: none; }
+  .observatory-view .observatory-site { bottom: 77px; padding: 4px; }
+  .observatory-view .observatory-site > div { display: none; }
+  .floating-tools:has(.destination-list) { bottom: 75px; }
+  .observatory .observatory-bar { gap: 10px; min-height: 56px; }
+  .observatory-mode { padding-left: 9px; }
+  .observatory-site { bottom: 78px; }
+  .observatory-readout { bottom: 78px; font-size: 10px; }
+  .observatory-readout[data-hover=true] { bottom: 137px; }
+  .observatory-tools { bottom: 13px; }
+  .floating-tools { bottom: 74px; }
+  .context-inspector { top: 13px; width: min(230px, calc(100% - 32px)); }
+  .observatory-view:has(.context-inspector) .observatory-title { opacity: .25; }
+  .observatory-footer { font-size: 9px; flex-wrap: wrap; justify-content: start; gap: 3px 12px; padding-block: 6px; }
+  .observatory-footer span:last-child { display: none; }
+  .observatory-tools .icon-button, .observatory-tools .obs-button, .observatory-site .obs-button, .observatory-panel .obs-button { min-height: 44px; }
+  .observatory-tools .icon-button { width: 44px; }
+  .science-workspace .topbar h1, .science-workspace .top-divider { display: none; }
+  .science-workspace .workspace-site-picker { max-width: 150px; }
 }
 @media (max-width: 500px) {
-  .lunar-return span { display: none; }
-  .lunar-return { padding: 0 6px; }
-  .lunar-viewport-footer { padding: 12px; font-size: 10px; }
-  .location-search { grid-column: 1 / -1; }
+  .observatory .site-launch { min-height: 44px; padding-inline: 8px; }
+  .observatory .site-launch .glass-label { display: none; }
+  .observatory .top-actions > .icon-button:last-child { display: none; }
+  .observatory .observatory-bar .identity strong { font-size: 11px; }
+  .observatory-tools { gap: 4px; }
+  .observatory-tools .obs-button { padding-inline: 8px; }
+  .observatory-tools .icon-button { width: 38px; }
+  .observatory .observatory-bar .top-actions .icon-button { display: inline-grid; }
+  .observatory .top-actions .icon-button, .observatory .command-launch { min-height: 44px; min-width: 44px; }
+  .command-launch .glass-label, .command-launch kbd, .observatory-mode svg, .lunar-return .glass-label { display: none; }
+  .observatory-mode { display: none; }
+  .observatory .workspace-launch { min-width: 44px; min-height: 44px; }
+  .science-workspace .science-search { display: none !important; }
+  .observatory .observatory-bar { gap: 6px; }
+  .observatory .observatory-bar .identity { gap: 6px; font-size: 12px; letter-spacing: .08em; }
+  .observatory .observatory-bar .identity small { display: none; }
+  .observatory .observatory-bar .data-status { display: none; }
+  .observatory .top-actions { gap: 4px; }
+  .observatory-title { top: 24px; }
+  .observatory-title p { max-width: 24ch; margin-top: 8px; font-size: 12px; }
+  .observatory-readout > svg { display: none; }
+  .observatory-readout[data-hover=false] small { display: none; }
+}
+@media (max-width: 359px) {
+  .observatory-tools .obs-button > span { display: none; }
+  .observatory-tools .obs-button, .observatory-tools .icon-button { width: 44px; }
+  .observatory .top-actions > .icon-button:last-child { display: none; }
+  .observatory-site { bottom: 74px; }
+  .observatory-site .obs-button { padding-inline: 8px; gap: 4px; }
+  .observatory-readout { bottom: 75px; }
+  .observatory-readout span { font-size: 9px; }
+}
+@media (max-height: 600px) {
+  .observatory-title { top: 14px; }
+  .observatory-title p { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .observatory-panel, button.obs-button, .icon-button { transition: none; animation: none; }
 }

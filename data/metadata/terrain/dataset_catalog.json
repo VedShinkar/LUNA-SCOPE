@@ -16,6 +16,7 @@
   "sites": {
     "Site04": {
       "name": "Shackleton rim",
+      "navigation_reference": {"latitude": -89.77, "longitude": -171.87, "basis": "PGDA Site04 raster centre (rounded)", "url": "https://pgda.gsfc.nasa.gov/products/78"},
       "priority": "P0",
       "directory": "data/raw/terrain/site04",
       "roi_archive_listed": true,
@@ -54,10 +55,12 @@
         "Use each raster mask/NoData; finite values alone do not prove accuracy.",
         "LDEC 0=interpolated, 1=single-shot, >=2=multi-shot; observation quality is separate from physical hazards."
       ],
-      "display_name": "Shackleton Crater Rim"
+      "display_name": "Shackleton Rim"
     },
     "Site11": {
       "name": "de Gerlache rim",
+      "display_name": "de Gerlache Rim",
+      "navigation_reference": {"latitude": -88.6834, "longitude": -67.9321, "basis": "NASA Lunar Surface Data Book R11", "url": "https://ntrs.nasa.gov/citations/20230007818"},
       "priority": "P1",
       "directory": "data/raw/terrain/site11",
       "roi_archive_listed": true,
@@ -99,6 +102,8 @@
     },
     "Site23": {
       "name": "Malapert massif",
+      "display_name": "Malapert Massif",
+      "navigation_reference": {"latitude": -85.9948, "longitude": -0.23578, "basis": "NASA Lunar Surface Data Book R23", "url": "https://ntrs.nasa.gov/citations/20230007818"},
       "priority": "P1",
       "directory": "data/raw/terrain/site23",
       "roi_archive_listed": false,

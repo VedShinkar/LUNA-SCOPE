@@ -55,3 +55,5 @@ data/cache/*
 logs/
 outputs/
 reports/generated/
+
+audit_artifacts/

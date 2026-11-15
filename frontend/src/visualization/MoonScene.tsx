@@ -2,10 +2,14 @@ import { Canvas, useFrame, useThree, type ThreeEvent } from '@react-three/fiber'
 import { useEffect, useMemo, useRef } from 'react'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js'
-import { albedoUrl, type Context, type Coordinates, type PolarGrid } from '../services/lunar'
+import { gsap } from 'gsap'
+import { albedoUrl, type Context, type Coordinates, type LunarSite, type PolarGrid } from '../services/lunar'
 import { lunarCoordinates, lunarPosition, polarCoordinates, sampleGlobal } from './lunar-coordinates'
+import { DeepSpace } from './DeepSpace'
+import { InteractiveNebulaShader } from '../components/ui/interactive-nebula-shader'
 
 export type Destination = { point: Coordinates; distance: number; enterSite?: boolean }
+export type SurfaceHit = Coordinates & { landmark?: string }
 type Props = {
   context: Context
   heights: Float32Array
@@ -15,15 +19,18 @@ type Props = {
   imagery: boolean
   relief: boolean
   graticule: boolean
+  nebula: boolean
   regionalRelief: boolean
-  siteGrid?: ElevationGrid
+  activeSite?: LunarSite
   measuring: boolean
   measurement: Coordinates[]
   onPoint: (point: Coordinates) => void
+  selected: SurfaceHit | null
+  onSelect: (point: SurfaceHit) => void
+  onHover: (point: SurfaceHit | null) => void
   onRange: (distance: number) => void
   onView: (point: Coordinates, distance: number) => void
   onArrival: () => void
-  onSite: () => void
 }
 
 const vec = (point: Coordinates, radius: number) => new THREE.Vector3(...lunarPosition(point, radius))
@@ -31,12 +38,13 @@ const radians = Math.PI / 180
 const clamp = THREE.MathUtils.clamp
 const ease = THREE.MathUtils.smoothstep
 
-function Camera({ destination, radius, onRange, onView, onArrival }: Pick<Props, 'destination' | 'onRange' | 'onView' | 'onArrival'> & { radius: number }) {
+function Camera({ destination, radius, onRange, onView, onArrival, motion }: Pick<Props, 'destination' | 'onRange' | 'onView' | 'onArrival'> & { radius: number; motion: { busy: boolean } }) {
   const { camera, gl, size, invalidate } = useThree()
   const controls = useRef<OrbitControls | null>(null)
   const flight = useRef<{
-    start: number; from: THREE.Vector3; rotation: THREE.Quaternion; startRadius: number; distance: number; enter?: boolean
+    progress: number; from: THREE.Vector3; rotation: THREE.Quaternion; startRadius: number; distance: number; enter?: boolean
   } | null>(null)
+  const gesture = useRef(false)
   const range = useRef(Infinity)
   const previousAltitude = useRef(Infinity)
   const previousDirection = useRef(new THREE.Vector3())
@@ -48,40 +56,47 @@ function Camera({ destination, radius, onRange, onView, onArrival }: Pick<Props,
     orbit.maxDistance = radius * 7
     orbit.zoomSpeed = 0.7
     orbit.addEventListener('change', () => invalidate())
+    orbit.addEventListener('start', () => { gesture.current = true; motion.busy = true })
+    orbit.addEventListener('end', () => { gesture.current = false; motion.busy = Boolean(flight.current) })
     controls.current = orbit
     return () => orbit.dispose()
-  }, [camera, gl, radius, invalidate])
+  }, [camera, gl, radius, invalidate, motion])
   useEffect(() => {
     const from = camera.position.clone().normalize()
     const target = vec(destination.point, 1)
     // OrbitControls constrains the exact poles. Keep the destination just off its singularity.
     if (Math.abs(target.y) > 0.999999999) target.set(0, Math.sign(target.y), 0.00003).normalize()
     const rotation = new THREE.Quaternion().setFromUnitVectors(from, target)
-    const distance = Math.max(15, destination.distance * Math.max(1, size.height / size.width))
-    flight.current = {
-      start: performance.now(), from, rotation, startRadius: camera.position.length(), distance, enter: destination.enterSite,
-    }
+    const aspect = Math.max(0.1, size.width / size.height)
+    const fit = destination.distance > 1000 ? Math.max(1, 0.88 / aspect) : Math.max(1, 1 / aspect)
+    const distance = Math.min(radius * 6, Math.max(15, destination.distance * fit))
+    const active = { progress: 0, from, rotation, startRadius: camera.position.length(), distance, enter: destination.enterSite }
+    flight.current = active
+    motion.busy = true
     if (controls.current) controls.current.enabled = false
-    invalidate()
-  }, [camera, destination, radius, size.width, size.height, invalidate])
+    const tween = gsap.to(active, {
+      progress: 1, duration: matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : active.enter ? 2.15 : 1.85,
+      ease: 'power2.inOut', onUpdate: () => invalidate(),
+    })
+    return () => { tween.kill(); flight.current = null; motion.busy = false }
+  }, [camera, destination, radius, size.width, size.height, invalidate, motion])
 
   useFrame(() => {
     const orbit = controls.current
     if (!orbit) return
     const active = flight.current
     if (active) {
-      const duration = matchMedia('(prefers-reduced-motion: reduce)').matches ? 1 : active.enter ? 1900 : 1600
-      const t = clamp((performance.now() - active.start) / duration, 0, 1)
-      const fraction = t * t * (3 - 2 * t)
+      const fraction = active.progress
       const rotation = new THREE.Quaternion().slerp(active.rotation, ease(fraction, 0, 0.75))
       const altitude = Math.exp(THREE.MathUtils.lerp(Math.log(Math.max(15, active.startRadius - radius)), Math.log(active.distance), fraction))
       camera.position.copy(active.from).applyQuaternion(rotation).multiplyScalar(radius + altitude)
       orbit.update()
-      if (t === 1) {
+      if (fraction >= 1) {
         flight.current = null
         orbit.enabled = true
+        motion.busy = gesture.current
         if (active.enter) onArrival()
-      } else invalidate()
+      }
     } else orbit.update()
     const altitude = camera.position.length() - radius
     if (altitude < 700) {
@@ -105,6 +120,92 @@ function Camera({ destination, radius, onRange, onView, onArrival }: Pick<Props,
       previousAltitude.current = altitude
       onView(lunarCoordinates(direction.x, direction.y, direction.z), altitude)
     }
+  })
+  return null
+}
+
+function PointerResponse({ motion, surface, marker, site, onHover }: {
+  motion: { busy: boolean }
+  surface: React.RefObject<THREE.Mesh | null>
+  marker: React.RefObject<THREE.Mesh | null>
+  site?: Coordinates & { name: string }
+  onHover: Props['onHover']
+}) {
+  const { camera, gl, invalidate, size } = useThree()
+  const offset = useRef({ x: 0, y: 0 })
+  const landmarkHover = useRef(false)
+  useEffect(() => {
+    const canvas = gl.domElement
+    const ray = new THREE.Raycaster()
+    const pointer = new THREE.Vector2()
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)')
+    const tweenOptions = { duration: 0.55, ease: 'power3.out', onUpdate: () => invalidate() }
+    const xTo = gsap.quickTo(offset.current, 'x', tweenOptions)
+    const yTo = gsap.quickTo(offset.current, 'y', tweenOptions)
+    let lastPick = -Infinity
+    let timer: ReturnType<typeof setTimeout> | undefined
+    let pending: { x: number; y: number } | undefined
+    const pick = () => {
+      timer = undefined
+      if (!pending || motion.busy || !surface.current) return
+      lastPick = performance.now()
+      pointer.set(pending.x, pending.y)
+      ray.setFromCamera(pointer, camera)
+      if (site && marker.current?.visible && ray.intersectObject(marker.current, false).length) {
+        landmarkHover.current = true
+        invalidate()
+        onHover({ latitude: site.latitude, longitude: site.longitude, landmark: site.name })
+        return
+      }
+      landmarkHover.current = false
+      invalidate()
+      const intersection = ray.intersectObject(surface.current, false)[0]
+      onHover(intersection ? lunarCoordinates(intersection.point.x, intersection.point.y, intersection.point.z) : null)
+    }
+    const move = (event: PointerEvent) => {
+      if (event.pointerType === 'touch' || event.buttons || motion.busy) return
+      const rect = canvas.getBoundingClientRect()
+      const x = clamp(2 * (event.clientX - rect.left) / rect.width - 1, -1, 1)
+      const y = clamp(1 - 2 * (event.clientY - rect.top) / rect.height, -1, 1)
+      if (!reduced.matches) { xTo(x * 0.017); yTo(y * 0.017) }
+      pending = { x, y }
+      if (timer === undefined) timer = setTimeout(pick, Math.max(0, 120 - (performance.now() - lastPick)))
+    }
+    const clear = () => {
+      pending = undefined
+      landmarkHover.current = false
+      clearTimeout(timer)
+      timer = undefined
+      xTo(0)
+      yTo(0)
+      onHover(null)
+    }
+    canvas.addEventListener('pointermove', move)
+    canvas.addEventListener('pointerleave', clear)
+    canvas.addEventListener('pointerdown', clear)
+    canvas.addEventListener('wheel', clear, { passive: true })
+    reduced.addEventListener('change', clear)
+    return () => {
+      canvas.removeEventListener('pointermove', move)
+      canvas.removeEventListener('pointerleave', clear)
+      canvas.removeEventListener('pointerdown', clear)
+      canvas.removeEventListener('wheel', clear)
+      reduced.removeEventListener('change', clear)
+      clearTimeout(timer)
+      xTo.tween.kill()
+      yTo.tween.kill()
+    }
+  }, [camera, gl, invalidate, marker, motion, onHover, site, surface])
+  useFrame(() => {
+    if (marker.current) {
+      const material = marker.current.material as THREE.MeshBasicMaterial
+      material.color.set(landmarkHover.current ? '#ffffff' : '#81e6e8')
+    }
+    if (!(camera instanceof THREE.PerspectiveCamera) || !size.width || !size.height) return
+    const { x, y } = offset.current
+    if (motion.busy || Math.abs(x) + Math.abs(y) < 0.00005) {
+      if (camera.view?.enabled) camera.clearViewOffset()
+    } else camera.setViewOffset(size.width, size.height, x * size.width, -y * size.height, size.width, size.height)
   })
   return null
 }
@@ -136,27 +237,16 @@ function patch(grid: ElevationGrid | undefined) {
   }
 }
 
-function globeGeometry(radius: number, sample: (point: Coordinates) => number, polar: boolean, close: boolean, site: boolean) {
+function globeGeometry(radius: number, sample: (point: Coordinates) => number, polar: boolean, centreLatitude?: number) {
   const cols = 720
   // One index buffer spans the entire globe. Latitude rings become denser near
   // the pole while every ring shares the same longitude samples.
   const latitudes = Array.from({ length: 361 }, (_, row) => 90 - row * 0.5)
   if (polar) {
     latitudes.splice(350)
-    for (let latitude = -85; latitude > -90; latitude -= 0.02) {
+    for (let latitude = -85; latitude > -90;) {
       latitudes.push(latitude)
-    }
-    if (close) {
-      while (latitudes.at(-1)! < -88.8) latitudes.pop()
-      for (let latitude = -88.8; latitude > -90; latitude -= 0.005) {
-        latitudes.push(latitude)
-      }
-    }
-    if (site) {
-      while (latitudes.at(-1)! < -89.4) latitudes.pop()
-      for (let latitude = -89.4; latitude > -90; latitude -= 0.002) {
-        latitudes.push(latitude)
-      }
+      latitude -= centreLatitude !== undefined && Math.abs(latitude - centreLatitude) < .82 ? .005 : .02
     }
     latitudes.push(-90)
   }
@@ -221,6 +311,11 @@ function useSurfaceMaterial(texture: THREE.Texture | null, graticule: boolean, p
             vec2 line = abs(fract(ll+0.5)-0.5)/width;
             diffuseColor.rgb = mix(diffuseColor.rgb,vec3(0.24,0.62,0.71),0.52*(1.0-smoothstep(0.0,1.0,min(line.x,line.y))));
           }
+        `).replace('#include <emissivemap_fragment>', `
+          #include <emissivemap_fragment>
+          // A narrow artistic edge fill on the actual terrain, with no atmosphere shell.
+          float grazing = 1.0 - max(dot(normal, normalize(vViewPosition)), 0.0);
+          totalEmissiveRadiance += vec3(0.019, 0.025, 0.032) * pow(grazing, 8.0);
         `)
     }
     return result
@@ -229,40 +324,35 @@ function useSurfaceMaterial(texture: THREE.Texture | null, graticule: boolean, p
   return material
 }
 
-function Moon({ context, heights, overview, approach, imagery, relief, graticule, regionalRelief, siteGrid, destination,
-  onPoint, measuring, measurement, onRange, onView, onArrival, onSite }: Props) {
+function Moon({ context, heights, overview, approach, imagery, relief, graticule, nebula, regionalRelief, activeSite, destination,
+  onPoint, onHover, onSelect, selected, measuring, measurement, onRange, onView, onArrival }: Props) {
   const radius = context.radius_m / 1000
   const [height, width] = context.global_shape
   const global = useMemo(() => (p: Coordinates) => relief ? sampleGlobal(heights, width, height, p) : 0,
     [heights, width, height, relief])
   const polar = regionalRelief ? overview : undefined
   const close = polar ? approach : undefined
+  const site = activeSite?.available ? activeSite : activeSite?.reference ? { ...activeSite.reference, name: activeSite.name } : undefined
+  const centreLatitude = close && site ? site.latitude : undefined
   const sampler = useMemo(() => {
-    const broad = patch(polar), fine = patch(close), local = patch(siteGrid)
+    const broad = patch(polar), fine = patch(close)
     return (point: Coordinates, altitude: number) => {
       const value = global(point)
       const region = broad?.(point, value) ?? value
       const detailed = fine?.(point, region) ?? region
-      const base = THREE.MathUtils.lerp(region, detailed, 1 - ease(altitude, 100, 210))
-      return THREE.MathUtils.lerp(base, local?.(point, base) ?? base, 1 - ease(altitude, 30, 85))
+      return THREE.MathUtils.lerp(region, detailed, 1 - ease(altitude, 100, 210))
     }
-  }, [global, polar, close, siteGrid])
+  }, [global, polar, close])
   const geometry = useMemo(() => {
-    const base = globeGeometry(radius, point => sampler(point, 250), Boolean(polar), Boolean(close), Boolean(siteGrid))
-    if (close || siteGrid) {
-      const finer = globeGeometry(radius, point => sampler(point, 95), Boolean(polar), Boolean(close), Boolean(siteGrid))
+    const base = globeGeometry(radius, point => sampler(point, 250), Boolean(polar), centreLatitude)
+    if (close) {
+      const finer = globeGeometry(radius, point => sampler(point, 95), Boolean(polar), centreLatitude)
       base.morphAttributes.position = [finer.getAttribute('position')]
       base.morphAttributes.normal = [finer.getAttribute('normal')]
-      if (siteGrid) {
-        const local = globeGeometry(radius, point => sampler(point, 25), Boolean(polar), Boolean(close), true)
-        base.morphAttributes.position.push(local.getAttribute('position'))
-        base.morphAttributes.normal.push(local.getAttribute('normal'))
-        local.dispose()
-      }
       finer.dispose()
     }
     return base
-  }, [radius, sampler, polar, close, siteGrid])
+  }, [radius, sampler, polar, close, centreLatitude])
   useEffect(() => () => geometry.dispose(), [geometry])
   const { camera, invalidate } = useThree()
   const texture = useMemo(() => {
@@ -276,16 +366,23 @@ function Moon({ context, heights, overview, approach, imagery, relief, graticule
   useEffect(() => () => texture?.dispose(), [texture])
   const material = useSurfaceMaterial(imagery ? texture : null, graticule, Boolean(polar))
   const marker = useRef<THREE.Mesh>(null)
+  const pin = useRef<THREE.Mesh>(null)
   const surface = useRef<THREE.Mesh>(null)
+  const motion = useRef({ busy: false }).current
   const globeMesh = useMemo(() => new THREE.Mesh(geometry, material), [geometry, material])
-  const site = context.site04
   useFrame(() => {
     const altitude = camera.position.length() - radius
     const morph = surface.current?.morphTargetInfluences
     if (morph?.length) {
-      const local = morph.length > 1 ? 1 - ease(altitude, 30, 85) : 0
-      morph[0] = (1 - ease(altitude, 100, 210)) * (1 - local)
-      if (morph.length > 1) morph[1] = local
+      morph[0] = 1 - ease(altitude, 100, 210)
+    }
+    if (selected && pin.current) {
+      const normal = vec(selected, 1)
+      const distance = camera.position.distanceTo(normal.clone().multiplyScalar(radius))
+      pin.current.position.copy(normal).multiplyScalar(radius + sampler(selected, altitude) / 1000 + Math.max(0.15, distance * 0.001))
+      pin.current.scale.setScalar(Math.max(0.1, distance * 0.012))
+      pin.current.quaternion.copy(camera.quaternion)
+      pin.current.visible = camera.position.dot(normal) > radius
     }
     if (!site || !marker.current) return
     const normal = vec(site, 1)
@@ -297,21 +394,35 @@ function Moon({ context, heights, overview, approach, imagery, relief, graticule
     marker.current.visible = camera.position.dot(normal) > radius
   })
   function pick(event: ThreeEvent<MouseEvent>) {
-    if (!measuring || event.delta > 5) return
+    if (event.delta > 5 || motion.busy) return
     const point = event.point
-    onPoint(lunarCoordinates(point.x, point.y, point.z))
+    const coordinates = lunarCoordinates(point.x, point.y, point.z)
+    if (measuring) onPoint(coordinates)
+    else onSelect(coordinates)
   }
   return <>
-    <Camera destination={destination} radius={radius} onRange={onRange} onView={onView} onArrival={onArrival} />
-    <ambientLight intensity={0.25} />
-    <directionalLight position={[-2, -0.72, 2.4]} intensity={3} color="#fff4e5" />
-    <directionalLight position={[0, -2, -0.4]} intensity={0.28} color="#d9e4f3" />
+    <Camera destination={destination} radius={radius} onRange={onRange} onView={onView} onArrival={onArrival} motion={motion} />
+    <PointerResponse motion={motion} surface={surface} marker={marker} site={site} onHover={onHover} />
+    {nebula && <InteractiveNebulaShader />}
+    <DeepSpace />
+    {/* Fixed display lights; never used by scientific calculations. */}
+    <ambientLight intensity={0.18} color="#dce6f5" />
+    <directionalLight position={[-2.6, -0.65, 1.35]} intensity={3.1} color="#fff5e8" />
+    <directionalLight position={[0.7, -2, -0.4]} intensity={0.42} color="#c1d4ee" />
     <primitive object={globeMesh} ref={surface} onClick={pick} />
     {site && <mesh ref={marker} onClick={event => {
-      if (event.delta <= 5) { event.stopPropagation(); if (measuring) onPoint(site); else onSite() }
+      if (event.delta <= 5 && marker.current?.visible && !motion.busy) {
+        event.stopPropagation()
+        if (measuring) onPoint(site)
+        else onSelect({ latitude: site.latitude, longitude: site.longitude, landmark: site.name })
+      }
     }}>
       <ringGeometry args={[0.64, 0.88, 36]} />
       <meshBasicMaterial color="#81e6e8" transparent opacity={0.95} side={THREE.DoubleSide} depthWrite={false} depthTest={false} />
+    </mesh>}
+    {selected && <mesh ref={pin} renderOrder={2} raycast={() => undefined}>
+      <ringGeometry args={[0.29, 0.34, 36]} />
+      <meshBasicMaterial color="#a5f1ec" side={THREE.DoubleSide} depthWrite={false} depthTest={false} />
     </mesh>}
     {measurement.map((point, index) => <mesh key={index}
       position={lunarPosition(point, radius + sampler(point, destination.distance) / 1000 + 1)} raycast={() => undefined}>
@@ -322,7 +433,7 @@ function Moon({ context, heights, overview, approach, imagery, relief, graticule
 }
 
 export default function MoonScene(props: Props) {
-  return <Canvas frameloop="demand" dpr={[1, 1.6]} camera={{ position: [0, 320, 5000], near: 0.3, far: 17000, fov: 45 }}
+  return <Canvas frameloop="demand" dpr={[1, 1.6]} camera={{ position: [0, 320, 6900], near: 0.3, far: 34000, fov: 45 }}
     gl={{ antialias: true, alpha: true, logarithmicDepthBuffer: true }}>
     <Moon {...props} />
   </Canvas>

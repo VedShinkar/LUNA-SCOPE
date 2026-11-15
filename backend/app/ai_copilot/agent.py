@@ -1,11 +1,12 @@
 """
 LUNA-SCOPE AI Mission Copilot.
 
-Local tool-using decision-support agent.
-Uses existing deterministic scientific functions.
+Local deterministic tool-using decision-support agent.
+Uses existing scientific functions.
 No external API or paid LLM required.
 """
 
+import json
 import re
 import uuid
 
@@ -34,7 +35,12 @@ SITE_ALIASES = {
 }
 
 
+# --------------------------------------------------
+# SESSION MANAGEMENT
+# --------------------------------------------------
+
 def get_session(session_id=None):
+    """Create or retrieve an in-memory conversation session."""
 
     if not session_id:
         session_id = str(uuid.uuid4())
@@ -42,6 +48,7 @@ def get_session(session_id=None):
     if session_id not in SESSIONS:
         SESSIONS[session_id] = {
             "last_site_ids": [],
+            "last_active_site": None,
             "last_profile": DEFAULT_PROFILE,
             "history": []
         }
@@ -49,7 +56,12 @@ def get_session(session_id=None):
     return session_id, SESSIONS[session_id]
 
 
+# --------------------------------------------------
+# SITE IDENTIFICATION AND FOLLOW-UP HANDLING
+# --------------------------------------------------
+
 def identify_sites(question, session):
+    """Identify named sites or resolve basic follow-up references."""
 
     text = question.lower()
 
@@ -61,16 +73,69 @@ def identify_sites(question, session):
 
     found = list(dict.fromkeys(found))
 
-    if not found:
-        found = session["last_site_ids"]
-
+    # Explicitly named sites take priority.
     if found:
         session["last_site_ids"] = found
+        session["last_active_site"] = found[-1]
+        return found
 
-    return found
+    # Handle requests referring to another site after a comparison.
+    other_site_phrases = [
+        "other site",
+        "another site",
+        "remaining site",
+        "second site"
+    ]
 
+    if any(phrase in text for phrase in other_site_phrases):
+
+        previous_sites = session.get("last_site_ids", [])
+        active_site = session.get("last_active_site")
+
+        alternatives = [
+            site for site in previous_sites
+            if site != active_site
+        ]
+
+        if alternatives:
+            selected_site = alternatives[0]
+            session["last_active_site"] = selected_site
+            return [selected_site]
+
+    # Handle follow-up questions referring to the active site.
+    follow_up_phrases = [
+        "its",
+        "their",
+        "this site",
+        "that site",
+        "the site",
+        "what about",
+        "tell me more",
+        "what are the risks",
+        "what about its risks",
+        "terrain there",
+        "explain further",
+        "more details"
+    ]
+
+    if any(phrase in text for phrase in follow_up_phrases):
+
+        active_site = session.get("last_active_site")
+
+        if active_site:
+            return [active_site]
+
+        return session.get("last_site_ids", [])
+
+    return []
+
+
+# --------------------------------------------------
+# TOOL RESULT VALIDATION
+# --------------------------------------------------
 
 def format_tool_result(result):
+    """Ensure tools return a dictionary."""
 
     if not isinstance(result, dict):
         return {
@@ -81,7 +146,83 @@ def format_tool_result(result):
     return result
 
 
+# --------------------------------------------------
+# ASSESSMENT SCORE EXTRACTION
+# --------------------------------------------------
+
+def extract_overall_score(assessment):
+    """Extract score from assessment.score.overall."""
+
+    if not isinstance(assessment, dict):
+        return None
+
+    score_data = assessment.get("score")
+
+    if isinstance(score_data, dict):
+        return score_data.get("overall")
+
+    return None
+
+
+# --------------------------------------------------
+# TERRAIN SUMMARY FORMATTING
+# --------------------------------------------------
+
+def format_terrain_summary(terrain_data):
+    """Format terrain metrics, hazards, uncertainty and provenance."""
+
+    if not isinstance(terrain_data, dict):
+        return "Terrain summary is unavailable."
+
+    sections = {
+        "ELEVATION SUMMARY": terrain_data.get("elevation_summary"),
+        "SLOPE SUMMARY": terrain_data.get("slope_summary"),
+        "ROUGHNESS SUMMARY": terrain_data.get("roughness_summary"),
+        "OBSERVATION AND UNCERTAINTY": (
+            terrain_data.get("epistemic_quality_and_observation")
+        ),
+        "HAZARD SCREENING": terrain_data.get("hazard_screening_summary"),
+        "DATA PROVENANCE": terrain_data.get("data_provenance")
+    }
+
+    output = []
+
+    for title, value in sections.items():
+
+        output.append("")
+        output.append(title)
+        output.append("-" * 35)
+
+        if value is None:
+            output.append(
+                "Information not available in the terrain report."
+            )
+        else:
+            output.append(
+                json.dumps(value, indent=2, default=str)
+            )
+
+    output.append("")
+    output.append("SCIENTIFIC LIMITATIONS")
+    output.append("-" * 35)
+
+    limitations = terrain_data.get("scientific_limitations")
+
+    if limitations:
+        for limitation in limitations:
+            output.append(f"- {limitation}")
+    else:
+        output.append("No limitations reported.")
+
+    return "\n".join(output)
+
+
+# --------------------------------------------------
+# MAIN COPILOT FUNCTION
+# --------------------------------------------------
+
 def ask_copilot(question: str, session_id=None) -> dict:
+    """Process a mission question using deterministic scientific tools."""
 
     if not isinstance(question, str) or not question.strip():
         return {
@@ -106,15 +247,14 @@ def ask_copilot(question: str, session_id=None) -> dict:
     tools_used = []
     evidence = []
 
-    # Ask for clarification if no site is identified.
+    # Ask for clarification when no site is identified.
     if not sites:
         return {
             "success": True,
             "session_id": session_id,
             "question": question,
             "answer": (
-                "Which lunar landing site would you like me to "
-                "investigate?\n\n"
+                "Which lunar landing site would you like me to investigate?\n\n"
                 "Available sites:\n"
                 "- Shackleton Rim\n"
                 "- Malapert Massif\n"
@@ -125,16 +265,15 @@ def ask_copilot(question: str, session_id=None) -> dict:
             "data_notice": SYNTHETIC_NOTICE
         }
 
-    # Detect comparison requests.
+    # --------------------------------------------------
+    # REQUEST DETECTION
+    # --------------------------------------------------
+
     comparison_requested = (
         len(sites) >= 2
-        or any(
-            word in text
-            for word in ["compare", "comparison", "rank"]
-        )
+        or any(word in text for word in ["compare", "comparison", "rank"])
     )
 
-    # Detect terrain requests.
     terrain_requested = any(
         word in text
         for word in [
@@ -142,11 +281,12 @@ def ask_copilot(question: str, session_id=None) -> dict:
             "slope",
             "hazard",
             "roughness",
-            "elevation"
+            "elevation",
+            "uncertainty",
+            "provenance"
         ]
     )
 
-    # Detect mission assessment requests.
     assessment_requested = any(
         word in text
         for word in [
@@ -159,26 +299,29 @@ def ask_copilot(question: str, session_id=None) -> dict:
             "mission",
             "compare",
             "assessment",
-            "rank"
+            "rank",
+            "constraint"
         ]
     )
 
-    # Comparison requires at least two sites.
+    # Comparison needs at least two sites.
     if comparison_requested and len(sites) < 2:
         return {
             "success": True,
             "session_id": session_id,
             "question": question,
             "answer": (
-                "Please identify at least two lunar sites "
-                "for comparison."
+                "Please identify at least two lunar sites for comparison."
             ),
             "tools_used": [],
             "evidence": [],
             "data_notice": SYNTHETIC_NOTICE
         }
 
-    # Execute comparison tool.
+    # --------------------------------------------------
+    # EXECUTE SCIENTIFIC TOOLS
+    # --------------------------------------------------
+
     if comparison_requested:
 
         result = execute_tool(
@@ -189,27 +332,49 @@ def ask_copilot(question: str, session_id=None) -> dict:
             }
         )
 
+        result = format_tool_result(result)
+
         tools_used.append("compare_landing_sites")
-        evidence.append(format_tool_result(result))
+        evidence.append(result)
+
+        # Remember the highest-ranked site for follow-up questions.
+        comparison = result.get("comparison", [])
+
+        if result.get("success") and isinstance(comparison, list):
+
+            ranked_sites = sorted(
+                (
+                    item for item in comparison
+                    if isinstance(item, dict)
+                ),
+                key=lambda item: (
+                    item.get("rank") is None,
+                    item.get("rank") or 999
+                )
+            )
+
+            if ranked_sites:
+                top_site = ranked_sites[0].get("site_id")
+
+                if top_site:
+                    session["last_active_site"] = top_site
 
     else:
 
         for site_id in sites:
 
-            # Execute terrain tool when requested.
+            # Retrieve terrain information when requested.
             if terrain_requested:
 
                 result = execute_tool(
                     "terrain_information",
-                    {
-                        "site_id": site_id
-                    }
+                    {"site_id": site_id}
                 )
 
                 tools_used.append("terrain_information")
                 evidence.append(format_tool_result(result))
 
-            # Execute mission assessment.
+            # Retrieve mission assessment when requested.
             if assessment_requested or not terrain_requested:
 
                 result = execute_tool(
@@ -224,20 +389,22 @@ def ask_copilot(question: str, session_id=None) -> dict:
                 evidence.append(format_tool_result(result))
 
     # --------------------------------------------------
-    # BUILD READABLE MISSION RESPONSE
+    # SEPARATE SUCCESSFUL AND FAILED RESULTS
     # --------------------------------------------------
 
     successful_results = [
-        item
-        for item in evidence
+        item for item in evidence
         if isinstance(item, dict) and item.get("success")
     ]
 
     failed_results = [
-        item
-        for item in evidence
+        item for item in evidence
         if isinstance(item, dict) and not item.get("success")
     ]
+
+    # --------------------------------------------------
+    # BUILD RESPONSE
+    # --------------------------------------------------
 
     answer_parts = [
         "LUNA-SCOPE AI MISSION COPILOT",
@@ -262,15 +429,20 @@ def ask_copilot(question: str, session_id=None) -> dict:
             comparison_found = True
 
             ranked_sites = sorted(
-                comparison,
+                (
+                    item for item in comparison
+                    if isinstance(item, dict)
+                ),
                 key=lambda item: (
                     item.get("rank") is None,
                     item.get("rank") or 999
                 )
             )
 
-            answer_parts.append("MISSION SITE COMPARISON")
-            answer_parts.append("=" * 35)
+            answer_parts.extend([
+                "MISSION SITE COMPARISON",
+                "=" * 35
+            ])
 
             for site in ranked_sites:
 
@@ -279,62 +451,38 @@ def ask_copilot(question: str, session_id=None) -> dict:
                     site.get("site_id", "Unknown site")
                 )
 
-                feasibility = site.get(
-                    "feasibility",
-                    "UNKNOWN"
-                )
-
-                score = site.get(
-                    "overall_score",
-                    "Not available"
-                )
-
+                feasibility = site.get("feasibility", "UNKNOWN")
+                score = site.get("overall_score", "Not available")
                 rank = site.get("rank")
 
-                answer_parts.append("")
-                answer_parts.append(f"Site: {name}")
-                answer_parts.append(
-                    f"Feasibility: {feasibility}"
-                )
-                answer_parts.append(
-                    f"Overall score: {score}/100"
-                )
-                answer_parts.append(
-                    f"Rank: {rank if rank is not None else 'Not ranked'}"
-                )
+                answer_parts.extend([
+                    "",
+                    f"Site: {name}",
+                    f"Feasibility: {feasibility}",
+                    f"Overall score: {score}",
+                    (
+                        f"Rank: {rank}"
+                        if rank is not None
+                        else "Rank: Not available"
+                    )
+                ])
 
-                # Failed mission requirements.
-                failed_constraints = site.get(
-                    "failed_constraints",
-                    []
-                )
+                failures = site.get("failed_constraints", [])
 
-                if failed_constraints:
-
+                if failures:
                     answer_parts.append("Failed requirements:")
 
-                    for constraint in failed_constraints:
-                        answer_parts.append(
-                            f"- {constraint}"
-                        )
+                    for failure in failures:
+                        answer_parts.append(f"- {failure}")
 
-                else:
-
-                    answer_parts.append(
-                        "Failed requirements: None reported"
-                    )
-
-                # Risk factors.
                 risks = site.get("risk_factors", [])
 
                 if risks:
-
                     answer_parts.append("Risk factors:")
 
                     for risk in risks:
                         answer_parts.append(f"- {risk}")
 
-                # Recommendation.
                 recommendation = site.get("recommendation")
 
                 if recommendation:
@@ -342,23 +490,23 @@ def ask_copilot(question: str, session_id=None) -> dict:
                         f"Assessment: {recommendation}"
                     )
 
-            # Identify the highest-ranked feasible site.
+            # Identify the first-ranked feasible site.
             recommended_site = next(
                 (
-                    site
-                    for site in ranked_sites
+                    site for site in ranked_sites
                     if site.get("rank") == 1
                     and site.get("feasibility") == "FEASIBLE"
                 ),
                 None
             )
 
-            answer_parts.append("")
-            answer_parts.append("MISSION RECOMMENDATION")
-            answer_parts.append("=" * 35)
+            answer_parts.extend([
+                "",
+                "MISSION RECOMMENDATION",
+                "=" * 35
+            ])
 
             if recommended_site:
-
                 name = recommended_site.get(
                     "site_name",
                     recommended_site.get("site_id")
@@ -368,13 +516,31 @@ def ask_copilot(question: str, session_id=None) -> dict:
                     f"{name} ranks first and satisfies the "
                     "configured mandatory mission requirements."
                 )
-
             else:
-
                 answer_parts.append(
                     "No first-ranked feasible site was identified "
                     "in the comparison results."
                 )
+
+    # --------------------------------------------------
+    # PROCESS TERRAIN RESULTS
+    # --------------------------------------------------
+
+    for result in successful_results:
+
+        terrain_data = result.get("terrain_data")
+
+        if not isinstance(terrain_data, dict):
+            continue
+
+        answer_parts.extend([
+            "",
+            "LUNAR TERRAIN ANALYSIS",
+            "=" * 35,
+            f"Site: {terrain_data.get('site_name', result.get('site_id', 'Unknown'))}",
+            f"Terrain ID: {terrain_data.get('site_id', 'Unknown')}",
+            format_terrain_summary(terrain_data)
+        ])
 
     # --------------------------------------------------
     # PROCESS INDIVIDUAL SITE ASSESSMENTS
@@ -389,45 +555,46 @@ def ask_copilot(question: str, session_id=None) -> dict:
             if not isinstance(assessment, dict):
                 continue
 
-            answer_parts.append("MISSION SITE ASSESSMENT")
-            answer_parts.append("=" * 35)
-
-            answer_parts.append(
-                f"Site: {assessment.get('site_name', assessment.get('site_id', 'Unknown'))}"
-            )
-
-            answer_parts.append(
+            answer_parts.extend([
+                "",
+                "MISSION SITE ASSESSMENT",
+                "=" * 35,
+                (
+                    f"Site: {assessment.get('site_name', assessment.get('site_id', 'Unknown'))}"
+                ),
                 f"Feasibility: {assessment.get('feasibility', 'UNKNOWN')}"
-            )
+            ])
 
-            answer_parts.append(
-                f"Overall score: {assessment.get('overall_score', 'Not available')}/100"
-            )
+            # Correct extraction: assessment.score.overall
+            score = extract_overall_score(assessment)
 
-            failures = assessment.get(
-                "failed_constraints",
-                []
-            )
+            if score is not None:
+                answer_parts.append(f"Overall score: {score}")
+            else:
+                answer_parts.append("Overall score: Not available")
+
+            failures = assessment.get("failed_constraints", [])
 
             if failures:
-
                 answer_parts.append("Failed requirements:")
 
                 for failure in failures:
                     answer_parts.append(f"- {failure}")
-
             else:
+                answer_parts.append("Failed requirements: None reported")
 
-                answer_parts.append(
-                    "Failed requirements: None reported"
-                )
+            risks = assessment.get("risk_factors", [])
+
+            if risks:
+                answer_parts.append("Risk factors:")
+
+                for risk in risks:
+                    answer_parts.append(f"- {risk}")
 
             recommendation = assessment.get("recommendation")
 
             if recommendation:
-                answer_parts.append(
-                    f"Assessment: {recommendation}"
-                )
+                answer_parts.append(f"Assessment: {recommendation}")
 
     # --------------------------------------------------
     # HANDLE TOOL ERRORS
@@ -435,17 +602,17 @@ def ask_copilot(question: str, session_id=None) -> dict:
 
     if failed_results:
 
-        answer_parts.append("")
-        answer_parts.append("UNAVAILABLE INFORMATION")
+        answer_parts.extend([
+            "",
+            "UNAVAILABLE INFORMATION"
+        ])
 
         for failure in failed_results:
-
             answer_parts.append(
-                failure.get("error", "Unknown tool error")
+                failure.get("error", "Unknown scientific tool error.")
             )
 
     if not successful_results and not failed_results:
-
         answer_parts.append(
             "No scientific evidence was returned by the tools."
         )
@@ -465,12 +632,15 @@ def ask_copilot(question: str, session_id=None) -> dict:
         "It is not a live LLM-generated scientific conclusion."
     ])
 
-    # Construct final answer.
     answer = "\n".join(answer_parts)
 
-    # Store conversation history.
+    # --------------------------------------------------
+    # STORE CONVERSATION HISTORY
+    # --------------------------------------------------
+
     session["history"].append({
         "question": question,
+        "sites": sites,
         "tools_used": tools_used
     })
 

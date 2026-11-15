@@ -10,6 +10,12 @@ from typing import Any
 from app.mission.decision_engine.assessment import assess_mission
 from app.mission.decision_engine.feasibility import check_feasibility
 from app.mission.decision_engine.scenario_comparison import compare_scenarios
+# Mapping between Mission Intelligence and TerrainService site IDs.
+TERRAIN_SITE_MAPPING = {
+    "SHACKLETON_RIM": "Site04",
+    "DE_GERLACHE_RIM": "Site11",
+    "MALAPERT_MASSIF": "Site23",
+}
 
 
 def mission_feasibility(
@@ -88,17 +94,30 @@ def compare_landing_sites(
             "success": False,
             "error": str(error)
         }
+TERRAIN_SITE_MAPPING = {
+    "SHACKLETON_RIM": "Site04",
+    "DE_GERLACHE_RIM": "Site11",
+    "MALAPERT_MASSIF": "Site23",
+}
 
-
-def terrain_information(
-    site_id: str
-) -> dict[str, Any]:
+def terrain_information(site_id: str) -> dict[str, Any]:
     """Retrieve existing terrain information for a lunar site."""
 
     try:
         from app.scientific_engines.terrain.service import TerrainService
 
-        service = TerrainService.get_instance(site_id)
+        # Translate Copilot site IDs into TerrainService IDs.
+        terrain_site_id = TERRAIN_SITE_MAPPING.get(site_id.upper())
+
+        if terrain_site_id is None:
+            return {
+                "success": False,
+                "site_id": site_id,
+                "error": f"Unsupported terrain site identifier: {site_id}",
+                "availability": "UNAVAILABLE"
+            }
+
+        service = TerrainService.get_instance(terrain_site_id)
         service._ensure_loaded()
 
         result = service.get_site_summary()
@@ -106,6 +125,7 @@ def terrain_information(
         return {
             "success": True,
             "site_id": site_id,
+            "terrain_site_id": terrain_site_id,
             "terrain_data": result
         }
 
@@ -116,7 +136,6 @@ def terrain_information(
             "error": str(error),
             "availability": "UNAVAILABLE"
         }
-
 
 # OpenAI function-calling definitions.
 

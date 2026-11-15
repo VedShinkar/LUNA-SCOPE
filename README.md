@@ -2,120 +2,72 @@
 
 **Lunar Unified Navigation, Analysis & Site Optimization for Comparative Operational Planning and Evaluation**
 
-LUNA-SCOPE is an AI-assisted lunar mission-planning and decision-support platform combining NASA lunar terrain data, celestial geometry, solar illumination, direct-to-Earth communication analysis and integrated mission simulation to evaluate and compare lunar landing sites, dates and equipment configurations.
-LUNA-SCOPE is an AI-assisted lunar mission-planning and decision-support platform combining NASA lunar terrain data, celestial geometry, solar illumination, direct-to-Earth communication analysis and integrated mission simulation to evaluate and compare lunar landing sites, dates and equipment configurations.
+LUNA-SCOPE is a lunar landing-site exploration and mission-planning prototype for the lunar south pole. It brings terrain, Sun/Earth geometry, illumination and communication visibility, site comparison, and mission decision support into one workflow.
 
-## Current agreed alpha scope
+The goal is to help a mission planner explore candidate locations and understand the trade-offs behind a site choice—not to certify a landing site or replace mission engineering review.
 
-- Research-grade implementation using real NASA terrain data from the beginning.
-- First south-pole regions: Shackleton rim, followed by Malapert Massif.
-- Regional LOLA elevation products for terrain geometry; LROC NAC imagery for context and surface-feature inspection.
-- SPICE/NAIF with SpiceyPy as the primary local celestial-geometry engine; NASA JPL Horizons as an independent validation reference.
-- Terrain-aware horizon, shadow and visibility analysis.
-- Solar illumination and configurable power estimates, Earth communication geometry/link budget, and first-order thermal modelling.
-- Comparison across different landing locations, dates/times and two equipment modes: general-purpose and configurable mission-specific equipment.
-- Integrated simulation environment and an AI Mission Copilot grounded in verified structured outputs.
-- Modular-monolith architecture.
+## The challenge
 
-## First alpha vertical slice
+A lunar landing site must offer more than a flat patch of ground. Terrain hazards, local horizons, solar access, Earth line-of-sight, equipment assumptions and uncertainty all affect mission operations. These factors are often studied in separate tools. LUNA-SCOPE is designed to bring them together so that candidate sites can be explored and compared in a consistent interface.
 
-A reproducible Shackleton scenario that combines a verified regional DEM, processed terrain and local horizon, SPICE Sun/Earth geometry, Horizons validation, terrain-aware illumination/visibility, a 3D regional explorer and transparent mission assessment. Malapert is the next comparison region.
-## Current agreed alpha scope
+## What the prototype includes
 
-- Research-grade implementation using real NASA terrain data from the beginning.
-- First south-pole regions: Shackleton rim, followed by Malapert Massif.
-- Regional LOLA elevation products for terrain geometry; LROC NAC imagery for context and surface-feature inspection.
-- SPICE/NAIF with SpiceyPy as the primary local celestial-geometry engine; NASA JPL Horizons as an independent validation reference.
-- Terrain-aware horizon, shadow and visibility analysis.
-- Solar illumination and configurable power estimates, Earth communication geometry/link budget, and first-order thermal modelling.
-- Comparison across different landing locations, dates/times and two equipment modes: general-purpose and configurable mission-specific equipment.
-- Integrated simulation environment and an AI Mission Copilot grounded in verified structured outputs.
-- Modular-monolith architecture.
+- **Terrain analysis:** NASA Lunar Orbiter Laser Altimeter (LOLA) elevation products, terrain derivatives, data-quality and uncertainty information, and preliminary hazard screening.
+- **Candidate regions:** Shackleton rim (Site04), de Gerlache rim (Site11), and Malapert Massif (Site23), subject to the availability and completeness of each site's local data products.
+- **Celestial analysis:** Sun and Earth geometry using the project's SPICE/NAIF and NASA JPL Horizons workflows.
+- **Operational timeline:** Time-based solar and Earth visibility tracks, including unresolved intervals rather than silently treating missing data as clear conditions.
+- **Mission intelligence:** Mission profiles, feasibility checks, weighted comparisons and scenario summaries.
+- **AI Mission Copilot:** A deterministic natural-language interface that routes questions to project tools and explains returned information. It is not currently a live large-language-model assistant.
 
-## First alpha vertical slice
+## Important scientific status
 
-A reproducible Shackleton scenario that combines a verified regional DEM, processed terrain and local horizon, SPICE Sun/Earth geometry, Horizons validation, terrain-aware illumination/visibility, a 3D regional explorer and transparent mission assessment. Malapert is the next comparison region.
+This is a research and hackathon prototype. Some Mission Intelligence assessment examples still use synthetic fixtures. Those scores are illustrative and must not be represented as NASA-derived site rankings or validated landing probabilities. Terrain metrics, geometric calculations and model estimates have different evidence classes; the interface and reports should retain those distinctions.
 
-## Repository structure
+A preliminary hazard screen is not a landing-safety certification. Unresolved or missing inputs remain unknown. Results depend on source coverage, coordinate and time conventions, model assumptions and validation limits.
 
-```text
-frontend/       React + TypeScript application and 3D visualization
-backend/        FastAPI services and scientific/mission engines
-shared/         API schemas and shared contracts
-data/           Dataset metadata and local data mount points
-docs/           Product, science, data, architecture, API and delivery plans
-data/           Dataset metadata and local data mount points
-docs/           Product, science, data, architecture, API and delivery plans
-scripts/        Data acquisition and processing utilities
-tests/          Unit, scientific regression and integration tests
-tests/          Unit, scientific regression and integration tests
-```
+## NASA data and technical resources
 
-## Project management
+- **NASA LOLA / Planetary Data System Geosciences Node (PGDA):** Regional lunar elevation and associated terrain products used in the terrain workflow. The repository's terrain catalogue and download manifest record product-level details.
+- **NASA/JPL SPICE (NAIF):** Kernels and geometry tooling used by the celestial-analysis workflow.
+- **NASA JPL Horizons:** Ephemeris service used for celestial geometry and comparison/validation workflows.
+- **LROC:** Imagery is part of the broader research context where available; only list specific imagery products in the final submission if they were actually used in the submitted build.
 
-- [Development plan and dependency map](docs/DEVELOPMENT_PLAN.md)
+See [Data Sources](docs/DATA_SOURCES.md), [Terrain Data Guide](docs/TERRAIN_DATA_GUIDE.md), and the metadata under `data/metadata/` for source and processing details.
+
+## Technology
+
+- Python scientific and geospatial processing
+- FastAPI backend and Python mission/science services
+- React, TypeScript and browser-based visualization
+- SPICE/SpiceyPy and NASA JPL Horizons workflows
+- Raster terrain processing and automated tests
+
+Check the current dependency files and application setup instructions before running the project; this README is an overview, not a substitute for environment-specific installation steps.
+
+## Run and develop
+
+1. Clone this repository and follow the setup instructions in the backend and frontend directories.
+2. Obtain the required NASA source products and SPICE kernels using the documented scripts and manifests.
+3. Keep large raster files, kernels, credentials and local environment files out of Git.
+4. Run the documented test suites before changing scientific or integration code.
+
+## Project documentation
+
+- [Development plan](docs/DEVELOPMENT_PLAN.md)
 - [Scientific methodology](docs/SCIENTIFIC_METHODOLOGY.md)
-- [Data sources register](docs/DATA_SOURCES.md)
+- [Data sources](docs/DATA_SOURCES.md)
 - [System architecture](docs/SYSTEM_ARCHITECTURE.md)
 - [API contracts](docs/API_CONTRACTS.md)
 - [Team workflow](docs/TEAM_WORKFLOW.md)
-- [GitHub Project setup and metadata bootstrap](docs/GITHUB_PROJECT_SETUP.md)
+- [Terrain data guide](docs/TERRAIN_DATA_GUIDE.md)
+- [NASA Space Apps submission draft](docs/NASA_SPACE_APPS_SUBMISSION.md)
 
-GitHub repository issues: https://github.com/VedShinkar/LUNA-SCOPE/issues  
-Engineering board: https://github.com/users/VedShinkar/projects
+## Team and project links
 
-## Project management
+- Repository: https://github.com/VedShinkar/LUNA-SCOPE
+- Issues: https://github.com/VedShinkar/LUNA-SCOPE/issues
+- Engineering projects: https://github.com/users/VedShinkar/projects
 
-- [Development plan and dependency map](docs/DEVELOPMENT_PLAN.md)
-- [Scientific methodology](docs/SCIENTIFIC_METHODOLOGY.md)
-- [Data sources register](docs/DATA_SOURCES.md)
-- [System architecture](docs/SYSTEM_ARCHITECTURE.md)
-- [API contracts](docs/API_CONTRACTS.md)
-- [Team workflow](docs/TEAM_WORKFLOW.md)
-- [GitHub Project setup and metadata bootstrap](docs/GITHUB_PROJECT_SETUP.md)
+## Scientific integrity and responsible use
 
-GitHub repository issues: https://github.com/VedShinkar/LUNA-SCOPE/issues  
-Engineering board: https://github.com/users/VedShinkar/projects
-
-## Development status
-
-This repository currently contains the starter scaffold, planning documents and engineering issues. Do not describe scientific modules as implemented until code, tests and validation evidence exist.
-
-## Team workflow
-
-1. Take an issue from the Project board.
-2. Create a short-lived issue-specific feature branch.
-3. Implement the change and add tests.
-4. Open a pull request to `main`, referencing the issue (for example, `Closes #7`).
-5. Request review and merge only after tests and scientific checks pass.
-
-1. Take an issue from the Project board.
-2. Create a short-lived issue-specific feature branch.
-3. Implement the change and add tests.
-4. Open a pull request to `main`, referencing the issue (for example, `Closes #7`).
-5. Request review and merge only after tests and scientific checks pass.
-
-See [CONTRIBUTING.md](CONTRIBUTING.md).
-See [CONTRIBUTING.md](CONTRIBUTING.md).
-
-## Data policy
-
-Do not commit large DEMs, imagery archives, SPICE kernels, credentials or bulky derived datasets. Store retrieval instructions, product identifiers, source URLs, checksums, licence/use notes and processing metadata in the repository. Keep local datasets outside version control.
-
-## Scientific integrity
-
-Every result must identify its evidence class: source observation, ephemeris-derived value, terrain-derived value, model estimate, synthetic fixture or user assumption. Record units, coordinate/time frames, provenance, assumptions, uncertainty and limitations. Unknown data must remain unknown; it must not be treated as zero, clear visibility or safe landing.
-
-
-## Terrain data quick start
-
-The terrain baseline uses NASA PGDA LOLA products for Shackleton rim (Site04), de Gerlache rim (Site11) and Malapert massif (Site23). See [Terrain Data Guide](docs/TERRAIN_DATA_GUIDE.md) for dataset explanations, scientific caveats and download instructions.
-
-From the repository root:
-
-```powershell
-python scripts/download_lola_terrain.py
-python scripts/inspect_lola_site.py --site Site04
-```
-
-Large scientific rasters remain local under `data/raw/terrain/` and are intentionally excluded from Git.
+For every displayed result, identify whether it is a source observation, ephemeris-derived value, terrain-derived value, model estimate, synthetic fixture or user assumption. Preserve units, coordinate/time frames, provenance, uncertainty and limitations. Do not convert unknown data into zero, clear visibility or a claim of safety.

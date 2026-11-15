@@ -8,5 +8,4 @@ rasterio
 pyproj
 pytest
 httpx>=0.27,<1
-openai
-python-dotenv
+jsonschema>=4.20.0

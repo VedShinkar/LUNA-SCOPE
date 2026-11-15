@@ -1,14 +1,79 @@
 from pathlib import Path
 
 import numpy as np
+import pytest
 import rasterio
 from fastapi.testclient import TestClient
 from rasterio.crs import CRS
 from rasterio.transform import Affine
+from rasterio.warp import transform
 
 from app.main import app
 from app.scientific_engines.terrain.explorer import load_explorer_grid
 from app.scientific_engines.terrain.service import TerrainService
+
+
+@pytest.mark.parametrize("site_id", ["Site04", "Site11", "Site23"])
+def test_catalogued_site_grid_window_and_profile_are_isolated(site_id):
+    client = TestClient(app)
+    site = next(site for site in client.get('/terrain/explorer/context').json()['sites'] if site['site_id'] == site_id)
+    assert site['available'] and site['reference']
+    params = {'site_id': site_id, 'max_dimension': 32, 'easting_m': site['easting'], 'northing_m': site['northing']}
+    response = client.get('/terrain/explorer/grid', params=params)
+    assert response.status_code == 200, response.text
+    grid = response.json()
+    assert grid['site_id'] == site_id and grid['source_file'].startswith(site_id)
+    assert grid['resolution'] == [5, 5]
+    assert {'nasa_slope', 'coverage', 'uncertainty', 'elevation_uncertainty', 'hazards'} <= grid['layers'].keys()
+    with rasterio.open(Path('data/processed/terrain') / site_id.lower() / grid['source_file']) as raster:
+        affine = Affine(*grid['transform'])
+        row, col = raster.index(*(affine @ (8.5, 5.5)))
+        assert raster.xy(row, col) == affine @ (8.5, 5.5)
+        assert grid['elevation']['values'][5 * grid['width'] + 8] == raster.read(1)[row, col]
+        point = {key: site[key] for key in ('latitude', 'longitude')}
+        profile = client.post('/terrain/explorer/profile', json={'start': point, 'end': point, 'level': 'site', 'site_id': site_id})
+        assert profile.status_code == 200, profile.text
+        assert profile.json()['source'].startswith(site_id)
+        # Avoid a coordinate exactly on a pixel corner in the equality check.
+        x, y = raster.xy(row, col)
+        lon, lat = transform(raster.crs, '+proj=longlat +R=1737400 +type=crs', [x], [y])
+        point = {'latitude': lat[0], 'longitude': lon[0]}
+        profile = client.post('/terrain/explorer/profile', json={'start': point, 'end': point, 'level': 'site', 'site_id': site_id})
+        assert profile.json()['elevation_m'] == [grid['elevation']['values'][5 * grid['width'] + 8]] * 128
+    other = 'Site11' if site_id == 'Site04' else 'Site04'
+    assert client.get('/terrain/explorer/grid', params={**params, 'site_id': other}).status_code == 422
+
+
+@pytest.mark.parametrize("site_id", ["Site04", "Site11", "Site23"])
+def test_regional_approach_contains_target(site_id):
+    from app.scientific_engines.terrain.lunar_context import regional_grid, site_context
+
+    site = site_context(site_id)
+    grid = regional_grid('approach', site_id)
+    col, row = (~Affine(*grid['transform'])) @ (site['easting'], site['northing'])
+    assert 0 < col < grid['width'] and 0 < row < grid['height']
+    assert grid['elevation']['values'][int(row) * grid['width'] + int(col)] is not None
+
+
+def test_explorer_distinguishes_unknown_and_unavailable_sites(monkeypatch):
+    from app.scientific_engines.terrain import explorer
+    from rasterio.errors import RasterioIOError
+
+    client = TestClient(app)
+    assert client.get('/terrain/explorer/grid?site_id=Site99').status_code == 404
+    def unavailable(*args, **kwargs):
+        raise RasterioIOError('Missing fixture')
+    monkeypatch.setattr(explorer.rasterio, 'open', unavailable)
+    response = client.get('/terrain/explorer/grid?site_id=Site23')
+    assert response.status_code == 503 and 'Site23' in response.json()['detail']
+
+
+def test_archived_comparison_does_not_mix_site_summaries():
+    response = TestClient(app).get('/terrain/explorer/comparison')
+    assert response.status_code == 200
+    sites = response.json()['sites']
+    assert [site['site_id'] for site in sites] == ['Site04', 'Site11', 'Site23']
+    assert len({site['metrics']['elevation']['minimum_m'] for site in sites}) == 3
 
 
 def test_site04_explorer_serves_exact_aligned_samples():

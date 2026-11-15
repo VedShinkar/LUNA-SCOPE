@@ -14,3 +14,11 @@ Run locally from `backend/` after installing dependencies:
 `python -m uvicorn app.main:app --reload`
 
 Scientific engines must remain independent of HTTP request handling.
+
+For celestial calculations, run `python scripts/download_spice_kernels.py` from the repository root. The [Celestial Geometry Observatory guide](../docs/CELESTIAL_GEOMETRY.md) documents kernel coverage, the HTTP interface and the Horizons comparison.
+
+The [Solar Illumination Observatory guide](../docs/SOLAR_ILLUMINATION.md) covers native terrain ray tracing, time and regional analysis, and the distinction between terrain clearance and unresolved illumination.
+
+The [Earth Communication Observatory guide](../docs/EARTH_VISIBILITY.md) documents finite-disc evidence, the independent antenna elevation assumption and the visibility API.
+
+The [Mission Timeline guide](../docs/MISSION_TIMELINE.md) documents integrated UTC sampling, mission profiles and matched three-site operational window comparisons.

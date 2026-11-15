@@ -6,16 +6,19 @@ import warnings
 import numpy as np
 from pyproj import Geod
 import rasterio
-from rasterio.errors import NotGeoreferencedWarning
+from rasterio.errors import NotGeoreferencedWarning, RasterioIOError
+from rasterio.warp import transform
 from rasterio.windows import Window
 
-from app.scientific_engines.terrain.explorer import ROOT, _band, _encode, _path, _quad_validity
+from app.scientific_engines.terrain.explorer import ROOT, _band, _encode, _quad_validity, site_elevation_path
+from app.scientific_engines.terrain.catalog import get_site_config
 
 RADIUS = 1_737_400.0
 CACHE = ROOT / "cache" / "lunar-experience"
 SVS = "https://svs.gsfc.nasa.gov/4720/"
 PDS = "https://pds-geosciences.wustl.edu/lro/lro-l-lola-3-rdr-v1/lrolol_1xxx/data/lola_gdr/polar/img/"
 GEOD = Geod(a=RADIUS, b=RADIUS)
+LUNAR_GEOGRAPHIC = f"+proj=longlat +R={RADIUS} +type=crs"
 
 
 def polar_xy(latitude, longitude):
@@ -29,14 +32,24 @@ def polar_lonlat(x, y):
     return float(np.degrees(np.arctan2(x, y))), float(2 * np.degrees(np.arctan(np.hypot(x, y) / (2 * RADIUS))) - 90)
 
 
+def site_context(site_id):
+    config = get_site_config(site_id)
+    record = {"site_id": site_id, "name": config.get("display_name", config["name"]),
+              "reference": config.get("navigation_reference"), "source_url": config["identity_source_url"]}
+    try:
+        with rasterio.open(site_elevation_path(site_id)) as source:
+            x, y = source.transform @ (source.width / 2, source.height / 2)
+            lon, lat = transform(source.crs, LUNAR_GEOGRAPHIC, [x], [y])
+            return {**record, "available": True, "longitude": lon[0], "latitude": lat[0],
+                    "easting": x, "northing": y, "bounds": list(source.bounds),
+                    "source_resolution_m": list(source.res)}
+    except (RasterioIOError, OSError, ValueError):
+        return {**record, "available": False}
+
+
 def site04_context():
-    with rasterio.open(_path(ROOT, "processed", "processed_elevation")) as source:
-        x, y = source.transform @ (source.width / 2, source.height / 2)
-        longitude, latitude = polar_lonlat(x, y)
-        return {
-            "longitude": longitude, "latitude": latitude, "easting": x, "northing": y,
-            "bounds": list(source.bounds), "source_resolution_m": list(source.res),
-        }
+    site = site_context("Site04")
+    return site if site["available"] else None
 
 
 @lru_cache(maxsize=1)
@@ -62,19 +75,26 @@ def open_polar():
     return source
 
 
-@lru_cache(maxsize=2)
-def regional_grid(detail: str):
+@lru_cache(maxsize=4)
+def regional_grid(detail: str, site_id: str = "Site04"):
     """Two bounded windows of the same native PDS product, at exact sample centres."""
     if detail not in ("overview", "approach"):
         raise ValueError("Unknown regional detail.")
-    site = site04_context()
     # Square around the pole for context, then a finer square around the site.
     span, stride = (256_000, 16) if detail == "overview" else (48_000, 4)
-    x, y = (0, 0) if detail == "overview" else (site["easting"], site["northing"])
+    x, y = 0, 0
+    if detail == "approach":
+        site = site_context(site_id)
+        point = site if site["available"] else site["reference"]
+        if point is None:
+            raise ValueError(f"No navigation coordinates for {site_id}.")
+        x, y = polar_xy(point["latitude"], point["longitude"])
     with open_polar() as source:
         col, row = (~source.transform) @ (x - span / 2, y + span / 2)
         length = int(span / source.res[0])
-        window = Window(round(col), round(row), length, length)
+        # Shift the bounded window inward near the 85°S product boundary (Malapert).
+        window = Window(min(max(0, round(col)), source.width - length),
+                        min(max(0, round(row)), source.height - length), length, length)
         band = source.read(1, window=window, masked=True)
         valid = ~np.ma.getmaskarray(band)
         # PDS OFFSET is the radius datum, so only the 0.5 m scale applies to heights.
@@ -108,12 +128,7 @@ def _projected_samples(source, coordinates, scale=1):
     return result
 
 
-def elevation_profile(start, end, level):
-    """Return 128 samples along the short spherical geodesic in the selected source."""
-    lon1, lat1 = start
-    lon2, lat2 = end
-    _, _, distance = GEOD.inv(lon1, lat1, lon2, lat2)
-    coordinates = [start, *GEOD.npts(lon1, lat1, lon2, lat2, 126), end] if distance else [start] * 128
+def _elevation_samples(coordinates, level, site_id="Site04"):
     if level == "moon":
         grid = global_elevation()
         values = [float(grid[min(719, int((90 - lat) * 4)), int(((lon + 180) % 360) * 4)])
@@ -127,7 +142,23 @@ def elevation_profile(start, end, level):
             values = [value if lat <= -85 else None for value, (_, lat) in zip(values, coordinates)]
             source = "Polar LOLA · 40 m"
         else:
-            with rasterio.open(_path(ROOT, "processed", "processed_elevation")) as dataset:
-                values = _projected_samples(dataset, projected)
-            source = "Site04 LOLA · 5 m"
+            with rasterio.open(site_elevation_path(site_id)) as dataset:
+                x, y = transform(LUNAR_GEOGRAPHIC, dataset.crs, *zip(*coordinates))
+                values = _projected_samples(dataset, list(zip(x, y)))
+                source = f"{site_id} LOLA · {dataset.res[0]:g} m"
+    return values, source
+
+
+def inspect_lunar_surface(longitude, latitude, level):
+    values, source = _elevation_samples([(longitude, latitude)], level)
+    return {"elevation_m": values[0], "source": source, "sampling": "nearest native cell"}
+
+
+def elevation_profile(start, end, level, site_id="Site04"):
+    """Return 128 samples along the short spherical geodesic in the selected source."""
+    lon1, lat1 = start
+    lon2, lat2 = end
+    _, _, distance = GEOD.inv(lon1, lat1, lon2, lat2)
+    coordinates = [start, *GEOD.npts(lon1, lat1, lon2, lat2, 126), end] if distance else [start] * 128
+    values, source = _elevation_samples(coordinates, level, site_id)
     return {"distance_m": distance, "elevation_m": values, "source": source, "sampling": "nearest native cell"}

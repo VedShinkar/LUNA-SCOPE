@@ -12,6 +12,10 @@ class UnknownSiteError(ValueError):
     pass
 
 
+def list_site_ids(catalog_path: Path = CATALOG_PATH) -> tuple[str, ...]:
+    return tuple(json.loads(catalog_path.read_text(encoding="utf-8"))["sites"])
+
+
 def get_site_config(site_id: str, catalog_path: Path = CATALOG_PATH) -> dict:
     catalog = json.loads(catalog_path.read_text(encoding="utf-8"))
     if site_id not in catalog["sites"]:

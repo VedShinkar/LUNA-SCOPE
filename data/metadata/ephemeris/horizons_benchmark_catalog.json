@@ -1,0 +1,502 @@
+{
+  "shackleton_01": {
+    "epoch": "2026-01-01T00:00:00",
+    "site": {
+      "lat": -89.9,
+      "lon": 0.0,
+      "alt_m": 200.0
+    },
+    "sun": {
+      "azimuth_deg": 32.520769,
+      "elevation_deg": 1.430067,
+      "distance_au": 0.985323572976,
+      "distance_km": 147402308.468
+    },
+    "earth": {
+      "azimuth_deg": 358.720938,
+      "elevation_deg": 6.382359,
+      "distance_km": 360807.294,
+      "distance_au": 0.002411847791
+    }
+  },
+  "shackleton_02": {
+    "epoch": "2026-01-04T12:00:00",
+    "site": {
+      "lat": -89.9,
+      "lon": 0.0,
+      "alt_m": 200.0
+    },
+    "sun": {
+      "azimuth_deg": 350.084878,
+      "elevation_deg": 1.384252,
+      "distance_au": 0.985665206208,
+      "distance_km": 147453416.072
+    },
+    "earth": {
+      "azimuth_deg": 4.938594,
+      "elevation_deg": 4.224223,
+      "distance_km": 365889.835,
+      "distance_au": 0.00244582248
+    }
+  },
+  "shackleton_03": {
+    "epoch": "2026-03-20T00:00:00",
+    "site": {
+      "lat": -89.9,
+      "lon": 0.0,
+      "alt_m": 200.0
+    },
+    "sun": {
+      "azimuth_deg": 163.586797,
+      "elevation_deg": -0.618934,
+      "distance_au": 0.993332879042,
+      "distance_km": 148600483.601
+    },
+    "earth": {
+      "azimuth_deg": 355.891813,
+      "elevation_deg": 3.497919,
+      "distance_km": 370126.559,
+      "distance_au": 0.002474143229
+    }
+  },
+  "shackleton_04": {
+    "epoch": "2026-07-01T00:00:00",
+    "site": {
+      "lat": -89.9,
+      "lon": 0.0,
+      "alt_m": 200.0
+    },
+    "sun": {
+      "azimuth_deg": 346.327857,
+      "elevation_deg": -1.187125,
+      "distance_au": 1.019223623475,
+      "distance_km": 152473683.839
+    },
+    "earth": {
+      "azimuth_deg": 357.3805,
+      "elevation_deg": -4.55099,
+      "distance_km": 403924.182,
+      "distance_au": 0.002700066385
+    }
+  },
+  "shackleton_05": {
+    "epoch": "2026-07-04T12:00:00",
+    "site": {
+      "lat": -89.9,
+      "lon": 0.0,
+      "alt_m": 200.0
+    },
+    "sun": {
+      "azimuth_deg": 303.631474,
+      "elevation_deg": -1.147068,
+      "distance_au": 1.018317644409,
+      "distance_km": 152338151.3
+    },
+    "earth": {
+      "azimuth_deg": 353.811616,
+      "elevation_deg": 0.016754,
+      "distance_km": 393979.106,
+      "distance_au": 0.002633587658
+    }
+  },
+  "shackleton_06": {
+    "epoch": "2026-10-15T00:00:00",
+    "site": {
+      "lat": -89.9,
+      "lon": 0.0,
+      "alt_m": 200.0
+    },
+    "sun": {
+      "azimuth_deg": 131.948764,
+      "elevation_deg": 1.204502,
+      "distance_au": 0.995641011513,
+      "distance_km": 148945775.304
+    },
+    "earth": {
+      "azimuth_deg": 2.083155,
+      "elevation_deg": -6.629015,
+      "distance_km": 402572.512,
+      "distance_au": 0.002691031033
+    }
+  },
+  "malapert_01": {
+    "epoch": "2026-01-01T12:00:00",
+    "site": {
+      "lat": -85.99,
+      "lon": 2.91,
+      "alt_m": 5020.0
+    },
+    "sun": {
+      "azimuth_deg": 23.635092,
+      "elevation_deg": 5.012677,
+      "distance_au": 0.985459477013,
+      "distance_km": 147422639.422
+    },
+    "earth": {
+      "azimuth_deg": 356.719165,
+      "elevation_deg": 10.299009,
+      "distance_km": 360154.112,
+      "distance_au": 0.002407481541
+    }
+  },
+  "malapert_02": {
+    "epoch": "2026-03-20T12:00:00",
+    "site": {
+      "lat": -85.99,
+      "lon": 2.91,
+      "alt_m": 5020.0
+    },
+    "sun": {
+      "azimuth_deg": 154.49984,
+      "elevation_deg": -4.15667,
+      "distance_au": 0.993558278619,
+      "distance_km": 148634202.898
+    },
+    "earth": {
+      "azimuth_deg": 353.47246,
+      "elevation_deg": 8.061699,
+      "distance_km": 368740.42,
+      "distance_au": 0.002464877462
+    }
+  },
+  "malapert_03": {
+    "epoch": "2026-07-01T12:00:00",
+    "site": {
+      "lat": -85.99,
+      "lon": 2.91,
+      "alt_m": 5020.0
+    },
+    "sun": {
+      "azimuth_deg": 337.303944,
+      "elevation_deg": 2.425845,
+      "distance_au": 1.019166739366,
+      "distance_km": 152465174.097
+    },
+    "earth": {
+      "azimuth_deg": 353.890165,
+      "elevation_deg": -0.117446,
+      "distance_km": 402832.452,
+      "distance_au": 0.002692768619
+    }
+  },
+  "malapert_04": {
+    "epoch": "2026-09-22T00:00:00",
+    "site": {
+      "lat": -85.99,
+      "lon": 2.91,
+      "alt_m": 5020.0
+    },
+    "sun": {
+      "azimuth_deg": 49.554896,
+      "elevation_deg": 3.373513,
+      "distance_au": 1.005368193226,
+      "distance_km": 150400940.976
+    },
+    "earth": {
+      "azimuth_deg": 354.046828,
+      "elevation_deg": 0.752239,
+      "distance_km": 399116.753,
+      "distance_au": 0.002667930707
+    }
+  },
+  "malapert_05": {
+    "epoch": "2026-12-15T00:00:00",
+    "site": {
+      "lat": -85.99,
+      "lon": 2.91,
+      "alt_m": 5020.0
+    },
+    "sun": {
+      "azimuth_deg": 106.656956,
+      "elevation_deg": 0.222997,
+      "distance_au": 0.983204730437,
+      "distance_km": 147085334.136
+    },
+    "earth": {
+      "azimuth_deg": 351.375093,
+      "elevation_deg": 4.282475,
+      "distance_km": 400083.605,
+      "distance_au": 0.002674393717
+    }
+  },
+  "de_gerlache_01": {
+    "epoch": "2026-01-01T06:00:00",
+    "site": {
+      "lat": -88.48,
+      "lon": -88.35,
+      "alt_m": 650.0
+    },
+    "sun": {
+      "azimuth_deg": 117.86078,
+      "elevation_deg": 0.631576,
+      "distance_au": 0.985395370556,
+      "distance_km": 147413049.233
+    },
+    "earth": {
+      "azimuth_deg": 87.714746,
+      "elevation_deg": 6.365048,
+      "distance_km": 360490.838,
+      "distance_au": 0.002409732412
+    }
+  },
+  "de_gerlache_02": {
+    "epoch": "2026-04-10T00:00:00",
+    "site": {
+      "lat": -88.48,
+      "lon": -88.35,
+      "alt_m": 650.0
+    },
+    "sun": {
+      "azimuth_deg": 356.158419,
+      "elevation_deg": 0.448474,
+      "distance_au": 1.001802352714,
+      "distance_km": 149867498.828
+    },
+    "earth": {
+      "azimuth_deg": 83.717152,
+      "elevation_deg": -5.256927,
+      "distance_km": 400952.153,
+      "distance_au": 0.002680199599
+    }
+  },
+  "de_gerlache_03": {
+    "epoch": "2026-07-01T06:00:00",
+    "site": {
+      "lat": -88.48,
+      "lon": -88.35,
+      "alt_m": 650.0
+    },
+    "sun": {
+      "azimuth_deg": 71.602314,
+      "elevation_deg": -0.799833,
+      "distance_au": 1.019198733737,
+      "distance_km": 152469960.387
+    },
+    "earth": {
+      "azimuth_deg": 85.323048,
+      "elevation_deg": -4.260663,
+      "distance_km": 403455.35,
+      "distance_au": 0.002696932436
+    }
+  },
+  "de_gerlache_04": {
+    "epoch": "2026-08-15T12:00:00",
+    "site": {
+      "lat": -88.48,
+      "lon": -88.35,
+      "alt_m": 650.0
+    },
+    "sun": {
+      "azimuth_deg": 238.553652,
+      "elevation_deg": -0.972619,
+      "distance_au": 1.010750099771,
+      "distance_km": 151206062.736
+    },
+    "earth": {
+      "azimuth_deg": 94.469359,
+      "elevation_deg": -3.700801,
+      "distance_km": 379818.718,
+      "distance_au": 0.00253893131
+    }
+  },
+  "de_gerlache_05": {
+    "epoch": "2026-11-01T00:00:00",
+    "site": {
+      "lat": -88.48,
+      "lon": -88.35,
+      "alt_m": 650.0
+    },
+    "sun": {
+      "azimuth_deg": 13.494355,
+      "elevation_deg": 2.934638,
+      "distance_au": 0.993162644762,
+      "distance_km": 148575016.915
+    },
+    "earth": {
+      "azimuth_deg": 92.39123,
+      "elevation_deg": 2.877174,
+      "distance_km": 369885.946,
+      "distance_au": 0.002472534835
+    }
+  },
+  "nobile_01": {
+    "epoch": "2026-01-01T18:00:00",
+    "site": {
+      "lat": -85.25,
+      "lon": 35.8,
+      "alt_m": 1200.0
+    },
+    "sun": {
+      "azimuth_deg": 347.559417,
+      "elevation_deg": 5.97258,
+      "distance_au": 0.985517394127,
+      "distance_km": 147431303.699
+    },
+    "earth": {
+      "azimuth_deg": 323.928941,
+      "elevation_deg": 10.108952,
+      "distance_km": 360044.745,
+      "distance_au": 0.002406750463
+    }
+  },
+  "nobile_02": {
+    "epoch": "2026-05-01T00:00:00",
+    "site": {
+      "lat": -85.25,
+      "lon": 35.8,
+      "alt_m": 1200.0
+    },
+    "sun": {
+      "azimuth_deg": 335.624272,
+      "elevation_deg": 2.885462,
+      "distance_au": 1.010028250338,
+      "distance_km": 151098075.597
+    },
+    "earth": {
+      "azimuth_deg": 327.650111,
+      "elevation_deg": -1.725762,
+      "distance_km": 400345.23,
+      "distance_au": 0.00267614257
+    }
+  },
+  "nobile_03": {
+    "epoch": "2026-07-01T18:00:00",
+    "site": {
+      "lat": -85.25,
+      "lon": 35.8,
+      "alt_m": 1200.0
+    },
+    "sun": {
+      "azimuth_deg": 301.382641,
+      "elevation_deg": 1.205781,
+      "distance_au": 1.019129180466,
+      "distance_km": 152459555.366
+    },
+    "earth": {
+      "azimuth_deg": 320.787034,
+      "elevation_deg": -0.134147,
+      "distance_km": 402298.633,
+      "distance_au": 0.002689200262
+    }
+  },
+  "nobile_04": {
+    "epoch": "2026-09-01T00:00:00",
+    "site": {
+      "lat": -85.25,
+      "lon": 35.8,
+      "alt_m": 1200.0
+    },
+    "sun": {
+      "azimuth_deg": 273.032854,
+      "elevation_deg": 0.488402,
+      "distance_au": 1.011020894936,
+      "distance_km": 151246573.116
+    },
+    "earth": {
+      "azimuth_deg": 319.317314,
+      "elevation_deg": 8.960673,
+      "distance_km": 377539.05,
+      "distance_au": 0.002523692673
+    }
+  },
+  "nobile_05": {
+    "epoch": "2026-12-01T12:00:00",
+    "site": {
+      "lat": -85.25,
+      "lon": 35.8,
+      "alt_m": 1200.0
+    },
+    "sun": {
+      "azimuth_deg": 238.168356,
+      "elevation_deg": -1.038335,
+      "distance_au": 0.98597897442,
+      "distance_km": 147500355.128
+    },
+    "earth": {
+      "azimuth_deg": 331.025142,
+      "elevation_deg": 1.794079,
+      "distance_km": 378975.114,
+      "distance_au": 0.002533292166
+    }
+  },
+  "sinus_medii_01": {
+    "epoch": "2026-01-01T00:00:00",
+    "site": {
+      "lat": 0.0,
+      "lon": 0.0,
+      "alt_m": 0.0
+    },
+    "sun": {
+      "azimuth_deg": 92.503437,
+      "elevation_deg": 57.455366,
+      "distance_au": 0.985314073417,
+      "distance_km": 147400887.354
+    },
+    "earth": {
+      "azimuth_deg": 190.988778,
+      "elevation_deg": 83.288323,
+      "distance_km": 359279.122,
+      "distance_au": 0.002401632595
+    }
+  },
+  "sinus_medii_02": {
+    "epoch": "2026-03-20T00:00:00",
+    "site": {
+      "lat": 0.0,
+      "lon": 0.0,
+      "alt_m": 0.0
+    },
+    "sun": {
+      "azimuth_deg": 88.151979,
+      "elevation_deg": -73.579185,
+      "distance_au": 0.993343894015,
+      "distance_km": 148602131.418
+    },
+    "earth": {
+      "azimuth_deg": 228.184453,
+      "elevation_deg": 84.470087,
+      "distance_km": 368507.331,
+      "distance_au": 0.002463319361
+    }
+  },
+  "sinus_medii_03": {
+    "epoch": "2026-07-01T00:00:00",
+    "site": {
+      "lat": 0.0,
+      "lon": 0.0,
+      "alt_m": 0.0
+    },
+    "sun": {
+      "azimuth_deg": 275.415258,
+      "elevation_deg": 76.268213,
+      "distance_au": 1.019212100792,
+      "distance_km": 152471960.07
+    },
+    "earth": {
+      "azimuth_deg": 329.317179,
+      "elevation_deg": 84.853926,
+      "distance_km": 402059.56,
+      "distance_au": 0.00268760216
+    }
+  },
+  "sinus_medii_04": {
+    "epoch": "2026-09-22T00:00:00",
+    "site": {
+      "lat": 0.0,
+      "lon": 0.0,
+      "alt_m": 0.0
+    },
+    "sun": {
+      "azimuth_deg": 90.97149,
+      "elevation_deg": 37.640943,
+      "distance_au": 1.005361786856,
+      "distance_km": 150399982.597
+    },
+    "earth": {
+      "azimuth_deg": 314.42891,
+      "elevation_deg": 85.713708,
+      "distance_km": 397411.002,
+      "distance_au": 0.002656528468
+    }
+  }
+}

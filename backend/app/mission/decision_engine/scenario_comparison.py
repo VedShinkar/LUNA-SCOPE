@@ -40,13 +40,14 @@ def compare_scenarios(site_ids, profile_id):
         results.append(result)
 
     # Define transparent comparison priority.
+          # Define comparison priority.
     status_priority = {
         "FEASIBLE": 0,
         "NOT_FEASIBLE": 1,
         "INSUFFICIENT_DATA": 2
     }
 
-    # Sort by feasibility first, then score.
+    # Sort feasible locations first, then by score.
     results.sort(
         key=lambda item: (
             status_priority[item["feasibility"]],
@@ -55,30 +56,26 @@ def compare_scenarios(site_ids, profile_id):
         )
     )
 
-    # Assign suitability ranks only to feasible locations.
+    # Assign ranks only to feasible locations.
     current_rank = 0
     previous_score = None
 
     for result in results:
 
         if result["feasibility"] != "FEASIBLE":
-
             result["rank"] = None
             continue
 
         score = result.get("overall_score")
 
         if score is None:
-
             result["rank"] = None
             continue
 
         if score != previous_score:
-
             current_rank += 1
 
         result["rank"] = current_rank
-
         previous_score = score
 
     return results

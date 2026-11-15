@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LUNA-SCOPE | AI Mission Copilot</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+<div class="app-container">
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+
+        <div class="brand">
+            <div class="brand-icon">🌙</div>
+            <div>
+                <h2>LUNA-SCOPE</h2>
+                <span>MISSION INTELLIGENCE</span>
+            </div>
+        </div>
+
+        <div class="sidebar-section">
+            <p class="section-label">WORKSPACE</p>
+
+            <button class="nav-item active" id="homeNav">
+                <span>⌂</span> Mission Copilot
+            </button>
+
+            <button class="nav-item" id="compareNav">
+                <span>⇄</span> Site Comparison
+            </button>
+        </div>
+
+        <div class="sidebar-section">
+            <p class="section-label">LUNAR LANDING SITES</p>
+
+            <div class="site-item">
+                <span class="site-dot"></span>
+                Shackleton Rim
+            </div>
+
+            <div class="site-item">
+                <span class="site-dot blue"></span>
+                Malapert Massif
+            </div>
+
+            <div class="site-item">
+                <span class="site-dot orange"></span>
+                de Gerlache Rim
+            </div>
+        </div>
+
+        <div class="sidebar-bottom">
+            <div class="connection-status">
+                <span class="online-dot"></span>
+                <div>
+                    <strong>Backend Status</strong>
+                    <small id="connectionStatus">Checking connection...</small>
+                </div>
+            </div>
+
+            <p class="sidebar-footer">NASA SPACE APPS CHALLENGE</p>
+        </div>
+
+    </aside>
+
+
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
+        <header class="topbar">
+            <div>
+                <p class="breadcrumb">WORKSPACE / MISSION INTELLIGENCE</p>
+                <h1>AI Mission Copilot</h1>
+            </div>
+
+            <div class="profile">
+                <div class="profile-icon">AI</div>
+                <span>Mission Assistant</span>
+            </div>
+        </header>
+
+
+        <!-- DASHBOARD INTRO -->
+        <section class="welcome-section">
+
+            <div class="welcome-text">
+                <span class="tag">LUNAR SOUTH POLE EXPLORATION</span>
+
+                <h2>Explore the Moon.<br>
+                    <span>Plan Smarter Missions.</span>
+                </h2>
+
+                <p>
+                    An intelligent mission decision-support interface
+                    for evaluating lunar landing sites, mission feasibility
+                    and exploration scenarios.
+                </p>
+            </div>
+
+            <div class="moon-visual">
+                <div class="moon">🌕</div>
+                <div class="orbit orbit-one"></div>
+                <div class="orbit orbit-two"></div>
+            </div>
+
+        </section>
+
+
+        <!-- QUICK STATS -->
+        <section class="stats-grid">
+
+            <div class="stat-card">
+                <div class="stat-icon">🌑</div>
+                <div>
+                    <p>Landing Sites</p>
+                    <h2>03</h2>
+                    <small>Available for evaluation</small>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">🚀</div>
+                <div>
+                    <p>Mission Profile</p>
+                    <h2>Rover</h2>
+                    <small>ROVER_EXPLORATION_V1</small>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">🧠</div>
+                <div>
+                    <p>Decision Engine</p>
+                    <h2>Active</h2>
+                    <small>Deterministic assessment</small>
+                </div>
+            </div>
+
+        </section>
+
+
+        <!-- MAIN WORKSPACE -->
+        <section class="workspace-grid">
+
+            <!-- COPILOT CHAT -->
+            <div class="panel chat-panel">
+
+                <div class="panel-header">
+                    <div>
+                        <h3>💬 Mission Copilot</h3>
+                        <p>Ask questions about lunar mission planning</p>
+                    </div>
+
+                    <span class="active-badge">● ACTIVE</span>
+                </div>
+
+                <div class="chat-messages" id="chatMessages">
+
+                    <div class="message assistant-message">
+                        <div class="message-avatar">🌙</div>
+
+                        <div class="message-content">
+                            <strong>LUNA-SCOPE AI</strong>
+
+                            <p>
+                                Welcome to LUNA-SCOPE Mission Copilot!
+
+                                I can help you assess lunar landing sites,
+                                compare mission feasibility, identify risks
+                                and explain mission recommendations.
+
+                                What would you like to explore?
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <div class="suggestions">
+                    <button class="suggestion-btn"
+                        data-question="Is Shackleton Rim suitable for rover exploration?">
+                        Assess Shackleton Rim
+                    </button>
+
+                    <button class="suggestion-btn"
+                        data-question="Compare Shackleton Rim, Malapert Massif and de Gerlache Rim for rover exploration.">
+                        Compare all sites
+                    </button>
+
+                    <button class="suggestion-btn"
+                        data-question="What are the mission risks at de Gerlache Rim?">
+                        Explore mission risks
+                    </button>
+                </div>
+
+
+                <form class="chat-input-area" id="chatForm">
+
+                    <input
+                        type="text"
+                        id="userInput"
+                        placeholder="Ask your lunar mission question..."
+                        autocomplete="off"
+                        required
+                    >
+
+                    <button type="submit" id="sendButton">
+                        Send ➤
+                    </button>
+
+                </form>
+
+                <p class="input-note">
+                    Copilot uses existing LUNA-SCOPE decision tools.
+                </p>
+
+            </div>
+
+
+            <!-- SITE OVERVIEW -->
+            <div class="panel sites-panel">
+
+                <div class="panel-header">
+                    <div>
+                        <h3>🌍 Landing Site Overview</h3>
+                        <p>Mission evaluation locations</p>
+                    </div>
+                </div>
+
+
+                <div class="landing-site-card">
+                    <div class="site-heading">
+                        <h4>Shackleton Rim</h4>
+                        <span class="rank-badge">TOP RANK</span>
+                    </div>
+                    <p>SHACKLETON_RIM</p>
+                    <div class="site-description">
+                        Lunar south pole region
+                    </div>
+                </div>
+
+
+                <div class="landing-site-card">
+                    <div class="site-heading">
+                        <h4>Malapert Massif</h4>
+                        <span class="neutral-badge">UNDER REVIEW</span>
+                    </div>
+                    <p>MALAPERT_MASSIF</p>
+                    <div class="site-description">
+                        Lunar south pole region
+                    </div>
+                </div>
+
+
+                <div class="landing-site-card">
+                    <div class="site-heading">
+                        <h4>de Gerlache Rim</h4>
+                        <span class="neutral-badge">UNDER REVIEW</span>
+                    </div>
+                    <p>DE_GERLACHE_RIM</p>
+                    <div class="site-description">
+                        Lunar south pole region
+                    </div>
+                </div>
+
+
+                <div class="mission-profile">
+                    <p>ACTIVE MISSION PROFILE</p>
+                    <h4>Rover Exploration</h4>
+                    <span>ROVER_EXPLORATION_V1</span>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- SCIENTIFIC NOTICE -->
+        <section class="notice-panel">
+            <div class="notice-icon">⚠</div>
+
+            <div>
+                <h4>Scientific Data Disclaimer</h4>
+
+                <p>
+                    Current Mission Intelligence site fixtures and mission
+                    profile values are synthetic examples for software testing.
+                    They are not verified NASA scientific measurements and
+                    must not be used for real lunar mission planning.
+                </p>
+            </div>
+        </section>
+
+
+        <footer>
+            <p>LUNA-SCOPE | Lunar Unified Navigation & Mission Intelligence</p>
+            <span>NASA SPACE APPS CHALLENGE 2026</span>
+        </footer>
+
+    </main>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
